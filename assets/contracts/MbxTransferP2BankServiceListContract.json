@@ -1,0 +1,18 @@
+{
+	"status": 200,
+	"message": "Transfer P2Bank service success",
+	"data": [
+	  {
+		"code": "bi-fast",
+		"name": "BI-FAST",
+		"minimum": 10000,
+		"fee": 2500
+	  },
+	  {
+		"code": "online",
+		"name": "Realtime Online",
+		"minimum": 10000,
+		"fee": 6000
+	  }
+	]
+  }

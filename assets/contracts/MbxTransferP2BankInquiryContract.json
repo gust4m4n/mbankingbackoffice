@@ -1,0 +1,25 @@
+{
+	"status": 200,
+	"message": "Transfer P2Bank Inquiry Success",
+	"data": {
+	  "details": [
+		{
+		  "label": "TRANSAKSI",
+		  "value": "Transfer Antar Bank"
+		},
+		{
+		  "label": "NOMINAL",
+		  "value": "IDR 150.000"
+		},
+		{
+		  "label": "PENERIMA",
+		  "value": "CAROLINE\n000000000000\nBank Central Asia (BCA)"
+		},
+		{
+		  "label": "PENGIRIM",
+		  "value": "JULEHA\n8222-3833-4888\nBank XYZ"
+		}
+	  ],
+	  "transaction_id": "TRID-20210101-0001"
+	}
+  }

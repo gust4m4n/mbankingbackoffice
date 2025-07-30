@@ -1,0 +1,25 @@
+{
+	"status": 200,
+	"message": "Transfer P2P Inquiry Success",
+	"data": {
+	  "details": [
+		{
+		  "label": "TRANSAKSI",
+		  "value": "Transfer Antar Rekening"
+		},
+		{
+		  "label": "NOMINAL",
+		  "value": "IDR 150.000"
+		},
+		{
+		  "label": "PENERIMA",
+		  "value": "CAROLINE\n3888-111-2333"
+		},
+		{
+		  "label": "PENGIRIM",
+		  "value": "JULEHA\n8222-3833-4888"
+		}
+	  ],
+	  "transaction_id": "TRID-20210101-0001"
+	}
+  }

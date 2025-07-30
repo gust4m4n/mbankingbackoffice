@@ -1,0 +1,58 @@
+{
+	"status": 200,
+	"message": "Get transfer P2P destination success",
+	"data": [
+	  {
+		"name": "AGNES",
+		"account": "12345678123"
+	  },
+	  {
+		"name": "ANGELINA",
+		"account": "111122223333"
+	  },
+	  {
+		"name": "BRIAN",
+		"account": "900012345678"
+	  },
+	  {
+		"name": "CAROLINE",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "HARRY",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "LAURA",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "MIRANDA",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "ROBERT",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "SUZZANE",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "THOMAS",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "TIMOTHY",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "WILLIAM",
+		"account": "123412341234"
+	  },
+	  {
+		"name": "ZACK",
+		"account": "123412341234"
+	  }
+	]
+  }

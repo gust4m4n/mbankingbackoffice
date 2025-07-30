@@ -1,0 +1,8 @@
+{
+	"message": "QRIS inquiry success",
+	"data": {
+	  "merchant_name": "NASI BEBEK 100 BUMBU HITAM",
+	  "transaction_id": "0000000000000"
+	},
+	"status": 200
+  }
