@@ -47,7 +47,6 @@ import 'upgrade/views/mbx_upgrade_selfie_ktp_screen.dart';
 import 'upgrade/views/mbx_upgrade_selfie_screen.dart';
 import 'upgrade/views/mbx_upgrade_success_screen.dart';
 import 'widget-x/all_widgets.dart';
-import 'widget-x/media_x.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -102,10 +101,7 @@ Future<void> main() async {
         gradientColorEnd: ColorX.gray,
         child: Center(
           child: ClipRRect(
-            child: SizedBox(
-              width: kIsWeb ? MediaX.width : double.infinity,
-              child: MyApp(initialRoute),
-            ),
+            child: SizedBox(width: double.infinity, child: MyApp(initialRoute)),
           ),
         ),
       ),
