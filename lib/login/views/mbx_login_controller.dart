@@ -1,7 +1,6 @@
 import 'package:mbankingbackoffice/language/views/mbx_language_controller.dart';
 import 'package:mbankingbackoffice/language/views/mbx_language_sheet.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_login_otp_vm.dart';
-import 'package:mbankingbackoffice/login/viewmodels/mbx_login_phone_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_login_pin_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_onboarding_list_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_profile_vm.dart';
@@ -17,10 +16,26 @@ import 'mbx_login_screen.dart';
 class MbxLoginController extends GetxController {
   final PageController pageController = PageController();
   var onboardingVM = MbxOnboardingListVM();
+
+  // Email and Password controllers for web admin
+  final txtEmailController = TextEditingController();
+  final txtEmailNode = FocusNode();
+  final txtPasswordController = TextEditingController();
+  final txtPasswordNode = FocusNode();
+
+  // Phone controller (keeping for backward compatibility)
   final txtPhoneController = TextEditingController();
   final txtPhoneNode = FocusNode();
+
+  // Form validation errors
+  var emailError = '';
+  var passwordError = '';
   var phoneError = '';
+
+  // UI state
   var loginEnabled = false;
+  var isPasswordVisible = false;
+  var isLoading = false;
   var version = '';
   var onboardingIndex = 0;
 
@@ -66,6 +81,28 @@ class MbxLoginController extends GetxController {
     update();
   }
 
+  // New methods for web admin login
+  txtEmailOnChanged(String value) {
+    emailError = '';
+    loginEnabled = value.isNotEmpty && txtPasswordController.text.isNotEmpty;
+    update();
+  }
+
+  txtPasswordOnChanged(String value) {
+    passwordError = '';
+    loginEnabled = txtEmailController.text.isNotEmpty && value.isNotEmpty;
+    update();
+  }
+
+  togglePasswordVisibility() {
+    isPasswordVisible = !isPasswordVisible;
+    update();
+  }
+
+  btnForgotPasswordClicked() {
+    ToastX.showSuccess(msg: 'Fitur lupa password akan segera hadir');
+  }
+
   btnStartClicked() {
     Get.to(MbxLoginScreen());
   }
@@ -77,31 +114,58 @@ class MbxLoginController extends GetxController {
 
   btnLoginClicked() {
     FocusManager.instance.primaryFocus?.unfocus();
-    phoneError = '';
+    emailError = '';
+    passwordError = '';
     update();
 
-    if (txtPhoneController.text.trim().isEmpty) {
-      phoneError = 'Nomor handphone tidak boleh kosong.';
-      FocusScope.of(Get.context!).requestFocus(txtPhoneNode);
+    // Validate email
+    if (txtEmailController.text.trim().isEmpty) {
+      emailError = 'Email tidak boleh kosong';
+      FocusScope.of(Get.context!).requestFocus(txtEmailNode);
       update();
       return;
     }
 
-    Get.loading();
-    MbxLoginPhoneVM.request(phone: txtPhoneController.text).then((resp) {
-      Get.back();
-      if (resp.status == 200) {
-        askOtp(txtPhoneController.text);
-      } else {
-        SheetX.showMessage(
-          title: 'login'.tr,
-          message: resp.message,
-          leftBtnTitle: 'ok'.tr,
-          onLeftBtnClicked: () {
-            Get.back();
-          },
-        );
-      }
+    if (!RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    ).hasMatch(txtEmailController.text.trim())) {
+      emailError = 'Format email tidak valid';
+      FocusScope.of(Get.context!).requestFocus(txtEmailNode);
+      update();
+      return;
+    }
+
+    // Validate password
+    if (txtPasswordController.text.isEmpty) {
+      passwordError = 'Password tidak boleh kosong';
+      FocusScope.of(Get.context!).requestFocus(txtPasswordNode);
+      update();
+      return;
+    }
+
+    if (txtPasswordController.text.length < 6) {
+      passwordError = 'Password minimal 6 karakter';
+      FocusScope.of(Get.context!).requestFocus(txtPasswordNode);
+      update();
+      return;
+    }
+
+    // Start loading
+    isLoading = true;
+    update();
+
+    // Simulate login process
+    Future.delayed(const Duration(seconds: 2), () {
+      isLoading = false;
+      update();
+
+      // For demo purposes, any valid email/password combination will work
+      ToastX.showSuccess(msg: 'Login berhasil!');
+
+      // Navigate to dashboard/home
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.offAllNamed('/home');
+      });
     });
   }
 
