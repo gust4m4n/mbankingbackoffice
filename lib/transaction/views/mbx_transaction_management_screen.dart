@@ -9,32 +9,30 @@ class MbxTransactionManagementScreen extends StatelessWidget {
     return GetBuilder<MbxTransactionController>(
       init: MbxTransactionController(),
       builder: (controller) {
-        return Obx(() {
-          return Scaffold(
-            backgroundColor: Colors.grey.shade50,
-            body: LayoutBuilder(
-              builder: (context, constraints) {
-                final isMobile = constraints.maxWidth < 700;
+        return Scaffold(
+          backgroundColor: Colors.grey.shade50,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 700;
 
-                return Row(
-                  children: [
-                    if (!isMobile) _buildSidebar(controller),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          _buildTopBar(controller, isMobile),
-                          Expanded(
-                            child: _buildMainContent(controller, constraints),
-                          ),
-                        ],
-                      ),
+              return Row(
+                children: [
+                  if (!isMobile) _buildSidebar(controller),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        _buildTopBar(controller, isMobile),
+                        Expanded(
+                          child: _buildMainContent(controller, constraints),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              },
-            ),
-          );
-        });
+                  ),
+                ],
+              );
+            },
+          ),
+        );
       },
     );
   }
@@ -328,39 +326,41 @@ class MbxTransactionManagementScreen extends StatelessWidget {
   ) {
     final isMobile = constraints.maxWidth < 700;
 
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            title: 'Total Transactions',
-            value: controller.totalTransactions.value.toString(),
-            icon: Icons.receipt_long,
-            color: Colors.blue,
+    return Obx(() {
+      return Row(
+        children: [
+          Expanded(
+            child: _buildStatCard(
+              title: 'Total Transactions',
+              value: controller.totalTransactions.value.toString(),
+              icon: Icons.receipt_long,
+              color: Colors.blue,
+            ),
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            title: 'Current Page',
-            value:
-                '${controller.currentPage.value} / ${controller.totalPages.value}',
-            icon: Icons.pages,
-            color: Colors.green,
-          ),
-        ),
-        if (!isMobile) ...[
           const SizedBox(width: 16),
           Expanded(
             child: _buildStatCard(
-              title: 'Per Page',
-              value: controller.perPage.value.toString(),
-              icon: Icons.view_list,
-              color: Colors.orange,
+              title: 'Current Page',
+              value:
+                  '${controller.currentPage.value} / ${controller.totalPages.value}',
+              icon: Icons.pages,
+              color: Colors.green,
             ),
           ),
+          if (!isMobile) ...[
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                title: 'Per Page',
+                value: controller.perPage.value.toString(),
+                icon: Icons.view_list,
+                color: Colors.orange,
+              ),
+            ),
+          ],
         ],
-      ],
-    );
+      );
+    });
   }
 
   Widget _buildStatCard({
@@ -402,236 +402,245 @@ class MbxTransactionManagementScreen extends StatelessWidget {
     MbxTransactionController controller,
     BoxConstraints constraints,
   ) {
-    return Card(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+    return Obx(() {
+      return Card(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    'Transactions',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Showing ${controller.transactions.length} of ${controller.totalTransactions.value} transactions',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                const Text(
-                  'Transactions',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                Text(
-                  'Showing ${controller.transactions.length} of ${controller.totalTransactions.value} transactions',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: controller.isLoading.value
-                ? const Center(child: CircularProgressIndicator())
-                : controller.transactions.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No transactions found',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  )
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth - 32,
+            Expanded(
+              child: controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : controller.transactions.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No transactions found',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
-                      child: DataTable(
-                        columnSpacing: 12,
-                        horizontalMargin: 16,
-                        columns: const [
-                          DataColumn(label: Text('Transaction ID')),
-                          DataColumn(label: Text('Type')),
-                          DataColumn(label: Text('Amount')),
-                          DataColumn(label: Text('Status')),
-                          DataColumn(label: Text('User')),
-                          DataColumn(label: Text('Account')),
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Actions')),
-                        ],
-                        rows: controller.transactions.map((transaction) {
-                          return DataRow(
-                            cells: [
-                              DataCell(
-                                Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 100,
-                                  ),
-                                  child: Text(
-                                    transaction.id,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _getTypeColor(transaction.type),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    transaction.displayType,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth - 32,
+                        ),
+                        child: DataTable(
+                          columnSpacing: 12,
+                          horizontalMargin: 16,
+                          columns: const [
+                            DataColumn(label: Text('Transaction ID')),
+                            DataColumn(label: Text('Type')),
+                            DataColumn(label: Text('Amount')),
+                            DataColumn(label: Text('Status')),
+                            DataColumn(label: Text('User')),
+                            DataColumn(label: Text('Account')),
+                            DataColumn(label: Text('Date')),
+                            DataColumn(label: Text('Actions')),
+                          ],
+                          rows: controller.transactions.map((transaction) {
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  Container(
+                                    constraints: const BoxConstraints(
+                                      maxWidth: 100,
+                                    ),
+                                    child: Text(
+                                      transaction.id,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                 ),
-                              ),
-                              DataCell(
-                                Text(
-                                  transaction.formattedAmount,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _getStatusColor(transaction.status),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    transaction.displayStatus,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
+                                DataCell(
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 120,
-                                  ),
-                                  child: Text(
-                                    transaction.userName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Text(
-                                  transaction.maskedAccountNumber,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'monospace',
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Text(
-                                  transaction.formattedCreatedAt,
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ),
-                              DataCell(
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () => controller
-                                          .viewTransaction(transaction),
-                                      icon: const Icon(
-                                        Icons.visibility,
-                                        size: 16,
+                                    decoration: BoxDecoration(
+                                      color: _getTypeColor(transaction.type),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      transaction.displayType,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      tooltip: 'View Details',
                                     ),
-                                    if (!transaction.isReversed &&
-                                        transaction.status == 'completed')
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    transaction.formattedAmount,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: _getStatusColor(
+                                        transaction.status,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      transaction.displayStatus,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Container(
+                                    constraints: const BoxConstraints(
+                                      maxWidth: 120,
+                                    ),
+                                    child: Text(
+                                      transaction.userName,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    transaction.maskedAccountNumber,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    transaction.formattedCreatedAt,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                                DataCell(
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
                                       IconButton(
                                         onPressed: () => controller
-                                            .showReversalDialog(transaction),
-                                        icon: const Icon(Icons.undo, size: 16),
-                                        tooltip: 'Reverse Transaction',
-                                        color: Colors.red,
+                                            .viewTransaction(transaction),
+                                        icon: const Icon(
+                                          Icons.visibility,
+                                          size: 16,
+                                        ),
+                                        tooltip: 'View Details',
                                       ),
-                                  ],
+                                      if (!transaction.isReversed &&
+                                          transaction.status == 'completed')
+                                        IconButton(
+                                          onPressed: () => controller
+                                              .showReversalDialog(transaction),
+                                          icon: const Icon(
+                                            Icons.undo,
+                                            size: 16,
+                                          ),
+                                          tooltip: 'Reverse Transaction',
+                                          color: Colors.red,
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
-                  ),
-          ),
-          if (controller.totalPages.value > 1) _buildPagination(controller),
-        ],
-      ),
-    );
+            ),
+            if (controller.totalPages.value > 1) _buildPagination(controller),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildPagination(MbxTransactionController controller) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(8),
-          bottomRight: Radius.circular(8),
+    return Obx(() {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Page ${controller.currentPage.value} of ${controller.totalPages.value}',
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: controller.currentPage.value > 1
-                    ? controller.previousPage
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Page ${controller.currentPage.value} of ${controller.totalPages.value}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: controller.currentPage.value > 1
+                      ? controller.previousPage
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text('Previous'),
                 ),
-                child: const Text('Previous'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed:
-                    controller.currentPage.value < controller.totalPages.value
-                    ? controller.nextPage
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorX.theme,
-                  foregroundColor: Colors.white,
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed:
+                      controller.currentPage.value < controller.totalPages.value
+                      ? controller.nextPage
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorX.theme,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Next'),
                 ),
-                child: const Text('Next'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Color _getTypeColor(String type) {
