@@ -244,6 +244,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
         DataCell(
           Text(
             transaction.formattedAmount,
+            textAlign: TextAlign.right,
             style: const TextStyle(
               fontWeight: FontWeight.w500,
               color: Color(0xFF1976D2),

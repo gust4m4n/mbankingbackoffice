@@ -258,6 +258,7 @@ class MbxUserManagementScreen extends StatelessWidget {
         DataCell(
           Text(
             user.formattedBalance,
+            textAlign: TextAlign.right,
             style: const TextStyle(
               fontWeight: FontWeight.w500,
               color: Color(0xFF1976D2),
