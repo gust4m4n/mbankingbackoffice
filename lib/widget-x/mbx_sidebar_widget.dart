@@ -8,16 +8,28 @@ class MbxSidebarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: 280,
-      color: const Color(0xFF1A1D29),
+      color: isDark
+          ? const Color(0xFF333333) // Dark gray untuk dark mode
+          : const Color(0xFF1565C0), // Blue untuk light mode
       child: Column(
         children: [
           // Logo/Header
           Container(
             height: 80,
             padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(color: Color(0xFF1976D2)),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(
+                      0xFF404040,
+                    ) // Slightly lighter gray untuk header dark mode
+                  : const Color(
+                      0xFF0D47A1,
+                    ), // Darker blue untuk header light mode
+            ),
             child: Row(
               children: [
                 Container(

@@ -24,7 +24,7 @@ class MbxManagementScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isMobile = constraints.maxWidth < 700;
@@ -43,10 +43,13 @@ class MbxManagementScaffold extends StatelessWidget {
                       height: 80,
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).appBarTheme.backgroundColor,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? Colors.black.withOpacity(0.3)
+                                : Colors.black.withOpacity(0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 2),
                           ),
@@ -70,7 +73,9 @@ class MbxManagementScaffold extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: isMobile ? 18 : 24,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF1A1D29),
+                                color: Theme.of(
+                                  context,
+                                ).appBarTheme.foregroundColor,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -94,7 +99,9 @@ class MbxManagementScaffold extends StatelessWidget {
                               icon: const Icon(Icons.add, size: 20),
                               label: const Text('Add'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1976D2),
+                                backgroundColor: const Color(
+                                  0xFF1565C0,
+                                ), // Same blue as login screen
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),

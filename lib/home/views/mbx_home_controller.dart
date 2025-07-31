@@ -38,20 +38,6 @@ class MbxHomeController extends GetxController {
           data['data'] ?? data,
         );
 
-        print('🔍 Dashboard Data Parsed:');
-        print(
-          '  - Total Transactions Today Amount: ${dashboard.totalTransactions.todayAmount}',
-        );
-        print(
-          '  - Topup Today Amount: ${dashboard.topupTransactions.todayAmount}',
-        );
-        print(
-          '  - Withdraw Today Amount: ${dashboard.withdrawTransactions.todayAmount}',
-        );
-        print(
-          '  - Transfer Today Amount: ${dashboard.transferTransactions.todayAmount}',
-        );
-
         dashboardData.value = dashboard;
         print('Dashboard loaded successfully');
       } else {

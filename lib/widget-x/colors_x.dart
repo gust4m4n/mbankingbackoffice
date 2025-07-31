@@ -33,7 +33,7 @@ class ColorX {
   ); // Soft highlight for better UX
 
   static const Color transparent = Colors.transparent;
-  static Color theme = Color(0xff672EBA);
+  static Color theme = Color(0xFF1565C0); // Same blue as login screen
 
   // Dynamic colors that change based on theme
   static Color get black {

@@ -96,54 +96,58 @@ class MbxAppThemes {
       brightness: Brightness.dark,
       primarySwatch: _createMaterialColor(ColorX.theme),
       primaryColor: ColorX.theme,
-      scaffoldBackgroundColor: const Color(0xff121212),
-      cardColor: const Color(0xff2a2a2a),
-      dividerColor: const Color(0xff404040),
+      scaffoldBackgroundColor: const Color(
+        0xff1a1a1a,
+      ), // Soft dark gray background
+      cardColor: const Color(0xff161616), // Much darker cards
+      dividerColor: const Color(0xff2a2a2a),
 
       // AppBar Theme
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xff1a1a1a),
-        foregroundColor: Colors.white,
+        backgroundColor: Color(0xff202020), // Soft black app bar
+        foregroundColor: Color(0xFFF0F0F0), // Soft white text
         elevation: 1,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          color: Colors.white,
+          color: Color(0xFFF0F0F0), // Soft white
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Color(0xFFF0F0F0)), // Soft white icons
       ),
 
       // Text Theme
       textTheme: const TextTheme(
-        displayLarge: TextStyle(color: Colors.white),
-        displayMedium: TextStyle(color: Colors.white),
-        displaySmall: TextStyle(color: Colors.white),
-        headlineLarge: TextStyle(color: Colors.white),
-        headlineMedium: TextStyle(color: Colors.white),
-        headlineSmall: TextStyle(color: Colors.white),
-        titleLarge: TextStyle(color: Colors.white),
-        titleMedium: TextStyle(color: Colors.white),
-        titleSmall: TextStyle(color: Colors.white),
-        bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white),
-        bodySmall: TextStyle(color: Color(0xffb0b0b0)),
-        labelLarge: TextStyle(color: Colors.white),
-        labelMedium: TextStyle(color: Colors.white),
-        labelSmall: TextStyle(color: Color(0xffb0b0b0)),
+        displayLarge: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        displayMedium: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        displaySmall: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        headlineLarge: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        headlineMedium: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        headlineSmall: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        titleLarge: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        titleMedium: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        titleSmall: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        bodyLarge: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        bodyMedium: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        bodySmall: TextStyle(
+          color: Color(0xFFB0B0B0), // Soft gray for secondary text
+        ),
+        labelLarge: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        labelMedium: TextStyle(color: Color(0xFFF0F0F0)), // Soft white
+        labelSmall: TextStyle(color: Color(0xFFB0B0B0)), // Soft gray
       ),
 
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xff2a2a2a),
+        fillColor: const Color(0xff161616), // Darker input fields
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xff404040)),
+          borderSide: const BorderSide(color: Color(0xff2a2a2a)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xff404040)),
+          borderSide: const BorderSide(color: Color(0xff2a2a2a)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -165,7 +169,7 @@ class MbxAppThemes {
 
       // Card Theme
       cardTheme: CardThemeData(
-        color: const Color(0xff2a2a2a),
+        color: const Color(0xff161616), // Much darker cards
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),

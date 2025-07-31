@@ -1,3 +1,67 @@
+class MbxPerformanceData {
+  final double amount;
+  final int count;
+  final String period;
+
+  const MbxPerformanceData({
+    required this.amount,
+    required this.count,
+    required this.period,
+  });
+
+  factory MbxPerformanceData.fromJson(Map<String, dynamic> json) {
+    return MbxPerformanceData(
+      amount: (json['amount'] ?? 0).toDouble(),
+      count: json['count'] ?? 0,
+      period: json['period'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'amount': amount, 'count': count, 'period': period};
+  }
+}
+
+class MbxPerformanceStats {
+  final List<MbxPerformanceData> monthly;
+  final List<MbxPerformanceData> weekly;
+  final List<MbxPerformanceData> yearly;
+
+  const MbxPerformanceStats({
+    required this.monthly,
+    required this.weekly,
+    required this.yearly,
+  });
+
+  factory MbxPerformanceStats.fromJson(Map<String, dynamic> json) {
+    return MbxPerformanceStats(
+      monthly:
+          (json['monthly'] as List<dynamic>?)
+              ?.map((item) => MbxPerformanceData.fromJson(item))
+              .toList() ??
+          [],
+      weekly:
+          (json['weekly'] as List<dynamic>?)
+              ?.map((item) => MbxPerformanceData.fromJson(item))
+              .toList() ??
+          [],
+      yearly:
+          (json['yearly'] as List<dynamic>?)
+              ?.map((item) => MbxPerformanceData.fromJson(item))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'monthly': monthly.map((item) => item.toJson()).toList(),
+      'weekly': weekly.map((item) => item.toJson()).toList(),
+      'yearly': yearly.map((item) => item.toJson()).toList(),
+    };
+  }
+}
+
 class MbxTransactionStats {
   final int today;
   final int thisMonth;
@@ -44,6 +108,7 @@ class MbxDashboardModel {
   final MbxTransactionStats topupTransactions;
   final MbxTransactionStats withdrawTransactions;
   final MbxTransactionStats transferTransactions;
+  final MbxPerformanceStats? performance;
 
   const MbxDashboardModel({
     required this.totalUsers,
@@ -52,6 +117,7 @@ class MbxDashboardModel {
     required this.topupTransactions,
     required this.withdrawTransactions,
     required this.transferTransactions,
+    this.performance,
   });
 
   factory MbxDashboardModel.fromJson(Map<String, dynamic> json) {
@@ -70,6 +136,9 @@ class MbxDashboardModel {
       transferTransactions: MbxTransactionStats.fromJson(
         json['transfer_transactions'] ?? {},
       ),
+      performance: json['performance'] != null
+          ? MbxPerformanceStats.fromJson(json['performance'])
+          : null,
     );
   }
 
@@ -81,6 +150,7 @@ class MbxDashboardModel {
       'topup_transactions': topupTransactions.toJson(),
       'withdraw_transactions': withdrawTransactions.toJson(),
       'transfer_transactions': transferTransactions.toJson(),
+      'performance': performance?.toJson(),
     };
   }
 }
