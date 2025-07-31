@@ -23,6 +23,8 @@ import 'package:mbankingbackoffice/security/mbx_anti_jailbreak_vm.dart';
 import 'package:mbankingbackoffice/theme/app_themes.dart';
 import 'package:mbankingbackoffice/theme/controllers/mbx_theme_controller.dart';
 import 'package:mbankingbackoffice/theme/viewmodels/mbx_theme_vm.dart';
+import 'package:mbankingbackoffice/transaction/views/mbx_transaction_management_screen.dart';
+import 'package:mbankingbackoffice/user/views/mbx_user_management_screen.dart';
 import 'package:mbankingbackoffice/utils/mbx_reachability_vm.dart';
 
 import 'biller-pbb/views/mbx_pbb_screen.dart';
@@ -205,6 +207,16 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/admin-management',
               page: () => const MbxAdminManagementScreen(),
+              transition: Transition.noTransition,
+            ),
+            GetPage(
+              name: '/user-management',
+              page: () => const MbxUserManagementScreen(),
+              transition: Transition.noTransition,
+            ),
+            GetPage(
+              name: '/transaction-management',
+              page: () => const MbxTransactionManagementScreen(),
               transition: Transition.noTransition,
             ),
             GetPage(

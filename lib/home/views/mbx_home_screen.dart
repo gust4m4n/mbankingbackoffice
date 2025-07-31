@@ -118,6 +118,11 @@ class MbxHomeScreen extends StatelessWidget {
                             onTap: () => Get.toNamed('/admin-management'),
                           ),
                           _buildMenuItem(
+                            icon: Icons.people_outline,
+                            title: 'User Management',
+                            onTap: () => Get.toNamed('/user-management'),
+                          ),
+                          _buildMenuItem(
                             icon: Icons.bug_report_outlined,
                             title: 'Test Admin API',
                             onTap: () => Get.toNamed('/test-admin'),
@@ -125,9 +130,7 @@ class MbxHomeScreen extends StatelessWidget {
                           _buildMenuItem(
                             icon: Icons.receipt_long_outlined,
                             title: 'Transactions',
-                            onTap: () => controller.showFeatureNotAvailable(
-                              'Transactions',
-                            ),
+                            onTap: () => Get.toNamed('/transaction-management'),
                           ),
                           _buildMenuItem(
                             icon: Icons.analytics_outlined,
@@ -193,54 +196,73 @@ class MbxHomeScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Dashboard',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1A1D29),
-                            ),
-                          ),
-                          const Spacer(),
-                          // Search Bar
-                          Container(
-                            width: 300,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Search...',
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Colors.grey,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 12,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          bool isSmallScreen = constraints.maxWidth < 700;
+                          bool isVerySmallScreen = constraints.maxWidth < 500;
+
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Dashboard',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 18 : 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF1A1D29),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          // Notification Icon
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                              if (!isSmallScreen) ...[
+                                // Search Bar for larger screens
+                                Container(
+                                  width: constraints.maxWidth < 900 ? 200 : 300,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const TextField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Search...',
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey,
+                                      ),
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                              ] else if (!isVerySmallScreen) ...[
+                                // Search icon only for medium screens
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.search),
+                                  tooltip: 'Search',
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                              // Notification Icon
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Icon(
+                                  Icons.notifications_outlined,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
 
