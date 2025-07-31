@@ -192,6 +192,27 @@ class MbxTransactionController extends GetxController {
     }
   }
 
+  /// Go to first page
+  void firstPage() {
+    if (currentPage.value > 1) {
+      loadTransactions(page: 1);
+    }
+  }
+
+  /// Go to last page
+  void lastPage() {
+    if (currentPage.value < totalPages.value) {
+      loadTransactions(page: totalPages.value);
+    }
+  }
+
+  /// Go to specific page
+  void goToPage(int page) {
+    if (page >= 1 && page <= totalPages.value && page != currentPage.value) {
+      loadTransactions(page: page);
+    }
+  }
+
   /// Refresh transaction list
   void refreshTransactions() {
     loadTransactions(page: currentPage.value);

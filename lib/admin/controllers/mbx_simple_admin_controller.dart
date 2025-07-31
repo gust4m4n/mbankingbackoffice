@@ -89,6 +89,27 @@ class MbxAdminController extends GetxController {
     }
   }
 
+  /// Go to first page
+  void firstPage() {
+    if (currentPage.value > 1) {
+      loadAdmins(page: 1);
+    }
+  }
+
+  /// Go to last page
+  void lastPage() {
+    if (currentPage.value < totalPages.value) {
+      loadAdmins(page: totalPages.value);
+    }
+  }
+
+  /// Go to specific page
+  void goToPage(int page) {
+    if (page >= 1 && page <= totalPages.value && page != currentPage.value) {
+      loadAdmins(page: page);
+    }
+  }
+
   /// Placeholder methods for CRUD operations
   void showCreateAdminDialog() {
     print('Show create admin dialog');

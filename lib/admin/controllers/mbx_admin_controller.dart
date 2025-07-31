@@ -4,15 +4,15 @@ import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxAdminController extends GetxController {
   // Loading states
-  var isLoading = false;
-  var isSubmitting = false;
+  var isLoading = false.obs;
+  var isSubmitting = false.obs;
 
   // Admin list
   var admins = <MbxAdminModel>[].obs;
-  var totalAdmins = 0;
-  var currentPage = 1;
-  var perPage = 10;
-  var totalPages = 1;
+  var totalAdmins = 0.obs;
+  var currentPage = 1.obs;
+  var perPage = 10.obs;
+  var totalPages = 1.obs;
 
   // Selected admin for view/edit/delete
   MbxAdminModel? selectedAdmin;
@@ -66,13 +66,12 @@ class MbxAdminController extends GetxController {
   /// Load admins list
   Future<void> loadAdmins({int page = 1}) async {
     try {
-      isLoading = true;
-      currentPage = page;
-      // Remove update() here to avoid infinite loop
+      isLoading.value = true;
+      currentPage.value = page;
 
       final response = await MbxAdminApiService.getAdmins(
         page: page,
-        perPage: perPage,
+        perPage: perPage.value,
       );
 
       if (response.statusCode == 200) {
@@ -82,8 +81,8 @@ class MbxAdminController extends GetxController {
         );
 
         admins.value = adminListResponse.admins;
-        totalAdmins = adminListResponse.total;
-        totalPages = adminListResponse.totalPages;
+        totalAdmins.value = adminListResponse.total;
+        totalPages.value = adminListResponse.totalPages;
 
         print('Loaded ${admins.length} admins');
       } else {
@@ -93,8 +92,7 @@ class MbxAdminController extends GetxController {
       print('Error loading admins: $e');
       ToastX.showError(msg: 'Error loading admins: $e');
     } finally {
-      isLoading = false;
-      update(); // Only call update once at the end
+      isLoading.value = false;
     }
   }
 
@@ -145,8 +143,7 @@ class MbxAdminController extends GetxController {
     if (!_validateForm()) return;
 
     try {
-      isSubmitting = true;
-      update();
+      isSubmitting.value = true;
 
       if (isEdit && selectedAdmin != null) {
         await _updateAdmin();
@@ -154,28 +151,48 @@ class MbxAdminController extends GetxController {
         await _createAdmin();
       }
     } finally {
-      isSubmitting = false;
-      update();
+      isSubmitting.value = false;
     }
   }
 
   /// Go to next page
   void nextPage() {
-    if (currentPage < totalPages) {
-      loadAdmins(page: currentPage + 1);
+    if (currentPage.value < totalPages.value) {
+      loadAdmins(page: currentPage.value + 1);
     }
   }
 
   /// Go to previous page
   void previousPage() {
-    if (currentPage > 1) {
-      loadAdmins(page: currentPage - 1);
+    if (currentPage.value > 1) {
+      loadAdmins(page: currentPage.value - 1);
+    }
+  }
+
+  /// Go to first page
+  void firstPage() {
+    if (currentPage.value > 1) {
+      loadAdmins(page: 1);
+    }
+  }
+
+  /// Go to last page
+  void lastPage() {
+    if (currentPage.value < totalPages.value) {
+      loadAdmins(page: totalPages.value);
+    }
+  }
+
+  /// Go to specific page
+  void goToPage(int page) {
+    if (page >= 1 && page <= totalPages.value && page != currentPage.value) {
+      loadAdmins(page: page);
     }
   }
 
   /// Refresh admin list
   void refreshAdmins() {
-    loadAdmins(page: currentPage);
+    loadAdmins(page: currentPage.value);
   }
 
   // Private methods
@@ -194,7 +211,7 @@ class MbxAdminController extends GetxController {
       if (response.statusCode == 201) {
         ToastX.showSuccess(msg: 'Admin created successfully');
         Get.back(); // Close dialog
-        loadAdmins(page: currentPage); // Refresh list
+        loadAdmins(page: currentPage.value); // Refresh list
       } else {
         ToastX.showError(msg: 'Failed to create admin: ${response.message}');
       }
@@ -221,7 +238,7 @@ class MbxAdminController extends GetxController {
       if (response.statusCode == 200) {
         ToastX.showSuccess(msg: 'Admin updated successfully');
         Get.back(); // Close dialog
-        loadAdmins(page: currentPage); // Refresh list
+        loadAdmins(page: currentPage.value); // Refresh list
       } else {
         ToastX.showError(msg: 'Failed to update admin: ${response.message}');
       }
@@ -240,7 +257,7 @@ class MbxAdminController extends GetxController {
 
       if (response.statusCode == 200) {
         ToastX.showSuccess(msg: 'Admin deleted successfully');
-        loadAdmins(page: currentPage); // Refresh list
+        loadAdmins(page: currentPage.value); // Refresh list
       } else {
         ToastX.showError(msg: 'Failed to delete admin: ${response.message}');
       }
@@ -570,8 +587,8 @@ class MbxAdminController extends GetxController {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: isSubmitting ? null : submitAdmin,
-                  child: isSubmitting
+                  onPressed: isSubmitting.value ? null : submitAdmin,
+                  child: isSubmitting.value
                       ? const SizedBox(
                           width: 16,
                           height: 16,

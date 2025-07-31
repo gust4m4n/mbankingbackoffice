@@ -24,6 +24,7 @@ export 'image_x.dart';
 export 'inkwell_x.dart';
 export 'internet_toasts.dart';
 export 'mbx_management_scaffold.dart';
+export 'mbx_pagination_widget.dart';
 export 'mbx_screen.dart';
 export 'mbx_sidebar_widget.dart';
 export 'navigationbar_x.dart';

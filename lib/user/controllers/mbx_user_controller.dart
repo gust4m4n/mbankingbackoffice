@@ -98,6 +98,27 @@ class MbxUserController extends GetxController {
     }
   }
 
+  /// Go to first page
+  void firstPage() {
+    if (currentPage.value > 1) {
+      loadUsers(page: 1);
+    }
+  }
+
+  /// Go to last page
+  void lastPage() {
+    if (currentPage.value < totalPages.value) {
+      loadUsers(page: totalPages.value);
+    }
+  }
+
+  /// Go to specific page
+  void goToPage(int page) {
+    if (page >= 1 && page <= totalPages.value && page != currentPage.value) {
+      loadUsers(page: page);
+    }
+  }
+
   /// Refresh user list
   void refreshUsers() {
     loadUsers(page: currentPage.value);

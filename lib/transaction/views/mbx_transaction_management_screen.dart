@@ -167,44 +167,19 @@ class MbxTransactionManagementScreen extends StatelessWidget {
             ),
 
           // Pagination
-          Obx(() {
-            if (controller.totalPages.value > 1) {
-              return Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Page \${controller.currentPage.value} of \${controller.totalPages.value}',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: controller.currentPage.value > 1
-                          ? controller.previousPage
-                          : null,
-                      icon: const Icon(Icons.chevron_left),
-                    ),
-                    IconButton(
-                      onPressed:
-                          controller.currentPage.value <
-                              controller.totalPages.value
-                          ? controller.nextPage
-                          : null,
-                      icon: const Icon(Icons.chevron_right),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+          Obx(
+            () => MbxPaginationWidget(
+              currentPage: controller.currentPage.value,
+              totalPages: controller.totalPages.value,
+              totalItems: controller.totalTransactions.value,
+              itemsPerPage: controller.perPage.value,
+              onPrevious: controller.previousPage,
+              onNext: controller.nextPage,
+              onFirst: controller.firstPage,
+              onLast: controller.lastPage,
+              onPageChanged: controller.goToPage,
+            ),
+          ),
         ],
       ),
     );
