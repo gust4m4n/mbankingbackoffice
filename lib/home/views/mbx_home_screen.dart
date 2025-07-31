@@ -113,11 +113,14 @@ class MbxHomeScreen extends StatelessWidget {
                             onTap: () {},
                           ),
                           _buildMenuItem(
-                            icon: Icons.people_outline,
-                            title: 'User Management',
-                            onTap: () => controller.showFeatureNotAvailable(
-                              'User Management',
-                            ),
+                            icon: Icons.admin_panel_settings_outlined,
+                            title: 'Admin Management',
+                            onTap: () => Get.toNamed('/admin-management'),
+                          ),
+                          _buildMenuItem(
+                            icon: Icons.bug_report_outlined,
+                            title: 'Test Admin API',
+                            onTap: () => Get.toNamed('/test-admin'),
                           ),
                           _buildMenuItem(
                             icon: Icons.receipt_long_outlined,

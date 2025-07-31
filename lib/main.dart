@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:mbankingbackoffice/admin/views/mbx_admin_management_screen.dart';
+import 'package:mbankingbackoffice/admin/views/test_admin_screen.dart';
 import 'package:mbankingbackoffice/apis/mbx_device_info_vm.dart';
 import 'package:mbankingbackoffice/biller-pln/prepaid/views/mbx_electricity_prepaid_screen.dart';
 import 'package:mbankingbackoffice/biller-pulsa/dataplan/views/mbx_pulsa_dataplan_screen.dart';
@@ -198,6 +200,16 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/home',
               page: () => const MbxHomeScreen(),
+              transition: Transition.noTransition,
+            ),
+            GetPage(
+              name: '/admin-management',
+              page: () => const MbxAdminManagementScreen(),
+              transition: Transition.noTransition,
+            ),
+            GetPage(
+              name: '/test-admin',
+              page: () => const TestAdminScreen(),
               transition: Transition.noTransition,
             ),
             GetPage(
