@@ -25,6 +25,7 @@ class MbxUserManagementScreen extends StatelessWidget {
   Widget _buildUserContent(MbxUserController controller) {
     return Obx(() {
       return Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -102,11 +103,7 @@ class MbxUserManagementScreen extends StatelessWidget {
 
             // Loading State
             if (controller.isLoading.value)
-              const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
+              const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (controller.users.isEmpty)
               // Empty State
               const Expanded(
@@ -114,25 +111,16 @@ class MbxUserManagementScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.people_outline,
-                        size: 64,
-                        color: Colors.grey,
-                      ),
+                      Icon(Icons.people_outline, size: 64, color: Colors.grey),
                       SizedBox(height: 16),
                       Text(
                         'No users found',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                       SizedBox(height: 8),
                       Text(
                         'Users will appear here once they register',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -141,12 +129,13 @@ class MbxUserManagementScreen extends StatelessWidget {
             else
               // User Table
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    double minTableWidth = 800;
-                    bool needsScroll = minTableWidth > constraints.maxWidth;
-
-                    Widget dataTable = DataTable(
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: double.infinity,
+                    ),
+                    child: DataTable(
                       columnSpacing: 16,
                       dataRowMinHeight: 56,
                       dataRowMaxHeight: 72,
@@ -194,27 +183,8 @@ class MbxUserManagementScreen extends StatelessWidget {
                       rows: controller.users
                           .map((user) => _buildUserRow(user, controller))
                           .toList(),
-                    );
-
-                    if (needsScroll) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const ClampingScrollPhysics(),
-                        child: SingleChildScrollView(
-                          physics: const ClampingScrollPhysics(),
-                          child: dataTable,
-                        ),
-                      );
-                    } else {
-                      return SingleChildScrollView(
-                        physics: const ClampingScrollPhysics(),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: dataTable,
-                        ),
-                      );
-                    }
-                  },
+                    ),
+                  ),
                 ),
               ),
 
@@ -243,7 +213,8 @@ class MbxUserManagementScreen extends StatelessWidget {
                       icon: const Icon(Icons.chevron_left),
                     ),
                     IconButton(
-                      onPressed: controller.currentPage.value <
+                      onPressed:
+                          controller.currentPage.value <
                               controller.totalPages.value
                           ? controller.nextPage
                           : null,
@@ -295,9 +266,7 @@ class MbxUserManagementScreen extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        DataCell(
-          Text(user.phone, overflow: TextOverflow.ellipsis),
-        ),
+        DataCell(Text(user.phone, overflow: TextOverflow.ellipsis)),
         DataCell(
           Text(
             user.formattedBalance,

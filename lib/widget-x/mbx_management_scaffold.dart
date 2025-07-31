@@ -118,7 +118,12 @@ class MbxManagementScaffold extends StatelessWidget {
                     ),
 
                     // Content
-                    Expanded(child: child),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: child,
+                      ),
+                    ),
                   ],
                 ),
               ),

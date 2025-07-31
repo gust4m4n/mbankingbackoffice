@@ -25,9 +25,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
     return Column(
       children: [
         // Transaction Table
-        Expanded(
-          child: Obx(() => _buildTransactionTable(controller)),
-        ),
+        Expanded(child: Obx(() => _buildTransactionTable(controller))),
       ],
     );
   }
@@ -61,18 +59,12 @@ class MbxTransactionManagementScreen extends StatelessWidget {
               children: [
                 const Text(
                   'Recent Transactions',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 Text(
                   'Total: \${controller.totalTransactions.value}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
                 ),
               ],
             ),
@@ -80,11 +72,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
 
           // Loading State
           if (controller.isLoading.value)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+            const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (controller.transactions.isEmpty)
             // Empty State
             const Expanded(
@@ -100,17 +88,12 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     Text(
                       'No transactions found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     SizedBox(height: 8),
                     Text(
                       'Transactions will appear here once processed',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -121,60 +104,64 @@ class MbxTransactionManagementScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                child: DataTable(
-                  columnSpacing: 16,
-                  dataRowMinHeight: 56,
-                  dataRowMaxHeight: 72,
-                  headingRowColor: WidgetStateProperty.all(
-                    Colors.grey[100],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: double.infinity),
+                  child: DataTable(
+                    columnSpacing: 16,
+                    dataRowMinHeight: 56,
+                    dataRowMaxHeight: 72,
+                    headingRowColor: WidgetStateProperty.all(Colors.grey[100]),
+                    columns: const [
+                      DataColumn(
+                        label: Text(
+                          'ID',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Type',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'User',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Amount',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Status',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Date',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Actions',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                    rows: controller.transactions
+                        .map(
+                          (transaction) =>
+                              _buildTransactionRow(transaction, controller),
+                        )
+                        .toList(),
                   ),
-                  columns: const [
-                    DataColumn(
-                      label: Text(
-                        'ID',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Type',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'User',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Amount',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Status',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Actions',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                  rows: controller.transactions
-                      .map((transaction) => _buildTransactionRow(transaction, controller))
-                      .toList(),
                 ),
               ),
             ),
@@ -205,7 +192,9 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                       icon: const Icon(Icons.chevron_left),
                     ),
                     IconButton(
-                      onPressed: controller.currentPage.value < controller.totalPages.value
+                      onPressed:
+                          controller.currentPage.value <
+                              controller.totalPages.value
                           ? controller.nextPage
                           : null,
                       icon: const Icon(Icons.chevron_right),
@@ -221,7 +210,10 @@ class MbxTransactionManagementScreen extends StatelessWidget {
     );
   }
 
-  DataRow _buildTransactionRow(MbxTransactionModel transaction, MbxTransactionController controller) {
+  DataRow _buildTransactionRow(
+    MbxTransactionModel transaction,
+    MbxTransactionController controller,
+  ) {
     return DataRow(
       cells: [
         DataCell(
@@ -298,10 +290,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
         DataCell(
           Text(
             transaction.formattedCreatedAt,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.grey[600], fontSize: 12),
           ),
         ),
         DataCell(

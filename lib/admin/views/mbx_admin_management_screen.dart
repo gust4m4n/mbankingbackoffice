@@ -22,6 +22,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
 
   Widget _buildAdminContent(MbxAdminController controller) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -49,18 +50,12 @@ class MbxAdminManagementScreen extends StatelessWidget {
               children: [
                 const Text(
                   'Administrators',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 Text(
                   'Total: \${controller.totalAdmins.value}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
                 ),
               ],
             ),
@@ -68,11 +63,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
 
           // Loading State
           if (controller.isLoading.value)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+            const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (controller.admins.isEmpty)
             // Empty State
             const Expanded(
@@ -88,17 +79,12 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     Text(
                       'No administrators found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     SizedBox(height: 8),
                     Text(
                       'Administrators will appear here once added',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -109,53 +95,52 @@ class MbxAdminManagementScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                child: DataTable(
-                  columnSpacing: 16,
-                  dataRowMinHeight: 56,
-                  dataRowMaxHeight: 72,
-                  headingRowColor: WidgetStateProperty.all(
-                    Colors.grey[100],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: double.infinity),
+                  child: DataTable(
+                    columnSpacing: 16,
+                    dataRowMinHeight: 56,
+                    dataRowMaxHeight: 72,
+                    headingRowColor: WidgetStateProperty.all(Colors.grey[100]),
+                    columns: const [
+                      DataColumn(
+                        label: Text(
+                          'Name',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Email',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Role',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Status',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Actions',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                    rows: controller.admins
+                        .map((admin) => _buildAdminRow(admin, controller))
+                        .toList(),
                   ),
-                  columns: const [
-                    DataColumn(
-                      label: Text(
-                        'Name',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Email',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Role',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Status',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Actions',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                  rows: controller.admins
-                      .map((admin) => _buildAdminRow(admin, controller))
-                      .toList(),
                 ),
               ),
-            ),
-
-          // Pagination
+            ), // Pagination
           if (controller.totalPages.value > 1)
             Container(
               padding: const EdgeInsets.all(16),
@@ -180,7 +165,9 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     icon: const Icon(Icons.chevron_left),
                   ),
                   IconButton(
-                    onPressed: controller.currentPage.value < controller.totalPages.value
+                    onPressed:
+                        controller.currentPage.value <
+                            controller.totalPages.value
                         ? controller.nextPage
                         : null,
                     icon: const Icon(Icons.chevron_right),
@@ -223,12 +210,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
             ],
           ),
         ),
-        DataCell(
-          Text(
-            admin.email,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        DataCell(Text(admin.email, overflow: TextOverflow.ellipsis)),
         DataCell(
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
