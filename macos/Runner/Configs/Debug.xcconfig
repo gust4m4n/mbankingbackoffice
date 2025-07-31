@@ -1,2 +1,6 @@
 #include "../../Flutter/Flutter-Debug.xcconfig"
 #include "Warnings.xcconfig"
+
+// Only build for ARM64 (Apple Silicon)
+ARCHS = arm64
+VALID_ARCHS = arm64

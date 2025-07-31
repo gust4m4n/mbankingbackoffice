@@ -56,6 +56,12 @@ class MbxLoginController extends GetxController {
         update();
       }
     });
+
+    // Debug: Prefill login fields
+    txtEmailController.text = 'admin@mbankingcore.com';
+    txtPasswordController.text = 'admin123';
+    loginEnabled = true;
+    update();
   }
 
   btnThemeClicked() {
