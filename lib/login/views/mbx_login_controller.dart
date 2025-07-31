@@ -1,11 +1,13 @@
 import 'package:mbankingbackoffice/language/views/mbx_language_controller.dart';
 import 'package:mbankingbackoffice/language/views/mbx_language_sheet.dart';
+import 'package:mbankingbackoffice/login/viewmodels/mbx_admin_login_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_login_otp_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_login_pin_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_onboarding_list_vm.dart';
 import 'package:mbankingbackoffice/login/viewmodels/mbx_profile_vm.dart';
 import 'package:mbankingbackoffice/otp/views/mbx_otp_sheet.dart';
 import 'package:mbankingbackoffice/pin/views/mbx_pin_sheet.dart';
+import 'package:mbankingbackoffice/preferences/mbx_preferences_vm_users.dart';
 import 'package:mbankingbackoffice/theme/viewmodels/mbx_theme_vm.dart';
 import 'package:mbankingbackoffice/utils/logger_x.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
@@ -112,7 +114,7 @@ class MbxLoginController extends GetxController {
     update();
   }
 
-  btnLoginClicked() {
+  btnLoginClicked() async {
     FocusManager.instance.primaryFocus?.unfocus();
     emailError = '';
     passwordError = '';
@@ -154,19 +156,35 @@ class MbxLoginController extends GetxController {
     isLoading = true;
     update();
 
-    // Simulate login process
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      final response = await MbxAdminLoginVM.request(
+        email: txtEmailController.text.trim(),
+        password: txtPasswordController.text.trim(),
+      );
+
       isLoading = false;
       update();
 
-      // For demo purposes, any valid email/password combination will work
-      ToastX.showSuccess(msg: 'Login berhasil!');
+      if (response.status == 200 && response.data != null) {
+        // Save admin token
+        await MbxUserPreferencesVM.setToken(response.data!.accessToken);
 
-      // Navigate to dashboard/home
-      Future.delayed(const Duration(milliseconds: 500), () {
-        Get.offAllNamed('/home');
-      });
-    });
+        ToastX.showSuccess(
+          msg: 'Login berhasil! Selamat datang ${response.data!.admin.name}',
+        );
+
+        // Navigate to dashboard/home
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Get.offAllNamed('/home');
+        });
+      } else {
+        ToastX.showError(msg: response.message);
+      }
+    } catch (e) {
+      isLoading = false;
+      update();
+      ToastX.showError(msg: 'Terjadi kesalahan. Silakan coba lagi.');
+    }
   }
 
   askOtp(String phone) {

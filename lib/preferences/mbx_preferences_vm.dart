@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,7 +20,7 @@ class MbxPreferencesVM {
   static Future<void> setString(String key, String value) async {
     var prefKey = encodeKey(key);
     final encrypted = MbxSecurityVM.doubleEncrypt(Utf8Utils.encode(value));
-    if (kIsWeb) {
+    if (kIsWeb || Platform.isMacOS) {
       final storage = await SharedPreferences.getInstance();
       await storage.setString(prefKey, Base64Utils.encode(encrypted));
     } else {
@@ -33,7 +34,7 @@ class MbxPreferencesVM {
 
   static Future<String> getString(String key) async {
     var prefKey = encodeKey(key);
-    if (kIsWeb) {
+    if (kIsWeb || Platform.isMacOS) {
       final storage = await SharedPreferences.getInstance();
       String? value = storage.getString(prefKey);
       if (value != null) {

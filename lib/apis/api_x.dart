@@ -96,8 +96,12 @@ class ApiX {
     }
   }
 
-  static logApiCall(String url, String method, Map<String, String>? headers,
-      Map<String, Object?>? params) {
+  static logApiCall(
+    String url,
+    String method,
+    Map<String, String>? headers,
+    Map<String, Object?>? params,
+  ) {
     if (kDebugMode) {
       var headerLines = '';
       if (headers != null && headers.isNotEmpty) {
@@ -112,18 +116,21 @@ class ApiX {
         });
       }
       LoggerX.logSeparated(
-          '[ApiX] $method $url\nHeaders:\n$headerLines\nParameters:\n$paramLines');
+        '[ApiX] $method $url\nHeaders:\n$headerLines\nParameters:\n$paramLines',
+      );
     }
   }
 
-  static Future<ApiXResponse> get(
-      {required String url,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers}) async {
+  static Future<ApiXResponse> get({
+    required String url,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+  }) async {
     String finalUrl = url;
     if (params != null && params.isNotEmpty) {
-      final Map<String, String> newParams =
-          params.map((key, value) => MapEntry(key, value.toString()));
+      final Map<String, String> newParams = params.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
       String queryString = Uri(queryParameters: newParams).query;
       finalUrl = '$finalUrl?$queryString';
     }
@@ -138,7 +145,8 @@ class ApiX {
     ApiXResponse? resp = await handleContract(url);
     if (resp != null) {
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       await Future.delayed(Duration(milliseconds: contractDelay));
       return Future.value(resp);
     }
@@ -155,7 +163,8 @@ class ApiX {
       ApiXResponse resp = ApiXResponse();
       resp.decodeHttpResponse(response);
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       return resp;
     } catch (e) {
       if (e is TimeoutException) {
@@ -169,17 +178,20 @@ class ApiX {
     }
   }
 
-  static Future<ApiXResponse> post(
-      {required String url,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers,
-      bool json = false}) async {
-    Map<String, String>? newHeaders;
+  static Future<ApiXResponse> post({
+    required String url,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+    bool json = false,
+  }) async {
+    Map<String, String> newHeaders = {};
     if (headers != null && headers.isNotEmpty) {
-      newHeaders = headers.map((key, value) => MapEntry(key, value.toString()));
+      newHeaders.addAll(
+        headers.map((key, value) => MapEntry(key, value.toString())),
+      );
     }
     if (json == true) {
-      newHeaders?['Content-Type'] = 'application/json';
+      newHeaders['Content-Type'] = 'application/json';
     }
 
     logApiCall(url, 'POST', newHeaders, params);
@@ -187,7 +199,8 @@ class ApiX {
     ApiXResponse? resp = await handleContract(url);
     if (resp != null) {
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       await Future.delayed(Duration(milliseconds: contractDelay));
       return Future.value(resp);
     }
@@ -198,17 +211,41 @@ class ApiX {
     }
 
     try {
+      print('[ApiX] Entering POST method');
+      print('[ApiX] json flag: $json');
+      print('[ApiX] params: $params');
+
+      dynamic requestBody;
+      if (json == true && params != null) {
+        print('[ApiX] Processing JSON body...');
+        requestBody = params.toSortedJsonMap().toJsonString();
+        print('[ApiX] JSON Body: $requestBody');
+      } else if (params != null) {
+        print('[ApiX] Processing Form body...');
+        requestBody = params.map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+        print('[ApiX] Form Body: $requestBody');
+      } else {
+        print('[ApiX] No params provided');
+      }
+
+      print('[ApiX] Headers: $newHeaders');
+      print('[ApiX] Request URL: $url');
+      print('[ApiX] About to make HTTP request...');
+
       var response = await http
-          .post(Uri.parse(url),
-              body: json == true
-                  ? params?.toSortedJsonMap().toJsonString()
-                  : params,
-              headers: newHeaders)
+          .post(
+            Uri.parse(url),
+            body: requestBody,
+            headers: newHeaders.isEmpty ? null : newHeaders,
+          )
           .timeout(Duration(seconds: timeoutInSecs));
       ApiXResponse resp = ApiXResponse();
       resp.decodeHttpResponse(response);
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       return resp;
     } catch (e) {
       if (e is TimeoutException) {
@@ -217,16 +254,18 @@ class ApiX {
         var resp = ApiXResponse();
         resp.statusCode = -1;
         resp.message = e.toString();
+        LoggerX.log('[ApiX] Error: ${resp.message}');
         return resp;
       }
     }
   }
 
-  static Future<ApiXResponse> put(
-      {url = String,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers,
-      bool json = false}) async {
+  static Future<ApiXResponse> put({
+    required String url,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+    bool json = false,
+  }) async {
     Map<String, String>? newHeaders;
     if (headers != null && headers.isNotEmpty) {
       newHeaders = headers.map((key, value) => MapEntry(key, value.toString()));
@@ -250,16 +289,19 @@ class ApiX {
 
     try {
       var response = await http
-          .put(Uri.parse(url),
-              body: json == true
-                  ? params?.toSortedJsonMap().toJsonString()
-                  : params,
-              headers: newHeaders)
+          .put(
+            Uri.parse(url),
+            body: json == true
+                ? params?.toSortedJsonMap().toJsonString()
+                : params,
+            headers: newHeaders,
+          )
           .timeout(Duration(seconds: timeoutInSecs));
       ApiXResponse resp = ApiXResponse();
       resp.decodeHttpResponse(response);
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       return resp;
     } catch (e) {
       if (e is TimeoutException) {
@@ -273,11 +315,12 @@ class ApiX {
     }
   }
 
-  static Future<ApiXResponse> delete(
-      {url = String,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers,
-      bool json = false}) async {
+  static Future<ApiXResponse> delete({
+    required String url,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+    bool json = false,
+  }) async {
     Map<String, String>? newHeaders;
     if (headers != null && headers.isNotEmpty) {
       newHeaders = headers.map((key, value) => MapEntry(key, value.toString()));
@@ -301,16 +344,19 @@ class ApiX {
 
     try {
       var response = await http
-          .delete(Uri.parse(url),
-              body: json == true
-                  ? params?.toSortedJsonMap().toJsonString()
-                  : params,
-              headers: newHeaders)
+          .delete(
+            Uri.parse(url),
+            body: json == true
+                ? params?.toSortedJsonMap().toJsonString()
+                : params,
+            headers: newHeaders,
+          )
           .timeout(Duration(seconds: timeoutInSecs));
       ApiXResponse resp = ApiXResponse();
       resp.decodeHttpResponse(response);
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       return resp;
     } catch (e) {
       if (e is TimeoutException) {
@@ -324,11 +370,12 @@ class ApiX {
     }
   }
 
-  static Future<ApiXResponse> postMultipart(
-      {url = String,
-      Map<String, String?>? files,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers}) async {
+  static Future<ApiXResponse> postMultipart({
+    required String url,
+    Map<String, String?>? files,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+  }) async {
     ApiXResponse? resp = await handleContract(url);
     if (resp != null) {
       await Future.delayed(Duration(milliseconds: contractDelay));
@@ -384,26 +431,35 @@ class ApiX {
         });
       }
       LoggerX.logSeparated(
-          '[ApiX] POST MULTIPART $url\nHeaders:\n$headerLines\nParameters:\n$paramLines\nFiles:\n$fileLines');
+        '[ApiX] POST MULTIPART $url\nHeaders:\n$headerLines\nParameters:\n$paramLines\nFiles:\n$fileLines',
+      );
     }
 
-    return request.send().then((stremedResponse) async {
-      var response = await http.Response.fromStream(stremedResponse);
-      ApiXResponse resp = ApiXResponse();
-      resp.decodeHttpResponse(response);
-      LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
-      return resp;
-    }).timeout(Duration(seconds: timeoutInSecs), onTimeout: () {
-      return apiTimeoutResponse();
-    });
+    return request
+        .send()
+        .then((stremedResponse) async {
+          var response = await http.Response.fromStream(stremedResponse);
+          ApiXResponse resp = ApiXResponse();
+          resp.decodeHttpResponse(response);
+          LoggerX.logSeparated(
+            '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+          );
+          return resp;
+        })
+        .timeout(
+          Duration(seconds: timeoutInSecs),
+          onTimeout: () {
+            return apiTimeoutResponse();
+          },
+        );
   }
 
-  static Future<ApiXResponse> putMultipart(
-      {url = String,
-      Map<String, String?>? files,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers}) async {
+  static Future<ApiXResponse> putMultipart({
+    required String url,
+    Map<String, String?>? files,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+  }) async {
     ApiXResponse? resp = await handleContract(url);
     if (resp != null) {
       await Future.delayed(Duration(milliseconds: contractDelay));
@@ -459,28 +515,38 @@ class ApiX {
         });
       }
       LoggerX.logSeparated(
-          '[ApiX] PUT MULTIPART $url\nHeaders:\n$headerLines\nParameters:\n$paramLines\nFiles:\n$fileLines');
+        '[ApiX] PUT MULTIPART $url\nHeaders:\n$headerLines\nParameters:\n$paramLines\nFiles:\n$fileLines',
+      );
     }
-    return request.send().then((stremedResponse) async {
-      var response = await http.Response.fromStream(stremedResponse);
-      ApiXResponse resp = ApiXResponse();
-      resp.decodeHttpResponse(response);
-      LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
-      return resp;
-    }).timeout(Duration(seconds: timeoutInSecs), onTimeout: () {
-      return apiTimeoutResponse();
-    });
+    return request
+        .send()
+        .then((stremedResponse) async {
+          var response = await http.Response.fromStream(stremedResponse);
+          ApiXResponse resp = ApiXResponse();
+          resp.decodeHttpResponse(response);
+          LoggerX.logSeparated(
+            '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+          );
+          return resp;
+        })
+        .timeout(
+          Duration(seconds: timeoutInSecs),
+          onTimeout: () {
+            return apiTimeoutResponse();
+          },
+        );
   }
 
-  static Future<ApiXResponse> download(
-      {required String url,
-      Map<String, Object?>? params,
-      Map<String, Object?>? headers}) async {
+  static Future<ApiXResponse> download({
+    required String url,
+    Map<String, Object?>? params,
+    Map<String, Object?>? headers,
+  }) async {
     ApiXResponse? resp = await handleContract(url);
     if (resp != null) {
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       await Future.delayed(Duration(milliseconds: contractDelay));
       return Future.value(resp);
     }
@@ -492,8 +558,9 @@ class ApiX {
 
     String finalUrl = url;
     if (params != null && params.isNotEmpty) {
-      final Map<String, String> newParams =
-          params.map((key, value) => MapEntry(key, value.toString()));
+      final Map<String, String> newParams = params.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
       String queryString = Uri(queryParameters: newParams).query;
       finalUrl = '$finalUrl?$queryString';
     }
@@ -512,7 +579,8 @@ class ApiX {
       ApiXResponse resp = ApiXResponse();
       resp.decodeHttpResponse(response);
       LoggerX.logSeparated(
-          '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}');
+        '[ApiX] ${resp.statusCode} $url\n${resp.jason.encoded()}',
+      );
       return resp;
     } catch (e) {
       if (e is TimeoutException) {

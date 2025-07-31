@@ -1,0 +1,3116 @@
+{
+  "info": {
+    "_postman_id": "mbankingcore-api-collection",
+    "name": "MBankingCore API Collection",
+    "description": "API testing collection for MBankingCore with comprehensive endpoint coverage.\n\n## Features:\n- 🏦 Banking Authentication (3-step process with refresh)\n- 📱 Device session management\n- 🔄 Automated token refresh\n- ✅ Comprehensive API coverage\n- 💰 Multi-account banking support\n- 💳 Transaction management (topup, withdraw, transfer, reversal)\n- 📝 Article management (CRUD)\n- 🎯 Onboarding content management\n- 📸 Photo gallery management\n- ⚙️ Config management system\n- 📋 Terms & Conditions management\n- 🔐 Privacy Policy management\n- 👥 User management (CRUD)\n- 🔧 Admin management system\n- 🔍 Audit trails & compliance monitoring\n- 🧪 Testing scenarios\n\n## API Coverage (73+ endpoints):\n- **Public APIs** (8 endpoints)\n  - Health Check (1)\n  - Terms & Conditions (1)\n  - Privacy Policy (1)\n  - Onboarding (2)\n  - Banking Authentication (3)\n- **Authenticated Content Management APIs** (2 endpoints)\n  - Terms & Conditions Management (1)\n  - Privacy Policy Management (1)\n- **Protected User APIs** (39 endpoints)\n  - User Profile Management (3)\n  - Session Management (3)\n  - Bank Account Management (5)\n  - Transaction Management (4)\n  - Article Management (6)\n  - Photo Management (5)\n  - Onboarding Management (3)\n  - Configuration Management (4)\n  - User Management (4)\n  - Transaction History (2)\n- **Admin Management APIs** (11 endpoints)\n  - Admin Authentication (2)\n  - Admin CRUD Operations (5)\n  - Admin Transaction Monitoring (1)\n  - Transaction Reversal (1)\n  - Audit Trails (2)\n\n## Testing Order:\n1. **Public APIs** - No authentication required\n2. **Banking Authentication** - 3-step process (login → verify → refresh)\n3. **Protected APIs** - User profile, bank accounts, content management\n4. **Transaction APIs** - Topup, withdraw, transfer, history\n5. **Admin APIs** - Admin login, admin management, transaction monitoring, reversal\n6. **Audit APIs** - Activity logs, login monitoring\n7. **Content Management** - Terms, Privacy Policy, Onboarding\n8. **User Management** - User CRUD operations\n\n## Usage:\n1. Import environment file: `MBankingCore-API.postman_environment.json`\n2. **Important**: Update `banking_account_number` to a unique value before testing\n3. Run collection with automated token handling\n4. Test all API endpoints systematically\n\n## Banking Authentication Flow:\n1. Banking Login → Submit credentials and get login_token + OTP\n2. Banking Verify → Submit login_token + OTP and get session tokens\n3. Refresh Token → Get new access/refresh tokens using refresh token\n4. Access protected endpoints → Auto token refresh\n5. Test CRUD operations on all resources\n6. Logout selectively → Per device or all devices\n\n## Transaction Management Flow:\n1. Topup Balance → Add balance to user account\n2. Withdraw Balance → Deduct balance from user account  \n3. Transfer Balance → Transfer balance between users using account number\n4. Transaction History → View user's transaction records\n5. Admin Transaction Monitoring → Admin view of all transactions\n6. Transaction Reversal → Admin reversal of any transaction type\n\n## Admin Authentication Flow:\n1. Admin Login → Submit admin credentials and get admin access_token\n2. Access admin endpoints → Create, read, update, delete admin accounts\n3. Monitor Transactions → View all user transactions with filtering\n4. Reverse Transactions → Reverse any transaction type with reason\n5. Audit Trails → Monitor system activities and login attempts\n6. Admin Logout → Invalidate admin session\n\n## Audit Trails Flow:\n1. Get Audit Logs → Review all system activities with filtering\n   - Filter by entity type (user, transaction, admin, etc.)\n   - Filter by action (CREATE, READ, UPDATE, DELETE)\n   - Filter by user/admin ID, date range, IP address\n   - Pagination support for large datasets\n2. Get Login Audit Logs → Monitor authentication activities\n   - Filter by login type (user_login, admin_login, logout)\n   - Filter by status (success, failed, blocked)\n   - Filter by date range, IP address\n   - Device information and failure reasons\n3. Security Monitoring → Detect suspicious activities\n   - Failed login attempts\n   - Unusual transaction patterns\n   - Administrative actions tracking\n\n## Content Management Flow:\n1. Terms & Conditions → Set/update terms content (authenticated)\n2. Privacy Policy → Set/update privacy policy content (authenticated)\n3. Onboarding → Create, update, delete onboarding steps (authenticated)\n4. Articles → Full CRUD operations for articles (authenticated)\n5. Photos → Full CRUD operations for photo gallery (authenticated)\n\n## Configuration Management Flow:\n1. Set Config → Create or update configuration values\n2. Get All Configs → Retrieve all system configurations\n3. Get Config by Key → Retrieve specific configuration\n4. Delete Config → Remove configuration by key\n\n## User Management Flow:\n1. List Users → Get all users in the system\n2. Get User by ID → Retrieve specific user details\n3. Delete User → Remove user from the system\n\n## Transaction Reversal Flow:\n1. Get All Transactions (Admin) → Find transaction ID to reverse\n2. Reverse Transaction → Submit transaction ID and reversal reason\n3. Verify Reversal → Check original transaction is marked as reversed\n4. Check Balance Impact → Verify user balance reflects reversal\n5. Audit Trail → Review reversal transaction record\n\n## Important Notes:\n⚠️ **Account Numbers Must Be Unique**: Each account number must be unique across the system. If testing with existing data, ensure you use a unique account number in the environment variables to avoid database constraint violations.\n\n🔑 **Environment Variables**: The collection uses pre-configured variables for testing. Update these values as needed:\n- `banking_account_number`: Use unique 16-digit number\n- `banking_phone`: Use unique phone number\n- `banking_name`: Full name (8+ characters)\n- `banking_mother_name`: Mother's name (8+ characters)\n- `banking_pin_atm`: 6-digit PIN\n- `admin_email`: Admin email (default: admin@mbankingcore.com)\n- `admin_password`: Admin password (default: admin123)\n- `config_key`: Configuration key for testing (default: app_version)\n- `test_user_id`: User ID for testing user operations\n- `created_article_id`: Auto-saved from article creation\n- `created_photo_id`: Auto-saved from photo creation\n- `created_onboarding_id`: Auto-saved from onboarding creation\n- `created_user_id`: Auto-saved from user creation\n- `topup_amount`: Amount for topup testing (default: 100000)\n- `withdraw_amount`: Amount for withdraw testing (default: 25000)\n- `transfer_amount`: Amount for transfer testing (default: 75000)\n- `transfer_to_account_number`: Target account for transfer testing\n- `transaction_page`: Page number for transaction history (default: 1)\n- `transaction_limit`: Items per page for transaction history (default: 10)\n- `transaction_id_to_reverse`: Transaction ID for reversal testing\n- `reversal_reason`: Reason for transaction reversal (default: Administrative reversal - Error correction)\n- `audit_page`: Page number for audit logs (default: 1)\n- `audit_limit`: Items per page for audit logs (default: 20)\n- `audit_entity_type`: Filter audit logs by entity type (default: transaction)\n- `audit_start_date`: Start date for audit log filtering (format: 2024-01-01)\n- `audit_end_date`: End date for audit log filtering (format: 2024-12-31)\n- `login_audit_page`: Page number for login audit logs (default: 1)\n- `login_audit_limit`: Items per page for login audit logs (default: 20)\n- `login_audit_type`: Filter by login type (user_login, admin_login, logout)\n- `login_audit_status`: Filter by status (success, failed, blocked)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_uid": "12345-mbankingcore"
+  },
+  "item": [
+    {
+      "name": "🏥 Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "// Test response data",
+                  "pm.test('Health check data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.code).to.eql(200);",
+                  "    pm.expect(responseJson.message).to.include('running');",
+                  "    pm.expect(responseJson.data).to.have.property('status', 'ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏦 Banking Authentication",
+      "item": [
+        {
+          "name": "Banking Login (Step 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('login_token');",
+                  "});",
+                  "",
+                  "// Extract and save login token",
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    const data = responseJson.data;",
+                  "    ",
+                  "    if (data.login_token) {",
+                  "        pm.environment.set('login_token', data.login_token);",
+                  "        console.log('✅ Login token saved to environment');",
+                  "        console.log('📱 OTP will be sent to phone number');",
+                  "        console.log('⏰ Token expires in:', data.expires_in, 'seconds');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{banking_name}}\",\n  \"account_number\": \"{{banking_account_number}}\",\n  \"mother_name\": \"{{banking_mother_name}}\",\n  \"phone\": \"{{banking_phone}}\",\n  \"pin_atm\": \"{{banking_pin_atm}}\",\n  \"device_info\": {\n    \"device_type\": \"android\",\n    \"device_id\": \"{{device_id_banking}}\",\n    \"device_name\": \"Samsung Galaxy S23\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Banking Login Verification (Step 2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('access_token');",
+                  "    pm.expect(responseJson.data).to.have.property('refresh_token');",
+                  "});",
+                  "",
+                  "// Extract and save tokens",
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    const data = responseJson.data;",
+                  "    ",
+                  "    if (data.access_token && data.refresh_token) {",
+                  "        pm.environment.set('access_token', data.access_token);",
+                  "        pm.environment.set('refresh_token', data.refresh_token);",
+                  "        pm.environment.set('user_id', data.user.id);",
+                  "        pm.environment.set('session_id', data.session_id);",
+                  "        console.log('✅ Authentication successful');",
+                  "        console.log('🔑 Access token saved to environment');",
+                  "        console.log('👤 User ID:', data.user.id);",
+                  "        console.log('📱 Session ID:', data.session_id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_token\": \"{{login_token}}\",\n  \"otp_code\": \"{{banking_otp_code}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has new tokens', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('access_token');",
+                  "    pm.expect(responseJson.data).to.have.property('refresh_token');",
+                  "});",
+                  "",
+                  "// Update tokens",
+                  "pm.test('Update environment tokens', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.access_token) {",
+                  "        pm.environment.set('access_token', responseJson.data.access_token);",
+                  "        pm.environment.set('refresh_token', responseJson.data.refresh_token);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏦 Bank Account Management",
+      "item": [
+        {
+          "name": "Get Bank Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('accounts');",
+                  "    pm.expect(responseJson.data).to.have.property('total');",
+                  "});",
+                  "",
+                  "// Save first account ID for other tests",
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    const accounts = responseJson.data.accounts;",
+                  "    ",
+                  "    if (accounts && accounts.length > 0) {",
+                  "        pm.environment.set('bank_account_id', accounts[0].id);",
+                  "        console.log('✅ Bank accounts retrieved successfully');",
+                  "        console.log('🏦 Total accounts:', responseJson.data.total);",
+                  "        console.log('💳 First account ID saved:', accounts[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bank-accounts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bank-accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Bank Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('account');",
+                  "});",
+                  "",
+                  "// Save created account ID",
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    const account = responseJson.data.account;",
+                  "    ",
+                  "    if (account && account.id) {",
+                  "        pm.environment.set('created_bank_account_id', account.id);",
+                  "        console.log('✅ Bank account created successfully');",
+                  "        console.log('💳 New account ID:', account.id);",
+                  "        console.log('🏦 Account number:', account.account_number);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_number\": \"{{secondary_account_number}}\",\n  \"account_name\": \"Secondary Account\",\n  \"bank_name\": \"Test Bank\",\n  \"bank_code\": \"TB001\",\n  \"account_type\": \"checking\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bank-accounts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bank-accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bank Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Bank account updated successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_name\": \"{{banking_name}} - Updated\",\n  \"bank_name\": \"Bank Central Asia - Updated\",\n  \"account_type\": \"checking\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bank-accounts/{{created_bank_account_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bank-accounts",
+                "{{created_bank_account_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Primary Bank Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Primary account set successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('primary');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bank-accounts/{{created_bank_account_id}}/primary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bank-accounts",
+                "{{created_bank_account_id}}",
+                "primary"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bank Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Bank account deleted successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bank-accounts/{{created_bank_account_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bank-accounts",
+                "{{created_bank_account_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Public Terms & Conditions",
+      "item": [
+        {
+          "name": "Get Terms & Conditions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/terms-conditions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "terms-conditions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Public Privacy Policy",
+      "item": [
+        {
+          "name": "Get Privacy Policy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/privacy-policy",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "privacy-policy"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Terms & Conditions Management",
+      "description": "Set and manage terms & conditions content (authenticated users)",
+      "item": [
+        {
+          "name": "Set Terms & Conditions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated Terms and Conditions content here...\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/terms-conditions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "terms-conditions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Privacy Policy Management",
+      "description": "Set and manage privacy policy content (authenticated users)",
+      "item": [
+        {
+          "name": "Set Privacy Policy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated Privacy Policy content here...\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/privacy-policy",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "privacy-policy"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Public Onboarding",
+      "item": [
+        {
+          "name": "Get All Onboardings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/onboardings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "onboardings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Onboarding by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test response status",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test response structure",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/onboardings/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "onboardings",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Onboarding Management", 
+      "description": "CRUD operations for managing onboarding content (authenticated users)",
+      "item": [
+        {
+          "name": "Create Onboarding",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has onboarding data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('title');",
+                  "    pm.expect(responseJson.data).to.have.property('description');",
+                  "});",
+                  "",
+                  "// Save created onboarding ID for other tests",
+                  "pm.test('Save created onboarding ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('created_onboarding_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Onboarding Step\",\n  \"description\": \"This is a new onboarding step description.\",\n  \"image\": \"https://example.com/onboarding-image.jpg\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/onboardings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "onboardings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Onboarding",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has updated onboarding data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('title');",
+                  "    pm.expect(responseJson.data.title).to.include('Updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Onboarding Step\",\n  \"description\": \"This is an updated onboarding step description.\",\n  \"image\": \"https://example.com/updated-onboarding-image.jpg\",\n  \"order\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/onboardings/{{created_onboarding_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "onboardings", "{{created_onboarding_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Onboarding",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('deleted successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/onboardings/{{created_onboarding_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "onboardings", "{{created_onboarding_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👤 User Profile Management",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has user profile data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('phone');",
+                  "    pm.expect(responseJson.data).to.have.property('balance');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Profile updated successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{banking_name}} Updated\",\n  \"mother_name\": \"{{banking_mother_name}} Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change PIN ATM",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('PIN changed successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('PIN');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_pin\": \"{{banking_pin_atm}}\",\n  \"new_pin\": \"654321\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/change-pin",
+              "host": ["{{base_url}}"],
+              "path": ["api", "change-pin"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Session Management",
+      "item": [
+        {
+          "name": "Get Active Sessions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has sessions data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sessions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout Current Device",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Logout successful', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('logout');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"logout_type\": \"current\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout Other Sessions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Other sessions logged out', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('other');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/logout-others",
+              "host": ["{{base_url}}"],
+              "path": ["api", "logout-others"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Article Management",
+      "item": [
+        {
+          "name": "Get All Articles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has articles data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('articles');",
+                  "    pm.expect(responseJson.data.articles).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/articles?page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "articles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Article by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has article data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('title');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/articles/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "articles", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Article updated successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Article Title\",\n  \"content\": \"Updated article content here...\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/articles/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "articles", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Article deleted successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/articles/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "articles", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Articles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has my articles data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('articles');",
+                  "    pm.expect(responseJson.data.articles).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/my-articles?page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "my-articles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has article data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('title');",
+                  "    pm.expect(responseJson.data).to.have.property('content');",
+                  "});",
+                  "",
+                  "// Save created article ID for other tests",
+                  "pm.test('Save created article ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('created_article_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Test Article\",\n  \"content\": \"This is a test article content created via Postman API testing.\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/articles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "articles"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📸 Photo Management",
+      "item": [
+        {
+          "name": "Get All Photos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has photos data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('photos');",
+                  "    pm.expect(responseJson.data.photos).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/photos?page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "photos"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Photo by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has photo data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('image');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/photos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "photos", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Photo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Photo updated successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"https://example.com/updated-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/photos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "photos", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Photo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Photo deleted successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/photos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "photos", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Photo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has photo data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('image');",
+                  "});",
+                  "",
+                  "// Save created photo ID for other tests",
+                  "pm.test('Save created photo ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('created_photo_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"https://example.com/test-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/photos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "photos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Configuration Management",
+      "description": "CRUD operations for managing application configurations",
+      "item": [
+        {
+          "name": "Set Config",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "pm.test('Response has config data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('key');",
+                  "    pm.expect(responseJson.data).to.have.property('value');",
+                  "    pm.expect(responseJson.data.key).to.eql('app_version');",
+                  "    pm.expect(responseJson.data.value).to.eql('2.1.0');",
+                  "});",
+                  "",
+                  "// Save config key for other tests",
+                  "pm.environment.set('config_key', 'app_version');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"app_version\",\n  \"value\": \"2.1.0\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Configs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has configs array', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Configs have correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.length > 0) {",
+                  "        const config = responseJson.data[0];",
+                  "        pm.expect(config).to.have.property('key');",
+                  "        pm.expect(config).to.have.property('value');",
+                  "        pm.expect(config).to.have.property('created_at');",
+                  "        pm.expect(config).to.have.property('updated_at');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/configs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "configs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Config by Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has config data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('key');",
+                  "    pm.expect(responseJson.data).to.have.property('value');",
+                  "    pm.expect(responseJson.data).to.have.property('created_at');",
+                  "    pm.expect(responseJson.data).to.have.property('updated_at');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/{{config_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "{{config_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Config by Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('deleted successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/test_config_to_delete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "test_config_to_delete"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 User Management",
+      "description": "CRUD operations for managing users (authenticated users)",
+      "item": [
+        {
+          "name": "List All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has users array', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Users have correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.length > 0) {",
+                  "        const user = responseJson.data[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('name');",
+                  "        pm.expect(user).to.have.property('account_number');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has user data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('account_number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{test_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{test_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('deleted successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{created_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{created_user_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "� Admin Management",
+      "description": "Admin authentication and CRUD operations for managing administrators",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has admin data and token', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('admin');",
+                  "    pm.expect(responseJson.data).to.have.property('access_token');",
+                  "    pm.expect(responseJson.data).to.have.property('expires_in');",
+                  "});",
+                  "",
+                  "// Save admin token",
+                  "pm.test('Save admin token to environment', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.access_token) {",
+                  "        pm.environment.set('admin_token', responseJson.data.access_token);",
+                  "    }",
+                  "    if (responseJson.data && responseJson.data.admin) {",
+                  "        pm.environment.set('admin_id', responseJson.data.admin.id);",
+                  "        pm.environment.set('admin_email', responseJson.data.admin.email);",
+                  "        pm.environment.set('admin_role', responseJson.data.admin.role);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms logout', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('logout');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Admins",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has admins list', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('admins');",
+                  "    pm.expect(responseJson.data).to.have.property('total');",
+                  "    pm.expect(responseJson.data).to.have.property('page');",
+                  "    pm.expect(responseJson.data).to.have.property('per_page');",
+                  "    pm.expect(responseJson.data.admins).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins?page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Admin by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has admin data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('email');",
+                  "    pm.expect(responseJson.data).to.have.property('role');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/{{admin_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "{{admin_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has created admin data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('email');",
+                  "    pm.expect(responseJson.data).to.have.property('role');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "});",
+                  "",
+                  "// Save created admin ID for further testing",
+                  "pm.test('Save created admin ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('created_admin_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{new_admin_name}}\",\n  \"email\": \"{{new_admin_email}}\",\n  \"password\": \"{{new_admin_password}}\",\n  \"role\": \"{{new_admin_role}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has updated admin data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('email');",
+                  "    pm.expect(responseJson.data).to.have.property('role');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{updated_admin_name}}\",\n  \"email\": \"{{updated_admin_email}}\",\n  \"role\": \"{{updated_admin_role}}\",\n  \"status\": {{updated_admin_status}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/{{created_admin_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "{{created_admin_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/{{created_admin_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "{{created_admin_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💰 Transaction Management",
+      "item": [
+        {
+          "name": "Topup Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Topup data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_id');",
+                  "    pm.expect(responseJson.data).to.have.property('amount');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_before');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_after');",
+                  "    pm.expect(responseJson.data.amount).to.be.above(0);",
+                  "});",
+                  "",
+                  "// Save transaction ID for future tests",
+                  "pm.test('Save transaction ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.transaction_id) {",
+                  "        pm.environment.set('last_transaction_id', responseJson.data.transaction_id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": {{topup_amount}},\n  \"description\": \"{{topup_description}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/transactions/topup",
+              "host": ["{{base_url}}"],
+              "path": ["api", "transactions", "topup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Withdraw data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_id');",
+                  "    pm.expect(responseJson.data).to.have.property('amount');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_before');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_after');",
+                  "    pm.expect(responseJson.data.amount).to.be.above(0);",
+                  "    pm.expect(responseJson.data.balance_after).to.be.at.least(0);",
+                  "});",
+                  "",
+                  "// Save transaction ID for future tests",
+                  "pm.test('Save transaction ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.transaction_id) {",
+                  "        pm.environment.set('last_transaction_id', responseJson.data.transaction_id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": {{withdraw_amount}},\n  \"description\": \"{{withdraw_description}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/transactions/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "transactions", "withdraw"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Transfer data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_id');",
+                  "    pm.expect(responseJson.data).to.have.property('to_account_number');",
+                  "    pm.expect(responseJson.data).to.have.property('to_account_name');",
+                  "    pm.expect(responseJson.data).to.have.property('amount');",
+                  "    pm.expect(responseJson.data).to.have.property('sender_balance_before');",
+                  "    pm.expect(responseJson.data).to.have.property('sender_balance_after');",
+                  "    pm.expect(responseJson.data.amount).to.be.above(0);",
+                  "    pm.expect(responseJson.data.sender_balance_after).to.be.at.least(0);",
+                  "});",
+                  "",
+                  "// Save transaction ID for future tests",
+                  "pm.test('Save transaction ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.transaction_id) {",
+                  "        pm.environment.set('last_transaction_id', responseJson.data.transaction_id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to_account_number\": \"{{transfer_to_account_number}}\",\n  \"amount\": {{transfer_amount}},\n  \"description\": \"{{transfer_description}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/transactions/transfer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "transactions", "transfer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction History",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Transaction history data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transactions');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.transactions).to.be.an('array');",
+                  "    pm.expect(responseJson.data.pagination).to.have.property('page');",
+                  "    pm.expect(responseJson.data.pagination).to.have.property('limit');",
+                  "    pm.expect(responseJson.data.pagination).to.have.property('total');",
+                  "});",
+                  "",
+                  "pm.test('Transaction records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.transactions.length > 0) {",
+                  "        const transaction = responseJson.data.transactions[0];",
+                  "        pm.expect(transaction).to.have.property('id');",
+                  "        pm.expect(transaction).to.have.property('type');",
+                  "        pm.expect(transaction).to.have.property('amount');",
+                  "        pm.expect(transaction).to.have.property('balance_before');",
+                  "        pm.expect(transaction).to.have.property('balance_after');",
+                  "        pm.expect(transaction).to.have.property('status');",
+                  "        pm.expect(transaction).to.have.property('created_at');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/transactions/history?page={{transaction_page}}&limit={{transaction_limit}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "transactions", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{transaction_page}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{transaction_limit}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Transactions (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Admin transaction data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transactions');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.transactions).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Admin transaction records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.transactions.length > 0) {",
+                  "        const transaction = responseJson.data.transactions[0];",
+                  "        pm.expect(transaction).to.have.property('id');",
+                  "        pm.expect(transaction).to.have.property('user_id');",
+                  "        pm.expect(transaction).to.have.property('user_name');",
+                  "        pm.expect(transaction).to.have.property('type');",
+                  "        pm.expect(transaction).to.have.property('amount');",
+                  "        pm.expect(transaction).to.have.property('status');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/transactions?page={{admin_transaction_page}}&limit={{admin_transaction_limit}}&user_id={{filter_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{admin_transaction_page}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{admin_transaction_limit}}"
+                },
+                {
+                  "key": "user_id",
+                  "value": "{{filter_user_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reverse Transaction (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Reversal data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('reversal_transaction');",
+                  "    pm.expect(responseJson.data.reversal_transaction).to.have.property('id');",
+                  "    pm.expect(responseJson.data.reversal_transaction).to.have.property('type');",
+                  "    pm.expect(responseJson.data.reversal_transaction).to.have.property('original_txn_id');",
+                  "    pm.expect(responseJson.data.reversal_transaction).to.have.property('reversal_reason');",
+                  "});",
+                  "",
+                  "// Save reversal transaction ID for further testing",
+                  "pm.test('Save reversal transaction ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.reversal_transaction) {",
+                  "        pm.environment.set('reversal_transaction_id', responseJson.data.reversal_transaction.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"transaction_id\": \"{{transaction_id_to_reverse}}\",\n    \"reason\": \"{{reversal_reason}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/transactions/reversal",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "transactions", "reversal"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Logs (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Audit logs data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('logs');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.logs).to.be.an('array');",
+                  "    ",
+                  "    if (responseJson.data.logs.length > 0) {",
+                  "        const log = responseJson.data.logs[0];",
+                  "        pm.expect(log).to.have.property('id');",
+                  "        pm.expect(log).to.have.property('entity_type');",
+                  "        pm.expect(log).to.have.property('action');",
+                  "        pm.expect(log).to.have.property('ip_address');",
+                  "        pm.expect(log).to.have.property('created_at');",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Pagination data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const pagination = responseJson.data.pagination;",
+                  "    pm.expect(pagination).to.have.property('page');",
+                  "    pm.expect(pagination).to.have.property('limit');",
+                  "    pm.expect(pagination).to.have.property('total');",
+                  "    pm.expect(pagination).to.have.property('total_pages');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/audit-logs?page={{audit_page}}&limit={{audit_limit}}&entity_type={{audit_entity_type}}&start_date={{audit_start_date}}&end_date={{audit_end_date}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "audit-logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{audit_page}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{audit_limit}}"
+                },
+                {
+                  "key": "entity_type",
+                  "value": "{{audit_entity_type}}"
+                },
+                {
+                  "key": "user_id",
+                  "value": "{{audit_user_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "admin_id",
+                  "value": "{{audit_admin_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "action",
+                  "value": "{{audit_action}}",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "{{audit_start_date}}"
+                },
+                {
+                  "key": "end_date",
+                  "value": "{{audit_end_date}}"
+                },
+                {
+                  "key": "ip_address",
+                  "value": "{{audit_ip_address}}",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Login Audit Logs (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Login audit logs data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('logs');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.logs).to.be.an('array');",
+                  "    ",
+                  "    if (responseJson.data.logs.length > 0) {",
+                  "        const log = responseJson.data.logs[0];",
+                  "        pm.expect(log).to.have.property('id');",
+                  "        pm.expect(log).to.have.property('login_type');",
+                  "        pm.expect(log).to.have.property('status');",
+                  "        pm.expect(log).to.have.property('ip_address');",
+                  "        pm.expect(log).to.have.property('created_at');",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Pagination data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const pagination = responseJson.data.pagination;",
+                  "    pm.expect(pagination).to.have.property('page');",
+                  "    pm.expect(pagination).to.have.property('limit');",
+                  "    pm.expect(pagination).to.have.property('total');",
+                  "    pm.expect(pagination).to.have.property('total_pages');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/login-audits?page={{login_audit_page}}&limit={{login_audit_limit}}&login_type={{login_audit_type}}&status={{login_audit_status}}&start_date={{login_audit_start_date}}&end_date={{login_audit_end_date}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "login-audits"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{login_audit_page}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{login_audit_limit}}"
+                },
+                {
+                  "key": "login_type",
+                  "value": "{{login_audit_type}}"
+                },
+                {
+                  "key": "status",
+                  "value": "{{login_audit_status}}"
+                },
+                {
+                  "key": "user_id",
+                  "value": "{{login_audit_user_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "admin_id",
+                  "value": "{{login_audit_admin_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "{{login_audit_start_date}}"
+                },
+                {
+                  "key": "end_date",
+                  "value": "{{login_audit_end_date}}"
+                },
+                {
+                  "key": "ip_address",
+                  "value": "{{login_audit_ip_address}}",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔄 Token Refresh",
+      "item": [
+        {
+          "name": "Refresh Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has new tokens', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('access_token');",
+                  "    pm.expect(responseJson.data).to.have.property('refresh_token');",
+                  "});",
+                  "",
+                  "// Save new tokens",
+                  "pm.test('Save new tokens to environment', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.access_token) {",
+                  "        pm.environment.set('access_token', responseJson.data.access_token);",
+                  "    }",
+                  "    if (responseJson.data && responseJson.data.refresh_token) {",
+                  "        pm.environment.set('refresh_token', responseJson.data.refresh_token);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "refresh"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "collection_version",
+      "value": "3.1.0",
+      "type": "string"
+    },
+    {
+      "key": "total_endpoints",
+      "value": "53",
+      "type": "string"
+    },
+    {
+      "key": "protected_endpoints",
+      "value": "25",
+      "type": "string"
+    },
+    {
+      "key": "admin_endpoints",
+      "value": "9",
+      "type": "string"
+    }
+  ]
+}

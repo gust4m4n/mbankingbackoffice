@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:mbankingbackoffice/apis/mbx_device_info_vm.dart';
 import 'package:mbankingbackoffice/biller-pln/prepaid/views/mbx_electricity_prepaid_screen.dart';
 import 'package:mbankingbackoffice/biller-pulsa/dataplan/views/mbx_pulsa_dataplan_screen.dart';
 import 'package:mbankingbackoffice/cardless/views/mbx_cardless_payment_screen.dart';
 import 'package:mbankingbackoffice/cardless/views/mbx_cardless_screen.dart';
+import 'package:mbankingbackoffice/home/views/mbx_home_screen.dart';
 import 'package:mbankingbackoffice/language/viewmodels/mbx_translation_service.dart';
 import 'package:mbankingbackoffice/language/views/mbx_language_controller.dart';
 import 'package:mbankingbackoffice/language/views/mbx_language_selection_screen.dart';
@@ -92,21 +95,38 @@ Future<void> main() async {
     initialRoute = '/relogin';
   }
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
-    value,
-  ) {
-    runApp(
-      ContainerX(
-        gradientColorBegin: ColorX.black,
-        gradientColorEnd: ColorX.gray,
-        child: Center(
-          child: ClipRRect(
-            child: SizedBox(width: double.infinity, child: MyApp(initialRoute)),
+  // Set orientation based on platform
+  if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+    // Desktop platforms - allow all orientations
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]).then((value) {
+      runApp(MyApp(initialRoute)); // Direct app for desktop
+    });
+  } else {
+    // Mobile platforms - portrait only
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
+      value,
+    ) {
+      runApp(
+        ContainerX(
+          gradientColorBegin: ColorX.black,
+          gradientColorEnd: ColorX.gray,
+          child: Center(
+            child: ClipRRect(
+              child: SizedBox(
+                width: double.infinity,
+                child: MyApp(initialRoute),
+              ),
+            ),
           ),
         ),
-      ),
-    );
-  });
+      );
+    });
+  }
   /*
   if (MbxSessionVM.token.isNotEmpty) {
     MbxSessionVM.checkPinAndBiometric();
@@ -153,6 +173,11 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/login',
               page: () => const MbxLoginScreen(),
+              transition: Transition.noTransition,
+            ),
+            GetPage(
+              name: '/home',
+              page: () => const MbxHomeScreen(),
               transition: Transition.noTransition,
             ),
             GetPage(
