@@ -91,12 +91,21 @@ Future<void> main() async {
 
   String initialRoute = '/login';
   final token = await MbxUserPreferencesVM.getToken();
-  if (token.isNotEmpty) {
+  // Temporarily force login screen for desktop debugging
+  if (Platform.isMacOS) {
+    await MbxUserPreferencesVM.setToken(''); // Clear token for macOS
+  }
+  if (token.isNotEmpty && !Platform.isMacOS) {
     initialRoute = '/relogin';
   }
 
-  // Set orientation based on platform
+  print('🚀 Starting app with route: $initialRoute');
+  print('🖥️  Platform: ${Platform.operatingSystem}');
+  print(
+    '🔑 Token length: ${token.length}',
+  ); // Set orientation based on platform
   if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+    print('🖥️  Desktop platform detected - allowing all orientations');
     // Desktop platforms - allow all orientations
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -104,9 +113,11 @@ Future<void> main() async {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]).then((value) {
+      print('🖥️  Running desktop app directly');
       runApp(MyApp(initialRoute)); // Direct app for desktop
     });
   } else {
+    print('📱 Mobile platform detected - portrait only');
     // Mobile platforms - portrait only
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
       value,
@@ -147,11 +158,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🏗️  Building MyApp with route: $initialRoute');
     final languageController = Get.find<MbxLanguageController>();
 
     return GetBuilder<MbxThemeController>(
       init: Get.find<MbxThemeController>(),
       builder: (themeController) {
+        print(
+          '🎨 Building GetMaterialApp with theme: ${themeController.themeMode}',
+        );
         return GetMaterialApp(
           popGesture: true,
           defaultTransition: Transition.cupertino,
@@ -160,8 +175,13 @@ class MyApp extends StatelessWidget {
           translations: MbxTranslationService(),
           fallbackLocale: const Locale('id', ''),
           scrollBehavior: AppScrollBehavior(),
-          title: 'MBankingApp',
-          theme: MbxAppThemes.lightTheme,
+          title: 'MBanking BackOffice',
+          theme: MbxAppThemes.lightTheme.copyWith(
+            // Add bright background for desktop debugging
+            scaffoldBackgroundColor: Platform.isMacOS
+                ? Colors.blue.shade100
+                : null,
+          ),
           darkTheme: MbxAppThemes.darkTheme,
           themeMode: themeController.themeMode,
           initialRoute: initialRoute,
