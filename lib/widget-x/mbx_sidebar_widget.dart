@@ -61,12 +61,6 @@ class MbxSidebarWidget extends StatelessWidget {
                   isActive: currentRoute == '/home',
                 ),
                 _buildMenuItem(
-                  icon: Icons.admin_panel_settings_outlined,
-                  title: 'Admin Management',
-                  route: '/admin-management',
-                  isActive: currentRoute == '/admin-management',
-                ),
-                _buildMenuItem(
                   icon: Icons.people_outline,
                   title: 'User Management',
                   route: '/user-management',
@@ -82,6 +76,12 @@ class MbxSidebarWidget extends StatelessWidget {
                   icon: Icons.analytics_outlined,
                   title: 'Reports',
                   onTap: () => _showFeatureNotAvailable('Reports'),
+                ),
+                _buildMenuItem(
+                  icon: Icons.admin_panel_settings_outlined,
+                  title: 'Admin Management',
+                  route: '/admin-management',
+                  isActive: currentRoute == '/admin-management',
                 ),
                 _buildMenuItem(
                   icon: Icons.settings_outlined,

@@ -61,10 +61,15 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                   'Recent Transactions',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                const Spacer(),
-                Text(
-                  'Total: \${controller.totalTransactions.value}',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Total: ${controller.totalTransactions.value}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
               ],
             ),

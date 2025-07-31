@@ -52,10 +52,15 @@ class MbxAdminManagementScreen extends StatelessWidget {
                   'Administrators',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                const Spacer(),
-                Text(
-                  'Total: \${controller.totalAdmins.value}',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Total: ${controller.totalAdmins.value}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
               ],
             ),

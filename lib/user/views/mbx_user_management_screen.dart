@@ -55,7 +55,7 @@ class MbxUserManagementScreen extends StatelessWidget {
 
                   if (isSmallScreen) {
                     return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text(
                           'Users',
@@ -65,11 +65,14 @@ class MbxUserManagementScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          'Total: \${controller.totalUsers.value} users',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Total: ${controller.totalUsers.value} users',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
@@ -87,11 +90,17 @@ class MbxUserManagementScreen extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
-                          'Total: \${controller.totalUsers.value} users',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Total: ${controller.totalUsers.value} users',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                       ],
