@@ -46,47 +46,65 @@ class MbxHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Section
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF1565C0),
-                      Color(0xFF0D47A1),
-                    ], // Same as login screen
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Welcome to MBanking BackOffice',
-                      style: TextStyle(
-                        fontSize: isMobile ? 20 : 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white, // Always white like login screen
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Manage your banking operations efficiently',
-                      style: TextStyle(
-                        fontSize: isMobile ? 14 : 16,
-                        color: Colors.white.withOpacity(
-                          0.9,
-                        ), // Always white like login screen
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Welcome Section - Hidden
+              // Container(
+              //   width: double.infinity,
+              //   padding: const EdgeInsets.all(24),
+              //   decoration: BoxDecoration(
+              //     gradient: const LinearGradient(
+              //       colors: [
+              //         Color(0xFF1565C0),
+              //         Color(0xFF0D47A1),
+              //       ], // Same as login screen
+              //       begin: Alignment.topLeft,
+              //       end: Alignment.bottomRight,
+              //     ),
+              //     borderRadius: BorderRadius.circular(16),
+              //   ),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         'Welcome to MBanking BackOffice',
+              //         style: TextStyle(
+              //           fontSize: isMobile ? 20 : 28,
+              //           fontWeight: FontWeight.bold,
+              //           color: Colors.white, // Always white like login screen
+              //         ),
+              //       ),
+              //       const SizedBox(height: 8),
+              //       Text(
+              //         'Manage your banking operations efficiently',
+              //         style: TextStyle(
+              //           fontSize: isMobile ? 14 : 16,
+              //           color: Colors.white.withOpacity(
+              //             0.9,
+              //           ), // Always white like login screen
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+
+              // const SizedBox(height: 32),
+
+              // Today's Activity (Moved to very top)
+              Obx(() {
+                return controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.dashboardData.value != null
+                    ? _buildTodayActivity(controller.dashboardData.value!)
+                    : Container();
+              }),
 
               const SizedBox(height: 32),
+
+              // Quick Stats Overview
+              const Text(
+                'Quick Stats Overview',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
 
               // Quick Stats Cards
               Obx(() {
@@ -113,17 +131,9 @@ class MbxHomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           _buildStatCard(
-                            'Total Admins',
-                            _formatNumber(dashboard?.totalAdmins ?? 0),
-                            Icons.admin_panel_settings,
-                            Colors.indigo,
-                            context,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildStatCard(
                             'Total Transactions',
                             _formatNumber(
-                              dashboard?.totalTransactions.thisMonth ?? 0,
+                              dashboard?.totalTransactions.allTime ?? 0,
                             ),
                             Icons.receipt_long,
                             Colors.green,
@@ -131,12 +141,10 @@ class MbxHomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           _buildStatCard(
-                            'Withdraw Transactions',
-                            _formatNumber(
-                              dashboard?.withdrawTransactions.thisMonth ?? 0,
-                            ),
-                            Icons.money_off,
-                            Colors.red,
+                            'Total Transaction Value',
+                            'Rp ${_formatNumber((dashboard?.totalTransactions.allTimeAmount ?? 0).toInt())}',
+                            Icons.attach_money,
+                            Colors.purple,
                             context,
                           ),
                         ],
@@ -155,19 +163,9 @@ class MbxHomeScreen extends StatelessWidget {
                           const SizedBox(width: 16),
                           Expanded(
                             child: _buildStatCard(
-                              'Total Admins',
-                              _formatNumber(dashboard?.totalAdmins ?? 0),
-                              Icons.admin_panel_settings,
-                              Colors.indigo,
-                              context,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _buildStatCard(
                               'Total Transactions',
                               _formatNumber(
-                                dashboard?.totalTransactions.thisMonth ?? 0,
+                                dashboard?.totalTransactions.allTime ?? 0,
                               ),
                               Icons.receipt_long,
                               Colors.green,
@@ -177,31 +175,15 @@ class MbxHomeScreen extends StatelessWidget {
                           const SizedBox(width: 16),
                           Expanded(
                             child: _buildStatCard(
-                              'Withdraw Transactions',
-                              _formatNumber(
-                                dashboard?.withdrawTransactions.thisMonth ?? 0,
-                              ),
-                              Icons.money_off,
-                              Colors.red,
+                              'Total Transaction Value',
+                              'Rp ${_formatNumber((dashboard?.totalTransactions.allTimeAmount ?? 0).toInt())}',
+                              Icons.attach_money,
+                              Colors.purple,
                               context,
                             ),
                           ),
                         ],
                       );
-              }),
-
-              const SizedBox(height: 32),
-
-              // System Overview
-              Obx(() {
-                return controller.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.dashboardData.value != null
-                    ? _buildSystemOverview(
-                        controller.dashboardData.value!,
-                        context,
-                      )
-                    : Container();
               }),
 
               const SizedBox(height: 32),
@@ -220,14 +202,12 @@ class MbxHomeScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Transaction Breakdown
+              // Transaction Breakdown (Modified)
               Obx(() {
                 return controller.isLoading.value
                     ? const Center(child: CircularProgressIndicator())
                     : controller.dashboardData.value != null
-                    ? _buildTransactionBreakdown(
-                        controller.dashboardData.value!,
-                      )
+                    ? _buildMonthlyPerformance(controller.dashboardData.value!)
                     : Container();
               }),
 
@@ -273,17 +253,10 @@ class MbxHomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: isDark
+            ? Colors.grey[900] // Lebih gelap untuk dark mode
+            : Theme.of(context).cardColor, // Tetap default untuk light mode
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -389,21 +362,11 @@ class MbxHomeScreen extends StatelessWidget {
     Color color,
     BuildContext context,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,91 +439,165 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionBreakdown(MbxDashboardModel dashboard) {
+  Widget _buildTodayActivity(MbxDashboardModel dashboard) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Transaction Breakdown by Period',
+          'Today\'s Activity',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'Today\'s Activity',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 800;
+
+            if (isMobile) {
+              return Column(
+                children: [
+                  _buildEnhancedBreakdownCard(
+                    'Topup Today',
+                    dashboard.topupTransactions.today,
+                    dashboard.topupTransactions.todayAmount,
+                    Icons.add_circle,
+                    const Color(0xFF4CAF50),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEnhancedBreakdownCard(
+                    'Withdraw Today',
+                    dashboard.withdrawTransactions.today,
+                    dashboard.withdrawTransactions.todayAmount,
+                    Icons.remove_circle,
+                    const Color(0xFFF44336),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEnhancedBreakdownCard(
+                    'Transfer Today',
+                    dashboard.transferTransactions.today,
+                    dashboard.transferTransactions.todayAmount,
+                    Icons.swap_horiz,
+                    const Color(0xFF2196F3),
+                  ),
+                ],
+              );
+            }
+
+            return Row(
+              children: [
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Topup Today',
+                    dashboard.topupTransactions.today,
+                    dashboard.topupTransactions.todayAmount,
+                    Icons.add_circle,
+                    const Color(0xFF4CAF50),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Withdraw Today',
+                    dashboard.withdrawTransactions.today,
+                    dashboard.withdrawTransactions.todayAmount,
+                    Icons.remove_circle,
+                    const Color(0xFFF44336),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Transfer Today',
+                    dashboard.transferTransactions.today,
+                    dashboard.transferTransactions.todayAmount,
+                    Icons.swap_horiz,
+                    const Color(0xFF2196F3),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Topup Today',
-                dashboard.topupTransactions.today,
-                dashboard.topupTransactions.todayAmount,
-                Icons.add_circle,
-                const Color(0xFF4CAF50),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Withdraw Today',
-                dashboard.withdrawTransactions.today,
-                dashboard.withdrawTransactions.todayAmount,
-                Icons.remove_circle,
-                const Color(0xFFF44336),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Transfer Today',
-                dashboard.transferTransactions.today,
-                dashboard.transferTransactions.todayAmount,
-                Icons.swap_horiz,
-                const Color(0xFF2196F3),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildMonthlyPerformance(MbxDashboardModel dashboard) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         const Text(
           'This Month\'s Performance',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Topup This Month',
-                dashboard.topupTransactions.thisMonth,
-                dashboard.topupTransactions.thisMonthAmount,
-                Icons.add_circle,
-                const Color(0xFF4CAF50),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Withdraw This Month',
-                dashboard.withdrawTransactions.thisMonth,
-                dashboard.withdrawTransactions.thisMonthAmount,
-                Icons.remove_circle,
-                const Color(0xFFF44336),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildEnhancedBreakdownCard(
-                'Transfer This Month',
-                dashboard.transferTransactions.thisMonth,
-                dashboard.transferTransactions.thisMonthAmount,
-                Icons.swap_horiz,
-                const Color(0xFF2196F3),
-              ),
-            ),
-          ],
+        const SizedBox(height: 16),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 800;
+
+            if (isMobile) {
+              return Column(
+                children: [
+                  _buildEnhancedBreakdownCard(
+                    'Topup This Month',
+                    dashboard.topupTransactions.thisMonth,
+                    dashboard.topupTransactions.thisMonthAmount,
+                    Icons.add_circle_outline,
+                    const Color(0xFF66BB6A),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEnhancedBreakdownCard(
+                    'Withdraw This Month',
+                    dashboard.withdrawTransactions.thisMonth,
+                    dashboard.withdrawTransactions.thisMonthAmount,
+                    Icons.remove_circle_outline,
+                    const Color(0xFFEF5350),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEnhancedBreakdownCard(
+                    'Transfer This Month',
+                    dashboard.transferTransactions.thisMonth,
+                    dashboard.transferTransactions.thisMonthAmount,
+                    Icons.swap_horiz_outlined,
+                    const Color(0xFF42A5F5),
+                  ),
+                ],
+              );
+            }
+
+            return Row(
+              children: [
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Topup This Month',
+                    dashboard.topupTransactions.thisMonth,
+                    dashboard.topupTransactions.thisMonthAmount,
+                    Icons.add_circle_outline,
+                    const Color(0xFF66BB6A),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Withdraw This Month',
+                    dashboard.withdrawTransactions.thisMonth,
+                    dashboard.withdrawTransactions.thisMonthAmount,
+                    Icons.remove_circle_outline,
+                    const Color(0xFFEF5350),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Transfer This Month',
+                    dashboard.transferTransactions.thisMonth,
+                    dashboard.transferTransactions.thisMonthAmount,
+                    Icons.swap_horiz_outlined,
+                    const Color(0xFF42A5F5),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -650,140 +687,6 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSystemOverview(
-    MbxDashboardModel dashboard,
-    BuildContext context,
-  ) {
-    double userToAdminRatio = dashboard.totalUsers / dashboard.totalAdmins;
-    double todayToMonthRatio =
-        dashboard.totalTransactions.today /
-        dashboard.totalTransactions.thisMonth *
-        100;
-    double monthToYearRatio =
-        dashboard.totalTransactions.thisMonth /
-        dashboard.totalTransactions.thisYear *
-        100;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'System Overview & Analytics',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInsightCard(
-                'User to Admin Ratio',
-                '${userToAdminRatio.toStringAsFixed(1)}:1',
-                'Users per admin',
-                Icons.balance,
-                Colors.deepPurple,
-                context,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildInsightCard(
-                'Today Activity',
-                '${todayToMonthRatio.toStringAsFixed(1)}%',
-                'of monthly transactions',
-                Icons.today,
-                Colors.orange,
-                context,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildInsightCard(
-                'Monthly Progress',
-                '${monthToYearRatio.toStringAsFixed(1)}%',
-                'of yearly target',
-                Icons.trending_up,
-                Colors.teal,
-                context,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInsightCard(
-    String title,
-    String value,
-    String subtitle,
-    IconData icon,
-    Color color,
-    BuildContext context,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildEnhancedBreakdownCard(
     String title,
     int count,
@@ -794,74 +697,83 @@ class MbxHomeScreen extends StatelessWidget {
     print(
       '🔍 _buildEnhancedBreakdownCard: $title - Count: $count, Amount: $amount',
     );
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.grey[900] // Background lebih gelap untuk dark mode
+                : Colors.white, // Background putih untuk light mode
+            gradient: isDark
+                ? null // Tidak pakai gradient di dark mode
+                : LinearGradient(
+                    colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(icon, color: color, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Primary focus: Transaction Amount (large, prominent)
+              Align(
+                alignment: Alignment.centerRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Rp ${_formatNumber(amount.toInt())}',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // Secondary info: Transaction Count (smaller, muted)
+                    Text(
+                      '${_formatNumber(count)} transactions',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: color.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          // Primary focus: Transaction Amount (large, prominent)
-          Align(
-            alignment: Alignment.centerRight,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'Rp ${_formatNumber(amount.toInt())}',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // Secondary info: Transaction Count (smaller, muted)
-                Text(
-                  '${_formatNumber(count)} transactions',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: color.withOpacity(0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -871,65 +783,67 @@ class MbxHomeScreen extends StatelessWidget {
     IconData icon,
     Color color,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.withOpacity(0.08), color.withOpacity(0.03)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.grey[900] // Background lebih gelap untuk dark mode
+                : Colors.white, // Background putih untuk light mode
+            gradient: isDark
+                ? null // Tidak pakai gradient di dark mode
+                : LinearGradient(
+                    colors: [color.withOpacity(0.08), color.withOpacity(0.03)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            borderRadius: BorderRadius.circular(12),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(icon, color: color, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerRight,
                 child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                  value,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: color,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1023,16 +937,8 @@ class MbxHomeScreen extends StatelessWidget {
       height: 300,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2E2E2E) : Colors.white,
+        color: isDark ? Colors.grey[900] : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1177,16 +1083,8 @@ class MbxHomeScreen extends StatelessWidget {
       height: 300,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2E2E2E) : Colors.white,
+        color: isDark ? Colors.grey[900] : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1338,9 +1236,8 @@ class MbxHomeScreen extends StatelessWidget {
         height: 300,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2E2E2E) : Colors.white,
+          color: isDark ? Colors.grey[900] : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.withOpacity(0.2)),
         ),
         child: Center(
           child: Text(
@@ -1355,16 +1252,8 @@ class MbxHomeScreen extends StatelessWidget {
       height: 300,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2E2E2E) : Colors.white,
+        color: isDark ? Colors.grey[900] : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

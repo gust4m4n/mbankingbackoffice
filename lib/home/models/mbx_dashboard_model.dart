@@ -66,17 +66,21 @@ class MbxTransactionStats {
   final int today;
   final int thisMonth;
   final int thisYear;
+  final int allTime;
   final double todayAmount;
   final double thisMonthAmount;
   final double thisYearAmount;
+  final double allTimeAmount;
 
   const MbxTransactionStats({
     required this.today,
     required this.thisMonth,
     required this.thisYear,
+    required this.allTime,
     required this.todayAmount,
     required this.thisMonthAmount,
     required this.thisYearAmount,
+    required this.allTimeAmount,
   });
 
   factory MbxTransactionStats.fromJson(Map<String, dynamic> json) {
@@ -84,9 +88,11 @@ class MbxTransactionStats {
       today: json['today'] ?? 0,
       thisMonth: json['this_month'] ?? 0,
       thisYear: json['this_year'] ?? 0,
+      allTime: json['all_time'] ?? 0,
       todayAmount: (json['today_amount'] ?? 0).toDouble(),
       thisMonthAmount: (json['this_month_amount'] ?? 0).toDouble(),
       thisYearAmount: (json['this_year_amount'] ?? 0).toDouble(),
+      allTimeAmount: (json['all_time_amount'] ?? 0).toDouble(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -94,9 +100,11 @@ class MbxTransactionStats {
       'today': today,
       'this_month': thisMonth,
       'this_year': thisYear,
+      'all_time': allTime,
       'today_amount': todayAmount,
       'this_month_amount': thisMonthAmount,
       'this_year_amount': thisYearAmount,
+      'all_time_amount': allTimeAmount,
     };
   }
 }
