@@ -99,12 +99,61 @@ class MbxHomeScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
+              // Transaction Stats by Period
+              Obx(() {
+                return controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.dashboardData.value != null
+                    ? _buildTransactionStatsByPeriod(
+                        controller.dashboardData.value!,
+                        context,
+                      )
+                    : Container();
+              }),
+
+              const SizedBox(height: 32),
+
+              // Transaction Breakdown (Modified)
+              Obx(() {
+                return controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.dashboardData.value != null
+                    ? _buildMonthlyPerformance(controller.dashboardData.value!)
+                    : Container();
+              }),
+
+              const SizedBox(height: 32),
+
+              // Transaction Amounts
+              Obx(() {
+                return controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.dashboardData.value != null
+                    ? _buildTransactionAmounts(controller.dashboardData.value!)
+                    : Container();
+              }),
+
+              const SizedBox(height: 32),
+
+              // Performance Charts
+              Obx(() {
+                return controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : controller.dashboardData.value != null &&
+                          controller.dashboardData.value!.performance != null
+                    ? _buildPerformanceCharts(controller.dashboardData.value!)
+                    : Container();
+              }),
+
+              const SizedBox(height: 32),
+
               // Quick Stats Overview
-              const Text(
+              _buildSectionTitle(
                 'Quick Stats Overview',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                icon: Icons.dashboard,
+                color: const Color(0xFF607D8B),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               // Quick Stats Cards
               Obx(() {
@@ -186,54 +235,6 @@ class MbxHomeScreen extends StatelessWidget {
                       );
               }),
 
-              const SizedBox(height: 32),
-
-              // Transaction Stats by Period
-              Obx(() {
-                return controller.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.dashboardData.value != null
-                    ? _buildTransactionStatsByPeriod(
-                        controller.dashboardData.value!,
-                        context,
-                      )
-                    : Container();
-              }),
-
-              const SizedBox(height: 32),
-
-              // Transaction Breakdown (Modified)
-              Obx(() {
-                return controller.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.dashboardData.value != null
-                    ? _buildMonthlyPerformance(controller.dashboardData.value!)
-                    : Container();
-              }),
-
-              const SizedBox(height: 32),
-
-              // Transaction Amounts
-              Obx(() {
-                return controller.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.dashboardData.value != null
-                    ? _buildTransactionAmounts(controller.dashboardData.value!)
-                    : Container();
-              }),
-
-              const SizedBox(height: 32),
-
-              // Performance Charts
-              Obx(() {
-                return controller.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
-                    : controller.dashboardData.value != null &&
-                          controller.dashboardData.value!.performance != null
-                    ? _buildPerformanceCharts(controller.dashboardData.value!)
-                    : Container();
-              }),
-
               const SizedBox(height: 24),
             ],
           ),
@@ -255,18 +256,18 @@ class MbxHomeScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Colors.grey[900] // Lebih gelap untuk dark mode
-            : Theme.of(context).cardColor, // Tetap default untuk light mode
+            : Colors.white, // Background putih untuk konsistensi
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -277,17 +278,18 @@ class MbxHomeScreen extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   value,
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                    color: color,
                   ),
                 ),
               ],
@@ -305,11 +307,12 @@ class MbxHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        _buildSectionTitle(
           'Transaction Statistics by Period',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          icon: Icons.bar_chart,
+          color: const Color(0xFFFF9800),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
@@ -353,6 +356,7 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
+  // Helper untuk membangun card period stats yang seragam
   Widget _buildPeriodStatsCard(
     String period,
     int total,
@@ -362,10 +366,13 @@ class MbxHomeScreen extends StatelessWidget {
     Color color,
     BuildContext context,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: isDark
+            ? Colors.grey[900] // Background lebih gelap untuk dark mode
+            : Colors.white, // Background putih untuk konsistensi
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -377,7 +384,7 @@ class MbxHomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(Icons.timeline, color: color, size: 20),
               ),
@@ -389,15 +396,15 @@ class MbxHomeScreen extends StatelessWidget {
                   child: Text(
                     period,
                     style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           _buildStatRow('Total', _formatNumber(total), color),
           const SizedBox(height: 8),
           _buildStatRow('Topup', _formatNumber(topup), Colors.green),
@@ -439,15 +446,46 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
+  // Helper untuk membangun section title yang seragam di seluruh dashboard
+  Widget _buildSectionTitle(String title, {IconData? icon, Color? color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: (color ?? const Color(0xFF2196F3)).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: color ?? const Color(0xFF2196F3),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+          Text(
+            title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTodayActivity(MbxDashboardModel dashboard) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        _buildSectionTitle(
           'Today\'s Activity',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          icon: Icons.today,
+          color: const Color(0xFF4CAF50),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         LayoutBuilder(
           builder: (context, constraints) {
             final isMobile = constraints.maxWidth < 800;
@@ -477,6 +515,14 @@ class MbxHomeScreen extends StatelessWidget {
                     dashboard.transferTransactions.todayAmount,
                     Icons.swap_horiz,
                     const Color(0xFF2196F3),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEnhancedBreakdownCard(
+                    'Total Today',
+                    dashboard.totalTransactions.today,
+                    dashboard.totalTransactions.todayAmount,
+                    Icons.receipt_long,
+                    const Color(0xFF9C27B0),
                   ),
                 ],
               );
@@ -513,6 +559,16 @@ class MbxHomeScreen extends StatelessWidget {
                     const Color(0xFF2196F3),
                   ),
                 ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildEnhancedBreakdownCard(
+                    'Total Today',
+                    dashboard.totalTransactions.today,
+                    dashboard.totalTransactions.todayAmount,
+                    Icons.receipt_long,
+                    const Color(0xFF9C27B0),
+                  ),
+                ),
               ],
             );
           },
@@ -525,11 +581,12 @@ class MbxHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        _buildSectionTitle(
           'This Month\'s Performance',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          icon: Icons.calendar_month,
+          color: const Color(0xFF2196F3),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         LayoutBuilder(
           builder: (context, constraints) {
             final isMobile = constraints.maxWidth < 800;
@@ -607,11 +664,12 @@ class MbxHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        _buildSectionTitle(
           'Transaction Values (Amount)',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          icon: Icons.attach_money,
+          color: const Color(0xFF9C27B0),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         const Text(
           'Today\'s Transaction Values',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -706,13 +764,6 @@ class MbxHomeScreen extends StatelessWidget {
             color: isDark
                 ? Colors.grey[900] // Background lebih gelap untuk dark mode
                 : Colors.white, // Background putih untuk light mode
-            gradient: isDark
-                ? null // Tidak pakai gradient di dark mode
-                : LinearGradient(
-                    colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -721,7 +772,7 @@ class MbxHomeScreen extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -792,13 +843,6 @@ class MbxHomeScreen extends StatelessWidget {
             color: isDark
                 ? Colors.grey[900] // Background lebih gelap untuk dark mode
                 : Colors.white, // Background putih untuk light mode
-            gradient: isDark
-                ? null // Tidak pakai gradient di dark mode
-                : LinearGradient(
-                    colors: [color.withOpacity(0.08), color.withOpacity(0.03)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -819,22 +863,21 @@ class MbxHomeScreen extends StatelessWidget {
                     child: Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   value,
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: color,
                   ),
@@ -851,34 +894,10 @@ class MbxHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Performance Charts Header
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2196F3).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.trending_up,
-                  color: Color(0xFF2196F3),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Performance Analytics',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
+        _buildSectionTitle(
+          'Performance Analytics',
+          icon: Icons.trending_up,
+          color: const Color(0xFF2196F3),
         ),
         const SizedBox(height: 20),
 
@@ -928,6 +947,30 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildChartTitle(String title, BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2196F3).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: const Icon(
+            Icons.analytics,
+            color: Color(0xFF2196F3),
+            size: 16,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMonthlyChart(
     MbxPerformanceStats performance,
     BuildContext context,
@@ -943,15 +986,8 @@ class MbxHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Monthly Performance (Amount)',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
+          _buildChartTitle('Monthly Performance (Amount)', context),
+          const SizedBox(height: 20),
           Expanded(
             child: LineChart(
               LineChartData(
@@ -1089,15 +1125,8 @@ class MbxHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Weekly Performance (Transactions)',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
+          _buildChartTitle('Weekly Performance (Transactions)', context),
+          const SizedBox(height: 20),
           Expanded(
             child: LineChart(
               LineChartData(
@@ -1258,15 +1287,8 @@ class MbxHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Yearly Performance (Amount)',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
+          _buildChartTitle('Yearly Performance (Amount)', context),
+          const SizedBox(height: 20),
           Expanded(
             child: LineChart(
               LineChartData(
