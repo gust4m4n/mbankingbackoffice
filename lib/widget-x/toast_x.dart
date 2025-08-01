@@ -45,6 +45,7 @@ class ToastX {
       context: Get.context!,
       duration: duration == 0 ? null : Duration(milliseconds: duration),
       barrierDismissible: true,
+      barrierColor: Colors.transparent, // Tidak ada barrier yang menghalangi
       builder: (context, controller) {
         ToastX.controller = controller;
         return FlashBar(
@@ -84,15 +85,18 @@ class BasicToast extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContainerX(
       backgroundColor: ColorX.transparent,
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: 32.0,
+        vertical: 16.0,
+      ), // Kurangi padding vertikal
       child: Center(
         child: ContainerX(
           backgroundColor: backgroundColor,
           padding: EdgeInsets.only(
             left: 16.0,
-            top: 8.0,
+            top: 12.0,
             right: 16.0,
-            bottom: 8.0,
+            bottom: 12.0,
           ),
           cornerRadius: 16.0,
           child: Wrap(

@@ -175,8 +175,14 @@ class MbxLoginController extends GetxController {
         // Save admin token
         await MbxUserPreferencesVM.setToken(response.data!.accessToken);
 
-        ToastX.showSuccess(
-          msg: 'Login berhasil! Selamat datang ${response.data!.admin.name}',
+        // Toast dengan durasi lebih singkat untuk tidak menghalangi
+        ToastX.snackBarCustom(
+          widget: BasicToast(
+            backgroundColor: ColorX.green,
+            textColor: ColorX.white,
+            msg: 'Login berhasil! Selamat datang ${response.data!.admin.name}',
+          ),
+          duration: 2000, // Kurangi dari 4000ms ke 2000ms
         );
 
         // Navigate to dashboard/home

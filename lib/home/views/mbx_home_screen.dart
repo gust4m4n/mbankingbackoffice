@@ -481,7 +481,7 @@ class MbxHomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(
-          'Today\'s Activity',
+          'Today',
           icon: Icons.today,
           color: const Color(0xFF4CAF50),
         ),
@@ -494,7 +494,7 @@ class MbxHomeScreen extends StatelessWidget {
               return Column(
                 children: [
                   _buildEnhancedBreakdownCard(
-                    'Topup Today',
+                    'Topup',
                     dashboard.topupTransactions.today,
                     dashboard.topupTransactions.todayAmount,
                     Icons.add_circle,
@@ -502,7 +502,7 @@ class MbxHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildEnhancedBreakdownCard(
-                    'Withdraw Today',
+                    'Withdraw',
                     dashboard.withdrawTransactions.today,
                     dashboard.withdrawTransactions.todayAmount,
                     Icons.remove_circle,
@@ -510,7 +510,7 @@ class MbxHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildEnhancedBreakdownCard(
-                    'Transfer Today',
+                    'Transfer',
                     dashboard.transferTransactions.today,
                     dashboard.transferTransactions.todayAmount,
                     Icons.swap_horiz,
@@ -518,7 +518,7 @@ class MbxHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildEnhancedBreakdownCard(
-                    'Total Today',
+                    'Total',
                     dashboard.totalTransactions.today,
                     dashboard.totalTransactions.todayAmount,
                     Icons.receipt_long,
@@ -532,7 +532,7 @@ class MbxHomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildEnhancedBreakdownCard(
-                    'Topup Today',
+                    'Topup',
                     dashboard.topupTransactions.today,
                     dashboard.topupTransactions.todayAmount,
                     Icons.add_circle,
@@ -542,7 +542,7 @@ class MbxHomeScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildEnhancedBreakdownCard(
-                    'Withdraw Today',
+                    'Withdraw',
                     dashboard.withdrawTransactions.today,
                     dashboard.withdrawTransactions.todayAmount,
                     Icons.remove_circle,
@@ -552,7 +552,7 @@ class MbxHomeScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildEnhancedBreakdownCard(
-                    'Transfer Today',
+                    'Transfer',
                     dashboard.transferTransactions.today,
                     dashboard.transferTransactions.todayAmount,
                     Icons.swap_horiz,
@@ -562,7 +562,7 @@ class MbxHomeScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildEnhancedBreakdownCard(
-                    'Total Today',
+                    'Total',
                     dashboard.totalTransactions.today,
                     dashboard.totalTransactions.todayAmount,
                     Icons.receipt_long,
