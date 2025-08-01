@@ -26,11 +26,15 @@ class MbxPerformanceStats {
   final List<MbxPerformanceData> monthly;
   final List<MbxPerformanceData> weekly;
   final List<MbxPerformanceData> yearly;
+  final List<MbxPerformanceData> last7Days;
+  final List<MbxPerformanceData> last30Days;
 
   const MbxPerformanceStats({
     required this.monthly,
     required this.weekly,
     required this.yearly,
+    required this.last7Days,
+    required this.last30Days,
   });
 
   factory MbxPerformanceStats.fromJson(Map<String, dynamic> json) {
@@ -50,6 +54,16 @@ class MbxPerformanceStats {
               ?.map((item) => MbxPerformanceData.fromJson(item))
               .toList() ??
           [],
+      last7Days:
+          (json['last_7_days'] as List<dynamic>?)
+              ?.map((item) => MbxPerformanceData.fromJson(item))
+              .toList() ??
+          [],
+      last30Days:
+          (json['last_30_days'] as List<dynamic>?)
+              ?.map((item) => MbxPerformanceData.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 
@@ -58,6 +72,8 @@ class MbxPerformanceStats {
       'monthly': monthly.map((item) => item.toJson()).toList(),
       'weekly': weekly.map((item) => item.toJson()).toList(),
       'yearly': yearly.map((item) => item.toJson()).toList(),
+      'last_7_days': last7Days.map((item) => item.toJson()).toList(),
+      'last_30_days': last30Days.map((item) => item.toJson()).toList(),
     };
   }
 }
