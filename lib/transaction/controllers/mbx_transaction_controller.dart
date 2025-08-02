@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/transaction/models/mbx_transaction_model.dart';
 import 'package:mbankingbackoffice/transaction/services/mbx_transaction_api_service.dart';
+import 'package:mbankingbackoffice/transaction/views/mbx_transaction_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxTransactionController extends GetxController {
@@ -110,9 +111,10 @@ class MbxTransactionController extends GetxController {
   /// View transaction details
   void viewTransaction(MbxTransactionModel transaction) {
     selectedTransaction = transaction;
-    Get.dialog(
-      _buildTransactionDetailsDialog(transaction),
-      barrierDismissible: true,
+    MbxTransactionDetailDialog.show(
+      Get.context!,
+      transaction,
+      onReverse: () => showReversalDialog(transaction),
     );
   }
 
@@ -237,137 +239,6 @@ class MbxTransactionController extends GetxController {
   }
 
   // Dialog builders
-
-  Widget _buildTransactionDetailsDialog(MbxTransactionModel transaction) {
-    return Dialog(
-      child: Container(
-        width: 600,
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text(
-                  'Transaction Details',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildDetailRow('Transaction ID', transaction.id),
-            _buildDetailRow('Type', transaction.displayType),
-            _buildDetailRow('Amount', transaction.formattedAmount),
-            _buildDetailRow('Status', transaction.displayStatus),
-            _buildDetailRow('User Name', transaction.userName),
-            _buildDetailRow('Account Number', transaction.maskedAccountNumber),
-            if (transaction.targetUserName != null)
-              _buildDetailRow('Target User', transaction.targetUserName!),
-            if (transaction.targetAccountNumber != null)
-              _buildDetailRow(
-                'Target Account',
-                transaction.maskedTargetAccountNumber,
-              ),
-            if (transaction.description != null)
-              _buildDetailRow('Description', transaction.description!),
-            _buildDetailRow('Created At', transaction.formattedCreatedAt),
-            if (transaction.balanceChangeDisplay.isNotEmpty)
-              _buildDetailRow(
-                'Balance Change',
-                transaction.balanceChangeDisplay,
-              ),
-            if (transaction.isReversed) ...[
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  border: Border.all(color: Colors.red.shade200),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'TRANSACTION REVERSED',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (transaction.reversalReason != null)
-                      Text('Reason: ${transaction.reversalReason}'),
-                    if (transaction.reversedAt != null)
-                      Text('Reversed At: ${transaction.reversedAt}'),
-                  ],
-                ),
-              ),
-            ],
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Spacer(),
-                if (!transaction.isReversed &&
-                    transaction.status == 'completed') ...[
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                      showReversalDialog(transaction);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Reverse Transaction'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildReversalDialog() {
     return Dialog(

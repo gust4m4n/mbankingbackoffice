@@ -13,7 +13,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
         title: 'Admin Management',
         currentRoute: '/admin-management',
         showAddButton: true,
-        onAddPressed: () => _showFeatureNotAvailable('Add Admin'),
+        onAddPressed: controller.showCreateAdminDialog,
         onRefreshPressed: controller.refreshAdmins,
         child: _buildAdminContent(controller),
       );
@@ -283,9 +283,5 @@ class MbxAdminManagementScreen extends StatelessWidget {
       default:
         return Colors.grey;
     }
-  }
-
-  void _showFeatureNotAvailable(String featureName) {
-    ToastX.showSuccess(msg: '\$featureName akan segera tersedia');
   }
 }

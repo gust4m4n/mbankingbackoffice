@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
 import 'package:mbankingbackoffice/admin/services/mbx_admin_api_service.dart';
+import 'package:mbankingbackoffice/admin/views/mbx_add_admin_dialog.dart';
 import 'package:mbankingbackoffice/admin/views/mbx_admin_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
@@ -113,7 +114,7 @@ class MbxAdminController extends GetxController {
 
   /// Placeholder methods for CRUD operations
   void showCreateAdminDialog() {
-    print('Show create admin dialog');
+    MbxAddAdminDialog.show(Get.context!);
   }
 
   void showEditAdminDialog(MbxAdminModel admin) {

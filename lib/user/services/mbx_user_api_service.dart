@@ -90,7 +90,11 @@ class MbxUserApiService {
           total: data['total'] ?? userModels.length,
           page: data['page'] ?? 1,
           perPage: data['per_page'] ?? userModels.length,
-          totalPages: data['total_pages'] ?? 1,
+          totalPages:
+              data['total_pages'] ??
+              ((data['total'] ?? userModels.length) /
+                      (data['per_page'] ?? userModels.length))
+                  .ceil(),
         );
       } else if (data is List<dynamic>) {
         // Handle direct array response

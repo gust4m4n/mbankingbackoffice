@@ -1,4 +1,3 @@
-import 'package:mbankingbackoffice/theme/widgets/mbx_dark_mode_switch.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxManagementScaffold extends StatelessWidget {
@@ -113,12 +112,6 @@ class MbxManagementScaffold extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                           ],
-
-                          // Dark Mode Switch (moved to rightmost position)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: MbxDarkModeSwitch(showLabel: false),
-                          ),
 
                           // Refresh button
                           if (onRefreshPressed != null)

@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/user/models/mbx_user_model.dart';
 import 'package:mbankingbackoffice/user/services/mbx_user_api_service.dart';
+import 'package:mbankingbackoffice/user/views/mbx_user_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxUserController extends GetxController {
@@ -43,7 +44,20 @@ class MbxUserController extends GetxController {
         totalUsers.value = userListResponse.total;
         totalPages.value = userListResponse.totalPages;
 
+        // Validate pagination data consistency
+        final calculatedTotalPages =
+            (userListResponse.total / userListResponse.perPage).ceil();
+        if (calculatedTotalPages != userListResponse.totalPages) {
+          print(
+            'Warning: totalPages mismatch - calculated: $calculatedTotalPages, received: ${userListResponse.totalPages}',
+          );
+          totalPages.value = calculatedTotalPages;
+        }
+
         print('Successfully loaded ${users.length} users');
+        print(
+          'Pagination: page=${userListResponse.page}, total=${userListResponse.total}, perPage=${userListResponse.perPage}, totalPages=${totalPages.value}',
+        );
       } else {
         ToastX.showError(msg: 'Failed to load users: ${response.message}');
       }
@@ -58,7 +72,7 @@ class MbxUserController extends GetxController {
   /// View user details
   void viewUser(MbxUserModel user) {
     selectedUser = user;
-    Get.dialog(_buildUserDetailsDialog(user), barrierDismissible: true);
+    MbxUserDetailDialog.show(Get.context!, user);
   }
 
   /// Delete user
@@ -145,86 +159,5 @@ class MbxUserController extends GetxController {
     } finally {
       Get.back(); // Close loading
     }
-  }
-
-  // Dialog builders
-
-  Widget _buildUserDetailsDialog(MbxUserModel user) {
-    return Dialog(
-      child: Container(
-        width: 500,
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text(
-                  'User Details',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildDetailRow('Name', user.name),
-            _buildDetailRow('Account Number', user.accountNumber),
-            _buildDetailRow('Phone', user.phone),
-            _buildDetailRow('Mother Name', user.motherName),
-            _buildDetailRow('PIN ATM', user.maskedPinAtm),
-            _buildDetailRow('Balance', user.formattedBalance),
-            _buildDetailRow('Status', user.displayStatus),
-            if (user.createdAt != null)
-              _buildDetailRow('Created At', user.createdAt!),
-            if (user.updatedAt != null)
-              _buildDetailRow('Updated At', user.updatedAt!),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

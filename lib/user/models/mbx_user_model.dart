@@ -162,13 +162,16 @@ class MbxUserListResponse {
   factory MbxUserListResponse.fromJson(Map<String, dynamic> json) {
     final List<dynamic> userList = json['users'] ?? json['data'] ?? [];
     final users = userList.map((user) => MbxUserModel.fromJson(user)).toList();
+    final total = json['total'] ?? users.length;
+    final perPage = json['per_page'] ?? users.length;
+    final totalPages = json['total_pages'] ?? (total / perPage).ceil();
 
     return MbxUserListResponse(
       users: users,
-      total: json['total'] ?? users.length,
+      total: total,
       page: json['page'] ?? 1,
-      perPage: json['per_page'] ?? users.length,
-      totalPages: json['total_pages'] ?? 1,
+      perPage: perPage,
+      totalPages: totalPages,
     );
   }
 }

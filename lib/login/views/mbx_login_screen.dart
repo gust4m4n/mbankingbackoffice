@@ -1,4 +1,6 @@
+import 'package:mbankingbackoffice/privacy-policy/views/mbx_privacy_policy_dialog.dart';
 import 'package:mbankingbackoffice/theme/widgets/mbx_dark_mode_switch.dart';
+import 'package:mbankingbackoffice/tnc/views/mbx_tnc_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 import 'mbx_login_controller.dart';
@@ -194,6 +196,41 @@ class MbxLoginScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
+
+                            // Terms & Conditions and Privacy Policy Links
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWellX(
+                                  clicked: () {
+                                    MbxTncDialog.show(context);
+                                  },
+                                  child: TextX(
+                                    'Syarat & Ketentuan',
+                                    fontSize: 12.0,
+                                    color: ColorX.theme,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                TextX(
+                                  ' • ',
+                                  fontSize: 12.0,
+                                  color: ColorX.gray,
+                                ),
+                                InkWellX(
+                                  clicked: () {
+                                    MbxPrivacyPolicyDialog.show(context);
+                                  },
+                                  child: TextX(
+                                    'Kebijakan Privasi',
+                                    fontSize: 12.0,
+                                    color: ColorX.theme,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
 
                             // Version
                             TextX(

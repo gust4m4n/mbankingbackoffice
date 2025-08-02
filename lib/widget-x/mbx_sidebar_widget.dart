@@ -1,10 +1,18 @@
 import 'package:mbankingbackoffice/preferences/mbx_preferences_vm_users.dart';
+import 'package:mbankingbackoffice/theme/widgets/mbx_dark_mode_switch.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
-class MbxSidebarWidget extends StatelessWidget {
+class MbxSidebarWidget extends StatefulWidget {
   final String currentRoute;
 
   const MbxSidebarWidget({super.key, required this.currentRoute});
+
+  @override
+  State<MbxSidebarWidget> createState() => _MbxSidebarWidgetState();
+}
+
+class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
+  String? hoveredItem;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +65,13 @@ class MbxSidebarWidget extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Dark Mode Switch
+                const MbxDarkModeSwitch(
+                  showLabel: false,
+                  iconSize: 18,
+                  activeColor: Colors.amber,
+                  inactiveColor: Colors.white70,
+                ),
               ],
             ),
           ),
@@ -70,19 +85,19 @@ class MbxSidebarWidget extends StatelessWidget {
                   icon: Icons.dashboard_outlined,
                   title: 'Dashboard',
                   route: '/home',
-                  isActive: currentRoute == '/home',
+                  isActive: widget.currentRoute == '/home',
                 ),
                 _buildMenuItem(
                   icon: Icons.people_outline,
                   title: 'User Management',
                   route: '/user-management',
-                  isActive: currentRoute == '/user-management',
+                  isActive: widget.currentRoute == '/user-management',
                 ),
                 _buildMenuItem(
                   icon: Icons.receipt_long_outlined,
                   title: 'Transaction Management',
                   route: '/transaction-management',
-                  isActive: currentRoute == '/transaction-management',
+                  isActive: widget.currentRoute == '/transaction-management',
                 ),
                 _buildMenuItem(
                   icon: Icons.analytics_outlined,
@@ -93,7 +108,7 @@ class MbxSidebarWidget extends StatelessWidget {
                   icon: Icons.admin_panel_settings_outlined,
                   title: 'Admin Management',
                   route: '/admin-management',
-                  isActive: currentRoute == '/admin-management',
+                  isActive: widget.currentRoute == '/admin-management',
                 ),
                 _buildMenuItem(
                   icon: Icons.settings_outlined,
@@ -122,33 +137,147 @@ class MbxSidebarWidget extends StatelessWidget {
     bool isActive = false,
     VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: isActive ? const Color(0xFF1976D2) : Colors.white70,
-          size: 20,
+    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    final isHovered = hoveredItem == title;
+    final shouldHighlight = isActive || isHovered;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => hoveredItem = title),
+      onExit: (_) => setState(() => hoveredItem = null),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: shouldHighlight
+              ? LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: isActive
+                      ? (isDark
+                            ? [
+                                const Color(0xFF1976D2).withOpacity(0.8),
+                                const Color(0xFF1565C0).withOpacity(0.6),
+                              ]
+                            : [
+                                Colors.white.withOpacity(0.95),
+                                Colors.white.withOpacity(0.85),
+                              ])
+                      : (isDark
+                            ? [
+                                Colors.white.withOpacity(0.08),
+                                Colors.white.withOpacity(0.04),
+                              ]
+                            : [
+                                Colors.white.withOpacity(0.15),
+                                Colors.white.withOpacity(0.05),
+                              ]),
+                )
+              : null,
+          boxShadow: shouldHighlight
+              ? [
+                  BoxShadow(
+                    color: isActive
+                        ? (isDark
+                              ? const Color(0xFF1976D2).withOpacity(0.3)
+                              : Colors.white.withOpacity(0.3))
+                        : (isDark
+                              ? Colors.white.withOpacity(0.1)
+                              : Colors.white.withOpacity(0.2)),
+                    blurRadius: isActive ? 8 : 4,
+                    offset: Offset(0, isActive ? 2 : 1),
+                  ),
+                ]
+              : null,
         ),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: isActive ? const Color(0xFF1976D2) : Colors.white70,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            fontSize: 14,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap:
+                onTap ??
+                () {
+                  if (route != null && route != widget.currentRoute) {
+                    Get.offNamed(route);
+                  }
+                },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: shouldHighlight
+                          ? (isActive
+                                ? (isDark
+                                      ? Colors.white.withOpacity(0.15)
+                                      : const Color(
+                                          0xFF1976D2,
+                                        ).withOpacity(0.1))
+                                : (isDark
+                                      ? Colors.white.withOpacity(0.08)
+                                      : Colors.white.withOpacity(0.1)))
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: shouldHighlight
+                          ? (isActive
+                                ? (isDark
+                                      ? Colors.white
+                                      : const Color(0xFF1976D2))
+                                : (isDark
+                                      ? Colors.white.withOpacity(0.9)
+                                      : Colors.white.withOpacity(0.9)))
+                          : Colors.white70,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: shouldHighlight
+                            ? (isActive
+                                  ? (isDark
+                                        ? Colors.white
+                                        : const Color(0xFF1976D2))
+                                  : (isDark
+                                        ? Colors.white.withOpacity(0.9)
+                                        : Colors.white.withOpacity(0.9)))
+                            : Colors.white70,
+                        fontWeight: isActive
+                            ? FontWeight.w700
+                            : (isHovered ? FontWeight.w600 : FontWeight.w500),
+                        fontSize: 14,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  if (isActive)
+                    Container(
+                      width: 4,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white : const Color(0xFF1976D2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  if (isHovered && !isActive)
+                    Icon(
+                      Icons.chevron_right,
+                      color: isDark
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.white.withOpacity(0.7),
+                      size: 18,
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        tileColor: isActive ? Colors.white.withOpacity(0.1) : null,
-        onTap:
-            onTap ??
-            () {
-              if (route != null && route != currentRoute) {
-                Get.offNamed(route);
-              }
-            },
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       ),
     );
   }
