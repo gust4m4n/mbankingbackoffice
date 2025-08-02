@@ -31,7 +31,6 @@ class MbxTransactionManagementScreen extends StatelessWidget {
   }
 
   Widget _buildTransactionTable(MbxTransactionController controller) {
-    final isDarkMode = Theme.of(Get.context!).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(Get.context!).cardColor,
@@ -39,112 +38,90 @@ class MbxTransactionManagementScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Loading State
-          if (controller.isLoading.value)
-            const Expanded(child: Center(child: CircularProgressIndicator()))
-          else if (controller.transactions.isEmpty)
-            // Empty State
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.receipt_long_outlined,
-                      size: 64,
-                      color: isDarkMode ? const Color(0xFF808080) : Colors.grey,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No transactions found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: isDarkMode
-                            ? const Color(0xFF808080)
-                            : Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Transactions will appear here once processed',
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? const Color(0xFF808080)
-                            : Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
+          // Transaction Table using reusable component
+          MbxDataTableWidget(
+            isLoading: controller.isLoading.value,
+            columns: [
+              const MbxDataColumn(
+                label: 'ID',
+                width: 120,
+                sortable: true,
+                sortKey: 'id',
               ),
-            )
-          else
-            // Transaction Table
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: double.infinity),
-                  child: DataTable(
-                    columnSpacing: 16,
-                    dataRowMinHeight: 56,
-                    dataRowMaxHeight: 72,
-                    headingRowColor: WidgetStateProperty.all(
-                      isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[100],
-                    ),
-                    columns: const [
-                      DataColumn(
-                        label: Text(
-                          'ID',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Type',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'User',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Amount',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Status',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Date',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Actions',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                    rows: controller.transactions
-                        .map(
-                          (transaction) =>
-                              _buildTransactionRow(transaction, controller),
-                        )
-                        .toList(),
+              MbxDataColumn(
+                label: 'Type',
+                width: 140,
+                sortable: true,
+                sortKey: 'type',
+                customWidget: (data) => _buildTypeCell(data),
+              ),
+              MbxDataColumn(
+                label: 'User',
+                width: 180,
+                sortable: true,
+                sortKey: 'userName',
+                customWidget: (data) => _buildUserCell(data),
+              ),
+              MbxDataColumn(
+                label: 'Amount',
+                width: 130,
+                sortable: true,
+                sortKey: 'amount',
+                textAlign: TextAlign.right,
+                customWidget: (data) => _buildAmountCell(data),
+              ),
+              MbxDataColumn(
+                label: 'Status',
+                width: 120,
+                sortable: true,
+                sortKey: 'status',
+                customWidget: (data) => _buildStatusCell(data),
+              ),
+              const MbxDataColumn(
+                label: 'Date',
+                width: 140,
+                sortable: true,
+                sortKey: 'date',
+              ),
+            ],
+            rows: controller.transactions.map((transaction) {
+              return MbxDataRow(
+                id: transaction.id.toString(),
+                data: {
+                  'id': transaction.id,
+                  'type': transaction.type,
+                  'userName': transaction.userName,
+                  'amount': transaction.amount,
+                  'status': transaction.status,
+                  'date': transaction.formattedCreatedAt,
+                  'transaction': transaction,
+                },
+                actions: [
+                  IconButton(
+                    onPressed: () => _viewTransaction(transaction),
+                    icon: const Icon(Icons.visibility_outlined, size: 18),
+                    tooltip: 'View Details',
+                    splashRadius: 20,
                   ),
-                ),
-              ),
-            ),
+                  IconButton(
+                    onPressed: () => _downloadReceipt(transaction),
+                    icon: const Icon(Icons.download_outlined, size: 18),
+                    tooltip: 'Download Receipt',
+                    splashRadius: 20,
+                  ),
+                ],
+                onTap: () => _viewTransaction(transaction),
+                highlightColor: _getStatusColor(
+                  transaction.status,
+                ).withOpacity(0.05),
+              );
+            }).toList(),
+            emptyIcon: Icons.receipt_long_outlined,
+            emptyTitle: 'No transactions found',
+            emptySubtitle: 'Transactions will appear here once processed',
+            enableHighlight: true,
+            minTableWidth: 890,
+          ),
 
           // Pagination
           Obx(
@@ -165,111 +142,95 @@ class MbxTransactionManagementScreen extends StatelessWidget {
     );
   }
 
-  DataRow _buildTransactionRow(
-    MbxTransactionModel transaction,
-    MbxTransactionController controller,
-  ) {
+  Widget _buildTypeCell(Map<String, dynamic> data) {
+    final transaction = data['transaction'] as MbxTransactionModel;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _getTypeColor(transaction.type).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        transaction.displayType,
+        style: TextStyle(
+          color: _getTypeColor(transaction.type),
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserCell(Map<String, dynamic> data) {
+    final transaction = data['transaction'] as MbxTransactionModel;
     final isDarkMode = Theme.of(Get.context!).brightness == Brightness.dark;
-    return DataRow(
-      cells: [
-        DataCell(
-          Text(
-            transaction.id.toString(),
-            style: const TextStyle(fontFamily: 'monospace'),
-          ),
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          transaction.userName,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+          overflow: TextOverflow.ellipsis,
         ),
-        DataCell(
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: _getTypeColor(transaction.type).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              transaction.displayType,
-              style: TextStyle(
-                color: _getTypeColor(transaction.type),
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-              ),
-            ),
+        Text(
+          transaction.maskedAccountNumber,
+          style: TextStyle(
+            fontSize: 12,
+            color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
+            fontFamily: 'monospace',
           ),
-        ),
-        DataCell(
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                transaction.userName,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                transaction.maskedAccountNumber,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDarkMode
-                      ? const Color(0xFFB0B0B0)
-                      : Colors.grey[600],
-                  fontFamily: 'monospace',
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-        DataCell(
-          Text(
-            transaction.formattedAmount,
-            textAlign: TextAlign.right,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF1976D2),
-            ),
-          ),
-        ),
-        DataCell(
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: _getStatusColor(transaction.status).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              transaction.displayStatus,
-              style: TextStyle(
-                color: _getStatusColor(transaction.status),
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ),
-        DataCell(
-          Text(
-            transaction.formattedCreatedAt,
-            style: TextStyle(
-              color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
-              fontSize: 12,
-            ),
-          ),
-        ),
-        DataCell(
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                onPressed: () => controller.viewTransaction(transaction),
-                icon: const Icon(Icons.visibility_outlined, size: 18),
-                tooltip: 'View Details',
-                splashRadius: 20,
-              ),
-            ],
-          ),
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
+  }
+
+  Widget _buildAmountCell(Map<String, dynamic> data) {
+    final transaction = data['transaction'] as MbxTransactionModel;
+
+    return Text(
+      transaction.formattedAmount,
+      textAlign: TextAlign.right,
+      style: const TextStyle(
+        fontWeight: FontWeight.w500,
+        color: Color(0xFF1976D2),
+      ),
+    );
+  }
+
+  Widget _buildStatusCell(Map<String, dynamic> data) {
+    final transaction = data['transaction'] as MbxTransactionModel;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _getStatusColor(transaction.status).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        transaction.displayStatus,
+        style: TextStyle(
+          color: _getStatusColor(transaction.status),
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  void _viewTransaction(MbxTransactionModel transaction) {
+    _showFeatureNotAvailable('View Transaction Details');
+  }
+
+  void _downloadReceipt(MbxTransactionModel transaction) {
+    _showFeatureNotAvailable('Download Receipt');
+  }
+
+  void _showFeatureNotAvailable(String featureName) {
+    MbxDialogController.showFeatureNotAvailable(featureName);
   }
 
   Color _getTypeColor(String type) {

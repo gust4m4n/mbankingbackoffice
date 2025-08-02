@@ -190,216 +190,129 @@ class MbxAdminManagementScreen extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            // Loading State
-                            if (controller.isLoading.value)
-                              const Expanded(
-                                child: Center(
-                                  child: CircularProgressIndicator(),
+                            // Admin Table using reusable component
+                            MbxDataTableWidget(
+                              isLoading: controller.isLoading.value,
+                              columns: [
+                                MbxDataColumn(
+                                  label: 'Name',
+                                  width: 180,
+                                  sortable: true,
+                                  sortKey: 'name',
+                                  customWidget: (data) => _buildNameCell(data),
                                 ),
-                              )
-                            else if (controller.admins.isEmpty)
-                              // Empty State
-                              const Expanded(
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.admin_panel_settings_outlined,
-                                        size: 64,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(height: 16),
-                                      Text(
-                                        'No administrators found',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        'Create your first admin to get started',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ],
-                                  ),
+                                const MbxDataColumn(
+                                  label: 'Email',
+                                  width: 200,
+                                  sortable: true,
+                                  sortKey: 'email',
                                 ),
-                              )
-                            else
-                              // Admin Table
-                              Expanded(
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    // Calculate minimum width needed for DataTable
-                                    double minTableWidth =
-                                        740; // Sum of all column widths + spacing
-                                    bool needsScroll =
-                                        minTableWidth > constraints.maxWidth;
-
-                                    Widget dataTable = DataTable(
-                                      columnSpacing: 16,
-                                      dataRowMinHeight: 56,
-                                      dataRowMaxHeight: 72,
-                                      headingRowColor: WidgetStateProperty.all(
-                                        isDarkMode
-                                            ? const Color(0xFF2A2A2A)
-                                            : Colors.grey[100],
-                                      ),
-                                      dataTextStyle: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                      headingTextStyle: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      columns: const [
-                                        DataColumn(
-                                          label: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Name',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Email',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Role',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Status',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Actions',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      rows: controller.admins
-                                          .map(
-                                            (admin) => _buildAdminRow(
-                                              admin,
-                                              controller,
-                                            ),
-                                          )
-                                          .toList(),
-                                    );
-
-                                    if (needsScroll) {
-                                      // Use horizontal scroll when space is limited
-                                      return SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: const ClampingScrollPhysics(),
-                                        child: SingleChildScrollView(
-                                          physics:
-                                              const ClampingScrollPhysics(),
-                                          child: dataTable,
-                                        ),
-                                      );
-                                    } else {
-                                      // Left-align when there's enough space
-                                      return SingleChildScrollView(
-                                        physics: const ClampingScrollPhysics(),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: dataTable,
-                                        ),
-                                      );
-                                    }
+                                MbxDataColumn(
+                                  label: 'Role',
+                                  width: 120,
+                                  sortable: true,
+                                  sortKey: 'role',
+                                  customWidget: (data) => _buildRoleCell(data),
+                                ),
+                                MbxDataColumn(
+                                  label: 'Status',
+                                  width: 100,
+                                  sortable: true,
+                                  sortKey: 'status',
+                                  customWidget: (data) =>
+                                      _buildStatusCell(data),
+                                ),
+                              ],
+                              rows: controller.admins.map((admin) {
+                                return MbxDataRow(
+                                  id: admin.id.toString(),
+                                  data: {
+                                    'name': admin.name,
+                                    'email': admin.email,
+                                    'role': admin.displayRole,
+                                    'status': admin.displayStatus,
+                                    'isSuperAdmin': admin.isSuperAdmin,
+                                    'isActive': admin.isActive,
+                                    'admin': admin,
                                   },
-                                ),
-                              ),
+                                  actions: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          controller.viewAdmin(admin),
+                                      icon: const Icon(
+                                        Icons.visibility_outlined,
+                                        size: 18,
+                                      ),
+                                      tooltip: 'View',
+                                      splashRadius: 20,
+                                    ),
+                                    IconButton(
+                                      onPressed: () =>
+                                          controller.showEditAdminDialog(admin),
+                                      icon: const Icon(
+                                        Icons.edit_outlined,
+                                        size: 18,
+                                      ),
+                                      tooltip: 'Edit',
+                                      splashRadius: 20,
+                                    ),
+                                    IconButton(
+                                      onPressed: () =>
+                                          controller.deleteAdmin(admin),
+                                      icon: const Icon(
+                                        Icons.delete_outline,
+                                        size: 18,
+                                      ),
+                                      color: Colors.red,
+                                      tooltip: 'Delete',
+                                      splashRadius: 20,
+                                    ),
+                                  ],
+                                  onTap: () => controller.viewAdmin(admin),
+                                );
+                              }).toList(),
+                              emptyIcon: Icons.admin_panel_settings_outlined,
+                              emptyTitle: 'No administrators found',
+                              emptySubtitle:
+                                  'Create your first admin to get started',
+                              enableHighlight: true,
+                              minTableWidth: 740,
+                            ),
 
                             // Pagination
                             if (controller.totalPages.value > 1)
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode
-                                      ? const Color(0xFF2A2A2A)
-                                      : Colors.grey[50],
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Page ${controller.currentPage.value} of ${controller.totalPages.value}',
-                                      style: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.grey[400]
-                                            : Colors.grey[600],
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                      onPressed:
-                                          controller.currentPage.value > 1
-                                          ? controller.previousPage
-                                          : null,
-                                      icon: Icon(
-                                        Icons.chevron_left,
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed:
-                                          controller.currentPage.value <
-                                              controller.totalPages.value
-                                          ? controller.nextPage
-                                          : null,
-                                      icon: Icon(
-                                        Icons.chevron_right,
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              MbxPaginationWidget(
+                                currentPage: controller.currentPage.value,
+                                totalPages: controller.totalPages.value,
+                                totalItems: controller.admins.length,
+                                itemsPerPage:
+                                    10, // Adjust based on your pagination size
+                                onPrevious: controller.currentPage.value > 1
+                                    ? controller.previousPage
+                                    : null,
+                                onNext:
+                                    controller.currentPage.value <
+                                        controller.totalPages.value
+                                    ? controller.nextPage
+                                    : null,
+                                onFirst: controller.currentPage.value > 1
+                                    ? () {
+                                        // Implement first page logic
+                                        // controller.firstPage();
+                                      }
+                                    : null,
+                                onLast:
+                                    controller.currentPage.value <
+                                        controller.totalPages.value
+                                    ? () {
+                                        // Implement last page logic
+                                        // controller.lastPage();
+                                      }
+                                    : null,
+                                onPageChanged: (page) {
+                                  // Implement page jump logic
+                                  // controller.goToPage(page);
+                                },
                               ),
                           ],
                         ),
@@ -446,131 +359,81 @@ class MbxAdminManagementScreen extends StatelessWidget {
     );
   }
 
-  DataRow _buildAdminRow(MbxAdminModel admin, MbxAdminController controller) {
-    return DataRow(
-      cells: [
-        DataCell(
-          SizedBox(
-            width: 180,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: const Color(0xFF1976D2),
-                  child: Text(
-                    admin.name.isNotEmpty ? admin.name[0].toUpperCase() : 'A',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    admin.name,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        DataCell(
-          SizedBox(
-            width: 200,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(admin.email, overflow: TextOverflow.ellipsis),
-            ),
-          ),
-        ),
-        DataCell(
-          SizedBox(
-            width: 120,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: admin.isSuperAdmin
-                      ? Colors.purple.withOpacity(0.1)
-                      : Colors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  admin.displayRole,
-                  style: TextStyle(
-                    color: admin.isSuperAdmin ? Colors.purple : Colors.blue,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
+  Widget _buildNameCell(Map<String, dynamic> data) {
+    final admin = data['admin'] as MbxAdminModel;
+    return SizedBox(
+      width: 180,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: const Color(0xFF1976D2),
+            child: Text(
+              admin.name.isNotEmpty ? admin.name[0].toUpperCase() : 'A',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
             ),
           ),
-        ),
-        DataCell(
-          SizedBox(
-            width: 100,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: admin.isActive
-                      ? Colors.green.withOpacity(0.1)
-                      : Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  admin.displayStatus,
-                  style: TextStyle(
-                    color: admin.isActive ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              admin.name,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoleCell(Map<String, dynamic> data) {
+    final isSuperAdmin = data['isSuperAdmin'] as bool;
+    final role = data['role'] as String;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isSuperAdmin
+            ? Colors.purple.withOpacity(0.1)
+            : Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        role,
+        style: TextStyle(
+          color: isSuperAdmin ? Colors.purple : Colors.blue,
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
         ),
-        DataCell(
-          SizedBox(
-            width: 140,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () => controller.viewAdmin(admin),
-                    icon: const Icon(Icons.visibility_outlined, size: 18),
-                    tooltip: 'View',
-                    splashRadius: 20,
-                  ),
-                  IconButton(
-                    onPressed: () => controller.showEditAdminDialog(admin),
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    tooltip: 'Edit',
-                    splashRadius: 20,
-                  ),
-                  IconButton(
-                    onPressed: () => controller.deleteAdmin(admin),
-                    icon: const Icon(Icons.delete_outline, size: 18),
-                    color: Colors.red,
-                    tooltip: 'Delete',
-                    splashRadius: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
+      ),
+    );
+  }
+
+  Widget _buildStatusCell(Map<String, dynamic> data) {
+    final isActive = data['isActive'] as bool;
+    final status = data['status'] as String;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isActive
+            ? Colors.green.withOpacity(0.1)
+            : Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          color: isActive ? Colors.green : Colors.red,
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
         ),
-      ],
+      ),
     );
   }
 

@@ -75,75 +75,267 @@ class MbxPaginationWidget extends StatelessWidget {
 
           // Navigation Row
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // First Page Button
-              if (!isMobile && totalPages > 5)
-                _buildPageButton(
-                  context,
-                  icon: Icons.first_page,
-                  onPressed: currentPage > 1 ? onFirst : null,
-                  tooltip: 'First Page',
-                ),
+              // Left Side: Page Navigation Buttons
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Previous Button
+                  _buildPageButton(
+                    context,
+                    icon: Icons.chevron_left,
+                    onPressed: currentPage > 1 ? onPrevious : null,
+                    tooltip: 'Previous Page',
+                  ),
 
-              // Previous Button
-              _buildPageButton(
-                context,
-                icon: Icons.chevron_left,
-                onPressed: currentPage > 1 ? onPrevious : null,
-                tooltip: 'Previous Page',
+                  // Desktop: First Page + Page Numbers + Next/Last Buttons
+                  if (!isMobile) ...[
+                    // First Page Button
+                    if (totalPages > 5) ...[
+                      const SizedBox(width: 8),
+                      _buildPageButton(
+                        context,
+                        icon: Icons.first_page,
+                        onPressed: currentPage > 1 ? onFirst : null,
+                        tooltip: 'First Page',
+                      ),
+                    ],
+
+                    const SizedBox(width: 16),
+
+                    // Page Numbers
+                    ..._buildPageNumbers(context),
+
+                    const SizedBox(width: 16),
+
+                    // Next Button
+                    _buildPageButton(
+                      context,
+                      icon: Icons.chevron_right,
+                      onPressed: currentPage < totalPages ? onNext : null,
+                      tooltip: 'Next Page',
+                    ),
+
+                    // Last Page Button
+                    if (totalPages > 5) ...[
+                      const SizedBox(width: 8),
+                      _buildPageButton(
+                        context,
+                        icon: Icons.last_page,
+                        onPressed: currentPage < totalPages ? onLast : null,
+                        tooltip: 'Last Page',
+                      ),
+                    ],
+                  ],
+
+                  // Mobile: Just show next button after prev
+                  if (isMobile) ...[
+                    const SizedBox(width: 16),
+                    _buildPageButton(
+                      context,
+                      icon: Icons.chevron_right,
+                      onPressed: currentPage < totalPages ? onNext : null,
+                      tooltip: 'Next Page',
+                    ),
+                  ],
+                ],
               ),
 
-              const SizedBox(width: 8),
+              // Center: Stretchable Space
+              const Spacer(),
 
-              // Page Numbers (desktop only)
-              if (!isMobile) ..._buildPageNumbers(context),
-
-              // Mobile page info
-              if (isMobile) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? const Color(0xff161616) : Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: isDarkMode
-                          ? const Color(0xff2a2a2a)
-                          : Colors.grey[300]!,
+              // Right Side: Page Info & Jump TextField
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Desktop: Jump Page TextField
+                  if (!isMobile && totalPages > 3) ...[
+                    Text(
+                      'Go to:',
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? const Color(0xFFB0B0B0)
+                            : Colors.grey[600],
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    '$currentPage / $totalPages',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: isDarkMode ? const Color(0xFFF0F0F0) : null,
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 50,
+                      height: 36,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isDarkMode ? const Color(0xFFF0F0F0) : null,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 8,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: isDarkMode
+                                  ? const Color(0xff2a2a2a)
+                                  : Colors.grey[300]!,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide(
+                              color: isDarkMode
+                                  ? const Color(0xff2a2a2a)
+                                  : Colors.grey[300]!,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF1976D2),
+                              width: 2,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: isDarkMode
+                              ? const Color(0xff161616)
+                              : Colors.white,
+                          hintText: currentPage.toString(),
+                          hintStyle: TextStyle(
+                            color: isDarkMode
+                                ? const Color(0xFF808080)
+                                : Colors.grey[500],
+                            fontSize: 14,
+                          ),
+                        ),
+                        onSubmitted: (value) {
+                          final pageNumber = int.tryParse(value);
+                          if (pageNumber != null &&
+                              pageNumber >= 1 &&
+                              pageNumber <= totalPages &&
+                              pageNumber != currentPage) {
+                            onPageChanged?.call(pageNumber);
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
 
-              const SizedBox(width: 8),
-
-              // Next Button
-              _buildPageButton(
-                context,
-                icon: Icons.chevron_right,
-                onPressed: currentPage < totalPages ? onNext : null,
-                tooltip: 'Next Page',
+                  // Mobile: Page info with inline text field
+                  if (isMobile) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isDarkMode
+                            ? const Color(0xff161616)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: isDarkMode
+                              ? const Color(0xff2a2a2a)
+                              : Colors.grey[300]!,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (totalPages > 3) ...[
+                            SizedBox(
+                              width: 30,
+                              height: 24,
+                              child: TextField(
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isDarkMode
+                                      ? const Color(0xFFF0F0F0)
+                                      : null,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(2),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide: BorderSide(
+                                      color: isDarkMode
+                                          ? const Color(0xff2a2a2a)
+                                          : Colors.grey[300]!,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide: BorderSide(
+                                      color: isDarkMode
+                                          ? const Color(0xff2a2a2a)
+                                          : Colors.grey[300]!,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF1976D2),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: isDarkMode
+                                      ? const Color(0xff1a1a1a)
+                                      : Colors.grey[50],
+                                  hintText: currentPage.toString(),
+                                  hintStyle: TextStyle(
+                                    color: isDarkMode
+                                        ? const Color(0xFF808080)
+                                        : Colors.grey[500],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                onSubmitted: (value) {
+                                  final pageNumber = int.tryParse(value);
+                                  if (pageNumber != null &&
+                                      pageNumber >= 1 &&
+                                      pageNumber <= totalPages &&
+                                      pageNumber != currentPage) {
+                                    onPageChanged?.call(pageNumber);
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '/',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: isDarkMode
+                                    ? const Color(0xFFF0F0F0)
+                                    : null,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                          ],
+                          Text(
+                            totalPages > 3
+                                ? totalPages.toString()
+                                : '$currentPage / $totalPages',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: isDarkMode
+                                  ? const Color(0xFFF0F0F0)
+                                  : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
               ),
-
-              // Last Page Button
-              if (!isMobile && totalPages > 5)
-                _buildPageButton(
-                  context,
-                  icon: Icons.last_page,
-                  onPressed: currentPage < totalPages ? onLast : null,
-                  tooltip: 'Last Page',
-                ),
             ],
           ),
 
@@ -157,6 +349,95 @@ class MbxPaginationWidget extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
+            if (totalPages > 3) ...[
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Go to:',
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? const Color(0xFFB0B0B0)
+                          : Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 50,
+                    height: 32,
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDarkMode ? const Color(0xFFF0F0F0) : null,
+                      ),
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: BorderSide(
+                            color: isDarkMode
+                                ? const Color(0xff2a2a2a)
+                                : Colors.grey[300]!,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: BorderSide(
+                            color: isDarkMode
+                                ? const Color(0xff2a2a2a)
+                                : Colors.grey[300]!,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF1976D2),
+                            width: 2,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: isDarkMode
+                            ? const Color(0xff161616)
+                            : Colors.white,
+                        hintText: currentPage.toString(),
+                        hintStyle: TextStyle(
+                          color: isDarkMode
+                              ? const Color(0xFF808080)
+                              : Colors.grey[500],
+                          fontSize: 12,
+                        ),
+                      ),
+                      onSubmitted: (value) {
+                        final pageNumber = int.tryParse(value);
+                        if (pageNumber != null &&
+                            pageNumber >= 1 &&
+                            pageNumber <= totalPages &&
+                            pageNumber != currentPage) {
+                          onPageChanged?.call(pageNumber);
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'of $totalPages',
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? const Color(0xFFB0B0B0)
+                          : Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ],
       ),
@@ -252,7 +533,7 @@ class MbxPaginationWidget extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Material(
         color: isActive
             ? const Color(0xFF1976D2)
