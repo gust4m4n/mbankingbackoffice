@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:mbankingbackoffice/admin/views/mbx_admin_management_screen.dart';
+import 'package:mbankingbackoffice/admin/views/mbx_admin_management_screen_old.dart';
 import 'package:mbankingbackoffice/admin/views/test_admin_screen.dart';
 import 'package:mbankingbackoffice/apis/mbx_device_info_vm.dart';
 import 'package:mbankingbackoffice/biller-pln/prepaid/views/mbx_electricity_prepaid_screen.dart';

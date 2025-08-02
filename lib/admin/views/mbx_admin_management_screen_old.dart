@@ -1,7 +1,5 @@
-import 'package:mbankingbackoffice/admin/controllers/mbx_simple_admin_controller.dart';
+import 'package:mbankingbackoffice/admin/controllers/mbx_admin_controller.dart';
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
-import 'package:mbankingbackoffice/preferences/mbx_preferences_vm_users.dart';
-import 'package:mbankingbackoffice/theme/controllers/mbx_theme_controller.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxAdminManagementScreen extends StatelessWidget {
@@ -9,385 +7,185 @@ class MbxAdminManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final controller = Get.put(MbxAdminController());
-      final themeController = Get.find<MbxThemeController>();
-      final isDarkMode = themeController.isDarkMode;
-
-      return Scaffold(
-        backgroundColor: isDarkMode ? const Color(0xFF121212) : Colors.grey[50],
-        body: Row(
-          children: [
-            // Sidebar (reuse from home screen)
-            Container(
-              width: 280,
-              color: const Color(0xFF1A1D29),
-              child: Column(
-                children: [
-                  // Logo/Header
-                  Container(
-                    height: 80,
-                    padding: const EdgeInsets.all(20),
-                    decoration: const BoxDecoration(color: Color(0xFF1976D2)),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.admin_panel_settings,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Expanded(
-                          child: Text(
-                            'MBanking\nBackOffice',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              height: 1.2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Navigation Menu
-                  Expanded(
-                    child: ListView(
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      children: [
-                        _buildMenuItem(
-                          icon: Icons.dashboard_outlined,
-                          title: 'Dashboard',
-                          onTap: () => Get.offNamed('/home'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.admin_panel_settings_outlined,
-                          title: 'Admin Management',
-                          isActive: true,
-                          onTap: () {},
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.people_outline,
-                          title: 'User Management',
-                          onTap: () =>
-                              _showFeatureNotAvailable('User Management'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.receipt_long_outlined,
-                          title: 'Transactions',
-                          onTap: () => _showFeatureNotAvailable('Transactions'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.analytics_outlined,
-                          title: 'Reports',
-                          onTap: () => _showFeatureNotAvailable('Reports'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.settings_outlined,
-                          title: 'Settings',
-                          onTap: () => _showFeatureNotAvailable('Settings'),
-                        ),
-                        const SizedBox(height: 20),
-                        const Divider(color: Colors.white24),
-                        _buildMenuItem(
-                          icon: Icons.logout_outlined,
-                          title: 'Logout',
-                          onTap: () => _logout(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Main Content Area
-            Expanded(
-              child: Column(
-                children: [
-                  // Top Bar
-                  Container(
-                    height: 80,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    decoration: BoxDecoration(
-                      color: isDarkMode
-                          ? const Color(0xFF1E1E1E)
-                          : Colors.white,
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        bool isSmallScreen = constraints.maxWidth < 600;
-
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Admin Management',
-                                style: TextStyle(
-                                  fontSize: isSmallScreen ? 18 : 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDarkMode
-                                      ? Colors.white
-                                      : const Color(0xFF1A1D29),
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (!isSmallScreen) ...[
-                              ElevatedButton.icon(
-                                onPressed: controller.showCreateAdminDialog,
-                                icon: const Icon(Icons.add, size: 20),
-                                label: const Text('Add Admin'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF1976D2),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                            ] else ...[
-                              IconButton(
-                                onPressed: controller.showCreateAdminDialog,
-                                icon: const Icon(Icons.add),
-                                tooltip: 'Add Admin',
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                            IconButton(
-                              onPressed: controller.refreshAdmins,
-                              icon: const Icon(Icons.refresh),
-                              tooltip: 'Refresh',
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-
-                  // Admin List Content
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? const Color(0xFF1E1E1E)
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            // Admin Table using reusable component
-                            MbxDataTableWidget(
-                              isLoading: controller.isLoading.value,
-                              columns: [
-                                MbxDataColumn(
-                                  label: 'Name',
-                                  width: 180,
-                                  sortable: true,
-                                  sortKey: 'name',
-                                  customWidget: (data) => _buildNameCell(data),
-                                ),
-                                const MbxDataColumn(
-                                  label: 'Email',
-                                  width: 200,
-                                  sortable: true,
-                                  sortKey: 'email',
-                                ),
-                                MbxDataColumn(
-                                  label: 'Role',
-                                  width: 120,
-                                  sortable: true,
-                                  sortKey: 'role',
-                                  customWidget: (data) => _buildRoleCell(data),
-                                ),
-                                MbxDataColumn(
-                                  label: 'Status',
-                                  width: 100,
-                                  sortable: true,
-                                  sortKey: 'status',
-                                  customWidget: (data) =>
-                                      _buildStatusCell(data),
-                                ),
-                              ],
-                              rows: controller.admins.map((admin) {
-                                return MbxDataRow(
-                                  id: admin.id.toString(),
-                                  data: {
-                                    'name': admin.name,
-                                    'email': admin.email,
-                                    'role': admin.displayRole,
-                                    'status': admin.displayStatus,
-                                    'isSuperAdmin': admin.isSuperAdmin,
-                                    'isActive': admin.isActive,
-                                    'admin': admin,
-                                  },
-                                  actions: [
-                                    IconButton(
-                                      onPressed: () =>
-                                          controller.viewAdmin(admin),
-                                      icon: const Icon(
-                                        Icons.visibility_outlined,
-                                        size: 18,
-                                      ),
-                                      tooltip: 'View',
-                                      splashRadius: 20,
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          controller.showEditAdminDialog(admin),
-                                      icon: const Icon(
-                                        Icons.edit_outlined,
-                                        size: 18,
-                                      ),
-                                      tooltip: 'Edit',
-                                      splashRadius: 20,
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          controller.deleteAdmin(admin),
-                                      icon: const Icon(
-                                        Icons.delete_outline,
-                                        size: 18,
-                                      ),
-                                      color: Colors.red,
-                                      tooltip: 'Delete',
-                                      splashRadius: 20,
-                                    ),
-                                  ],
-                                  onTap: () => controller.viewAdmin(admin),
-                                );
-                              }).toList(),
-                              emptyIcon: Icons.admin_panel_settings_outlined,
-                              emptyTitle: 'No administrators found',
-                              emptySubtitle:
-                                  'Create your first admin to get started',
-                              enableHighlight: true,
-                              minTableWidth: 740,
-                            ),
-
-                            // Pagination
-                            if (controller.totalPages.value > 1)
-                              MbxPaginationWidget(
-                                currentPage: controller.currentPage.value,
-                                totalPages: controller.totalPages.value,
-                                totalItems: controller.admins.length,
-                                itemsPerPage:
-                                    10, // Adjust based on your pagination size
-                                onPrevious: controller.currentPage.value > 1
-                                    ? controller.previousPage
-                                    : null,
-                                onNext:
-                                    controller.currentPage.value <
-                                        controller.totalPages.value
-                                    ? controller.nextPage
-                                    : null,
-                                onFirst: controller.currentPage.value > 1
-                                    ? () {
-                                        // Implement first page logic
-                                        // controller.firstPage();
-                                      }
-                                    : null,
-                                onLast:
-                                    controller.currentPage.value <
-                                        controller.totalPages.value
-                                    ? () {
-                                        // Implement last page logic
-                                        // controller.lastPage();
-                                      }
-                                    : null,
-                                onPageChanged: (page) {
-                                  // Implement page jump logic
-                                  // controller.goToPage(page);
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+    print('[DEBUG ADMIN] Building MbxAdminManagementScreen');
+    return GetBuilder<MbxAdminController>(
+      init: MbxAdminController(),
+      builder: (controller) {
+        print(
+          '[DEBUG ADMIN] GetBuilder called with controller: ${controller.runtimeType}',
+        );
+        return MbxManagementScaffold(
+          title: 'Admin Management',
+          currentRoute: '/admin-management',
+          showAddButton: true,
+          onAddPressed: controller.showCreateAdminDialog,
+          onRefreshPressed: controller.refreshAdmins,
+          child: _buildAdminContent(controller),
+        );
+      },
+    );
   }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    bool isActive = false,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildAdminContent(MbxAdminController controller) {
+    print(
+      '[DEBUG ADMIN] Building admin content, admins count: ${controller.admins.length}',
+    );
+    return Column(
+      children: [
+        // Admin Table
+        Expanded(child: _buildAdminTable(controller)),
+      ],
+    );
+  }
+
+  Widget _buildAdminTable(MbxAdminController controller) {
+    print(
+      '[DEBUG ADMIN] Building admin table with ${controller.admins.length} admins',
+    );
+    print('[DEBUG ADMIN] IsLoading: ${controller.isLoading.value}');
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: isActive ? const Color(0xFF1976D2) : Colors.white70,
-          size: 20,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: isActive ? const Color(0xFF1976D2) : Colors.white70,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            fontSize: 14,
+      decoration: BoxDecoration(
+        color: Theme.of(Get.context!).cardColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          // Admin Table using reusable component
+          MbxDataTableWidget(
+            isLoading: controller.isLoading.value,
+            columns: [
+              MbxDataColumn(
+                label: 'Name',
+                width: 180,
+                sortable: true,
+                sortKey: 'name',
+                customWidget: (data) => _buildNameCell(data),
+              ),
+              const MbxDataColumn(
+                label: 'Email',
+                width: 200,
+                sortable: true,
+                sortKey: 'email',
+              ),
+              MbxDataColumn(
+                label: 'Role',
+                width: 120,
+                sortable: true,
+                sortKey: 'role',
+                customWidget: (data) => _buildRoleCell(data),
+              ),
+              MbxDataColumn(
+                label: 'Status',
+                width: 100,
+                sortable: true,
+                sortKey: 'status',
+                customWidget: (data) => _buildStatusCell(data),
+              ),
+            ],
+            rows: controller.admins.map((admin) {
+              return MbxDataRow(
+                id: admin.id.toString(),
+                data: {
+                  'name': admin.name,
+                  'email': admin.email,
+                  'role': admin.displayRole,
+                  'status': admin.displayStatus,
+                  'isSuperAdmin': admin.isSuperAdmin,
+                  'isActive': admin.isActive,
+                  'admin': admin,
+                },
+                actions: [
+                  IconButton(
+                    onPressed: () => controller.viewAdmin(admin),
+                    icon: const Icon(Icons.visibility_outlined, size: 18),
+                    tooltip: 'View',
+                    splashRadius: 20,
+                  ),
+                  IconButton(
+                    onPressed: () => controller.showEditAdminDialog(admin),
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    tooltip: 'Edit',
+                    splashRadius: 20,
+                  ),
+                  IconButton(
+                    onPressed: () => controller.deleteAdmin(admin),
+                    icon: const Icon(Icons.delete_outline, size: 18),
+                    color: Colors.red,
+                    tooltip: 'Delete',
+                    splashRadius: 20,
+                  ),
+                ],
+                onTap: () => controller.viewAdmin(admin),
+              );
+            }).toList(),
+            emptyIcon: Icons.admin_panel_settings_outlined,
+            emptyTitle: 'No administrators found',
+            emptySubtitle: 'Create your first admin to get started',
+            enableHighlight: true,
+            minTableWidth: 740,
           ),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        tileColor: isActive ? Colors.white.withOpacity(0.1) : null,
-        onTap: onTap,
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+
+          // Pagination
+          if (controller.totalPages.value > 1)
+            MbxPaginationWidget(
+              currentPage: controller.currentPage.value,
+              totalPages: controller.totalPages.value,
+              totalItems: controller.admins.length,
+              itemsPerPage: 10,
+              onPrevious: controller.currentPage.value > 1
+                  ? controller.previousPage
+                  : null,
+              onNext: controller.currentPage.value < controller.totalPages.value
+                  ? controller.nextPage
+                  : null,
+              onFirst: controller.currentPage.value > 1
+                  ? () {
+                      // Implement first page logic
+                      // controller.firstPage();
+                    }
+                  : null,
+              onLast: controller.currentPage.value < controller.totalPages.value
+                  ? () {
+                      // Implement last page logic
+                      // controller.lastPage();
+                    }
+                  : null,
+              onPageChanged: (page) {
+                // Implement page jump logic
+                // controller.goToPage(page);
+              },
+            ),
+        ],
       ),
     );
   }
 
   Widget _buildNameCell(Map<String, dynamic> data) {
     final admin = data['admin'] as MbxAdminModel;
-    return SizedBox(
-      width: 180,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: const Color(0xFF1976D2),
-            child: Text(
-              admin.name.isNotEmpty ? admin.name[0].toUpperCase() : 'A',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: const Color(0xFF1976D2),
+          child: Text(
+            admin.name.isNotEmpty ? admin.name[0].toUpperCase() : 'A',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              admin.name,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-            ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            admin.name,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -435,30 +233,5 @@ class MbxAdminManagementScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _showFeatureNotAvailable(String featureName) {
-    MbxDialogController.showFeatureNotAvailable(featureName);
-  }
-
-  void _logout() async {
-    final confirmed = await MbxDialogController.showLogoutConfirmation();
-    if (confirmed == true) {
-      MbxDialogController.showLoadingDialog(message: 'Logging out...');
-
-      // Clear stored token
-      await MbxUserPreferencesVM.setToken('');
-
-      // Navigate to login and show success message
-      Future.delayed(const Duration(milliseconds: 500), () {
-        MbxDialogController.hideLoadingDialog();
-        Get.offAllNamed('/login');
-
-        // Show logout success toast after navigation
-        Future.delayed(const Duration(milliseconds: 200), () {
-          ToastX.showSuccess(msg: 'Logout berhasil');
-        });
-      });
-    }
   }
 }

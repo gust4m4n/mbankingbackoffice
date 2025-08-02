@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/transaction/controllers/mbx_transaction_controller.dart';
 import 'package:mbankingbackoffice/transaction/models/mbx_transaction_model.dart';
+import 'package:mbankingbackoffice/transaction/views/mbx_transaction_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxTransactionManagementScreen extends StatelessWidget {
@@ -111,15 +112,13 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                   ),
                 ],
                 onTap: () => _viewTransaction(transaction),
-                highlightColor: _getStatusColor(
-                  transaction.status,
-                ).withOpacity(0.05),
               );
             }).toList(),
             emptyIcon: Icons.receipt_long_outlined,
             emptyTitle: 'No transactions found',
             emptySubtitle: 'Transactions will appear here once processed',
             enableHighlight: true,
+            highlightColor: Colors.green.withOpacity(0.3),
             minTableWidth: 890,
           ),
 
@@ -222,7 +221,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
   }
 
   void _viewTransaction(MbxTransactionModel transaction) {
-    _showFeatureNotAvailable('View Transaction Details');
+    MbxTransactionDetailDialog.show(Get.context!, transaction);
   }
 
   void _downloadReceipt(MbxTransactionModel transaction) {

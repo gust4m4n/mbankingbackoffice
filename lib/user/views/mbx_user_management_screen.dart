@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/user/controllers/mbx_user_controller.dart';
 import 'package:mbankingbackoffice/user/models/mbx_user_model.dart';
+import 'package:mbankingbackoffice/user/views/mbx_user_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxUserManagementScreen extends StatelessWidget {
@@ -205,7 +206,7 @@ class MbxUserManagementScreen extends StatelessWidget {
   }
 
   void _viewUser(MbxUserModel user) {
-    _showFeatureNotAvailable('View User Details');
+    MbxUserDetailDialog.show(Get.context!, user);
   }
 
   void _editUser(MbxUserModel user) {

@@ -164,6 +164,10 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
   }
 
   Widget _buildDataTable(bool isDarkMode) {
+    print(
+      '[DEBUG BUILD] Building DataTable with ${widget.rows.length} rows, enableHighlight: ${widget.enableHighlight}',
+    );
+
     return DataTable(
       columnSpacing: 16,
       dataRowMinHeight: 56,
@@ -214,6 +218,10 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
   }
 
   DataRow _buildDataRow(MbxDataRow row, bool isDarkMode) {
+    print(
+      '[DEBUG ROW] Building row ${row.id} - hovered: ${hoveredRowId == row.id}, enableHighlight: ${widget.enableHighlight}',
+    );
+
     final isHovered = hoveredRowId == row.id;
     final isSelected = widget.selectedRows.contains(row.id) || row.isSelected;
 
@@ -226,9 +234,14 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
       rowColor =
           widget.highlightColor ??
           (isDarkMode
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.1));
+              ? Colors.white.withOpacity(0.15)
+              : Colors.grey.withOpacity(0.25));
+      print(
+        '[DEBUG HIGHLIGHT] Row ${row.id} highlighted with color: $rowColor (isDarkMode: $isDarkMode, isHovered: $isHovered, enableHighlight: ${widget.enableHighlight})',
+      );
     }
+
+    print('[DEBUG COLOR] Row ${row.id} final color: $rowColor');
 
     return DataRow(
       selected: isSelected,
@@ -258,8 +271,22 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
 
           return DataCell(
             MouseRegion(
-              onEnter: (_) => setState(() => hoveredRowId = row.id),
-              onExit: (_) => setState(() => hoveredRowId = null),
+              onEnter: (_) {
+                if (widget.enableHighlight) {
+                  print(
+                    '[DEBUG HOVER] Entering row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
+                  );
+                  setState(() => hoveredRowId = row.id);
+                }
+              },
+              onExit: (_) {
+                if (widget.enableHighlight) {
+                  print(
+                    '[DEBUG HOVER] Exiting row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
+                  );
+                  setState(() => hoveredRowId = null);
+                }
+              },
               child: InkWell(
                 onTap: row.onTap,
                 child: SizedBox(
@@ -278,8 +305,22 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
         if (widget.rows.any((row) => row.actions.isNotEmpty))
           DataCell(
             MouseRegion(
-              onEnter: (_) => setState(() => hoveredRowId = row.id),
-              onExit: (_) => setState(() => hoveredRowId = null),
+              onEnter: (_) {
+                if (widget.enableHighlight) {
+                  print(
+                    '[DEBUG HOVER] Entering actions row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
+                  );
+                  setState(() => hoveredRowId = row.id);
+                }
+              },
+              onExit: (_) {
+                if (widget.enableHighlight) {
+                  print(
+                    '[DEBUG HOVER] Exiting actions row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
+                  );
+                  setState(() => hoveredRowId = null);
+                }
+              },
               child: SizedBox(
                 width: 140,
                 child: Align(
