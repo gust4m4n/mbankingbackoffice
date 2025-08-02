@@ -24,7 +24,9 @@ class MbxLoginScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
+              colors: isDarkMode
+                  ? [const Color(0xFF1A1A1A), const Color(0xFF0D1117)]
+                  : [const Color(0xFF1565C0), const Color(0xFF0D47A1)],
             ),
           ),
           child: LayoutBuilder(
@@ -67,228 +69,239 @@ class MbxLoginScreen extends StatelessWidget {
                   : 26.0;
 
               return Center(
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: horizontalPadding,
-                    vertical: verticalPadding,
-                  ),
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: maxWidth,
-                      minHeight: isMobile ? 0 : constraints.maxHeight * 0.6,
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(scrollbars: false),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: verticalPadding,
                     ),
-                    child: Card(
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: maxWidth,
+                        minHeight: isMobile ? 0 : constraints.maxHeight * 0.6,
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.all(cardPadding),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Dark Mode Switch
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: MbxDarkModeSwitch(
-                                iconSize: isMobile ? 16 : 18,
-                                showLabel: false,
+                      child: Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: isDarkMode
+                                ? Colors.grey.shade700
+                                : Colors.grey.shade300,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(cardPadding),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Dark Mode Switch
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: MbxDarkModeSwitch(
+                                  iconSize: isMobile ? 16 : 18,
+                                  showLabel: false,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: isMobile ? 12 : 16),
+                              SizedBox(height: isMobile ? 12 : 16),
 
-                            // Logo or App Icon
-                            Container(
-                              width: logoSize,
-                              height: logoSize,
-                              decoration: BoxDecoration(
+                              // Logo or App Icon
+                              Container(
+                                width: logoSize,
+                                height: logoSize,
+                                decoration: BoxDecoration(
+                                  color: ColorX.theme,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Icon(
+                                  Icons.admin_panel_settings,
+                                  color: Colors.white,
+                                  size: logoSize * 0.5,
+                                ),
+                              ),
+                              SizedBox(height: isMobile ? 20 : 24),
+
+                              // Title
+                              TextX(
+                                'MBanking BackOffice',
+                                fontSize: titleFontSize,
+                                fontWeight: FontWeight.bold,
                                 color: ColorX.theme,
-                                borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Icon(
-                                Icons.admin_panel_settings,
-                                color: Colors.white,
-                                size: logoSize * 0.5,
-                              ),
-                            ),
-                            SizedBox(height: isMobile ? 20 : 24),
+                              SizedBox(height: isMobile ? 24 : 32),
 
-                            // Title
-                            TextX(
-                              'MBanking BackOffice',
-                              fontSize: titleFontSize,
-                              fontWeight: FontWeight.bold,
-                              color: ColorX.theme,
-                            ),
-                            SizedBox(height: isMobile ? 6 : 8),
-                            TextX(
-                              'Web Admin Panel',
-                              fontSize: isMobile ? 13.0 : 14.0,
-                              color: ColorX.gray,
-                            ),
-                            SizedBox(height: isMobile ? 24 : 32),
-
-                            // Email Field
-                            ContainerError(
-                              error: controller.emailError,
-                              child: TextFieldX(
-                                hint: 'Email',
-                                obscureText: false,
-                                keyboardType: TextInputType.emailAddress,
-                                readOnly: false,
-                                controller: controller.txtEmailController,
-                                focusNode: controller.txtEmailNode,
-                                onChanged: (value) {
-                                  controller.txtEmailOnChanged(value);
-                                },
-                                leftIcon: ImageX(
-                                  faIcon: FontAwesomeIcons.envelope,
-                                  color: ColorX.gray,
-                                  width: 16.0,
-                                  height: 16.0,
+                              // Email Field
+                              ContainerError(
+                                error: controller.emailError,
+                                child: TextFieldX(
+                                  hint: 'Email',
+                                  obscureText: false,
+                                  keyboardType: TextInputType.emailAddress,
+                                  readOnly: false,
+                                  controller: controller.txtEmailController,
+                                  focusNode: controller.txtEmailNode,
+                                  onChanged: (value) {
+                                    controller.txtEmailOnChanged(value);
+                                  },
+                                  leftIcon: ImageX(
+                                    faIcon: FontAwesomeIcons.envelope,
+                                    color: ColorX.gray,
+                                    width: 16.0,
+                                    height: 16.0,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: isMobile ? 12 : 16),
+                              SizedBox(height: isMobile ? 12 : 16),
 
-                            // Password Field
-                            ContainerError(
-                              error: controller.passwordError,
-                              child: TextFieldX(
-                                hint: 'Password',
-                                obscureText: !controller.isPasswordVisible,
-                                keyboardType: TextInputType.text,
-                                readOnly: false,
-                                controller: controller.txtPasswordController,
-                                focusNode: controller.txtPasswordNode,
-                                onChanged: (value) {
-                                  controller.txtPasswordOnChanged(value);
-                                },
-                                leftIcon: ImageX(
-                                  faIcon: FontAwesomeIcons.lock,
-                                  color: ColorX.gray,
-                                  width: 16.0,
-                                  height: 16.0,
+                              // Password Field
+                              ContainerError(
+                                error: controller.passwordError,
+                                child: TextFieldX(
+                                  hint: 'Password',
+                                  obscureText: !controller.isPasswordVisible,
+                                  keyboardType: TextInputType.text,
+                                  readOnly: false,
+                                  controller: controller.txtPasswordController,
+                                  focusNode: controller.txtPasswordNode,
+                                  onChanged: (value) {
+                                    controller.txtPasswordOnChanged(value);
+                                  },
+                                  leftIcon: ImageX(
+                                    faIcon: FontAwesomeIcons.lock,
+                                    color: ColorX.gray,
+                                    width: 16.0,
+                                    height: 16.0,
+                                  ),
+                                  rightIcon: ImageX(
+                                    faIcon: controller.isPasswordVisible
+                                        ? FontAwesomeIcons.eyeSlash
+                                        : FontAwesomeIcons.eye,
+                                    color: ColorX.gray,
+                                    width: 16.0,
+                                    height: 16.0,
+                                  ),
+                                  rightAction: () {
+                                    controller.togglePasswordVisibility();
+                                  },
                                 ),
-                                rightIcon: ImageX(
-                                  faIcon: controller.isPasswordVisible
-                                      ? FontAwesomeIcons.eyeSlash
-                                      : FontAwesomeIcons.eye,
-                                  color: ColorX.gray,
-                                  width: 16.0,
-                                  height: 16.0,
-                                ),
-                                rightAction: () {
-                                  controller.togglePasswordVisibility();
-                                },
                               ),
-                            ),
-                            SizedBox(height: isMobile ? 20 : 24),
+                              SizedBox(height: isMobile ? 20 : 24),
 
-                            // Login Button
-                            SizedBox(
-                              width: double.infinity,
-                              height: isMobile ? 44 : 48,
-                              child: controller.isLoading
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        color: ColorX.theme,
-                                        borderRadius: BorderRadius.circular(
-                                          12.0,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white,
-                                                ),
+                              // Login Button
+                              SizedBox(
+                                width: double.infinity,
+                                height: isMobile ? 44 : 48,
+                                child: controller.isLoading
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                          color: ColorX.theme,
+                                          borderRadius: BorderRadius.circular(
+                                            12.0,
                                           ),
                                         ),
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : ButtonX(
+                                        title: 'Login',
+                                        backgroundColor: ColorX.theme,
+                                        titleColor: Colors.white,
+                                        cornerRadius: 12.0,
+                                        enabled: !controller.isLoading,
+                                        clicked: () {
+                                          controller.btnLoginClicked();
+                                        },
                                       ),
-                                    )
-                                  : ButtonX(
-                                      title: 'Login',
-                                      backgroundColor: ColorX.theme,
-                                      titleColor: Colors.white,
-                                      cornerRadius: 12.0,
-                                      enabled: !controller.isLoading,
-                                      clicked: () {
-                                        controller.btnLoginClicked();
-                                      },
-                                    ),
-                            ),
-                            SizedBox(height: isMobile ? 12 : 16),
-
-                            // Forgot Password Link
-                            InkWellX(
-                              clicked: () {
-                                controller.btnForgotPasswordClicked();
-                              },
-                              child: TextX(
-                                'Lupa Password?',
-                                fontSize: isMobile ? 13.0 : 14.0,
-                                color: ColorX.theme,
-                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                            SizedBox(height: isMobile ? 20 : 24),
+                              SizedBox(height: isMobile ? 12 : 16),
 
-                            // Terms & Conditions and Privacy Policy Links
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                InkWellX(
-                                  clicked: () {
-                                    MbxTncDialog.show(context);
-                                  },
-                                  child: TextX(
-                                    'Syarat & Ketentuan',
+                              // Forgot Password Link
+                              InkWellX(
+                                clicked: () {
+                                  controller.btnForgotPasswordClicked();
+                                },
+                                child: TextX(
+                                  'Lupa Password?',
+                                  fontSize: isMobile ? 13.0 : 14.0,
+                                  color: ColorX.theme,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: isMobile ? 20 : 24),
+
+                              // Terms & Conditions and Privacy Policy Links
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  InkWellX(
+                                    clicked: () {
+                                      MbxTncDialog.show(context);
+                                    },
+                                    child: TextX(
+                                      'Syarat & Ketentuan',
+                                      fontSize: isMobile ? 11.0 : 12.0,
+                                      color: isDarkMode
+                                          ? Colors.blue.shade300
+                                          : const Color(0xFF1976D2),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  TextX(
+                                    ' • ',
                                     fontSize: isMobile ? 11.0 : 12.0,
                                     color: isDarkMode
-                                        ? Colors.blue.shade300
-                                        : const Color(0xFF1976D2),
-                                    fontWeight: FontWeight.w500,
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade600,
                                   ),
-                                ),
-                                TextX(
-                                  ' • ',
-                                  fontSize: isMobile ? 11.0 : 12.0,
-                                  color: isDarkMode
-                                      ? Colors.grey.shade400
-                                      : Colors.grey.shade600,
-                                ),
-                                InkWellX(
-                                  clicked: () {
-                                    MbxPrivacyPolicyDialog.show(context);
-                                  },
-                                  child: TextX(
-                                    'Kebijakan Privasi',
+                                  InkWellX(
+                                    clicked: () {
+                                      MbxPrivacyPolicyDialog.show(context);
+                                    },
+                                    child: TextX(
+                                      'Kebijakan Privasi',
+                                      fontSize: isMobile ? 11.0 : 12.0,
+                                      color: isDarkMode
+                                          ? Colors.blue.shade300
+                                          : const Color(0xFF1976D2),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  TextX(
+                                    ' • ',
                                     fontSize: isMobile ? 11.0 : 12.0,
                                     color: isDarkMode
-                                        ? Colors.blue.shade300
-                                        : const Color(0xFF1976D2),
-                                    fontWeight: FontWeight.w500,
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade600,
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: isMobile ? 12 : 16),
-
-                            // Version
-                            TextX(
-                              controller.version,
-                              fontSize: isMobile ? 12.0 : 13.0,
-                              fontWeight: FontWeight.w400,
-                              color: ColorX.gray,
-                            ),
-                          ],
+                                  TextX(
+                                    controller.version,
+                                    fontSize: isMobile ? 11.0 : 12.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: isDarkMode
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade600,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
