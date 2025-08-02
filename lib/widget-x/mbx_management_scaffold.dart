@@ -8,6 +8,7 @@ class MbxManagementScaffold extends StatelessWidget {
   final bool showAddButton;
   final VoidCallback? onAddPressed;
   final VoidCallback? onRefreshPressed;
+  final Widget? customHeaderWidget;
 
   const MbxManagementScaffold({
     super.key,
@@ -18,6 +19,7 @@ class MbxManagementScaffold extends StatelessWidget {
     this.showAddButton = false,
     this.onAddPressed,
     this.onRefreshPressed,
+    this.customHeaderWidget,
   });
 
   @override
@@ -65,20 +67,23 @@ class MbxManagementScaffold extends StatelessWidget {
                             const SizedBox(width: 8),
                           ],
 
-                          // Title
-                          Expanded(
-                            child: Text(
-                              title,
-                              style: TextStyle(
-                                fontSize: isMobile ? 18 : 24,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(
-                                  context,
-                                ).appBarTheme.foregroundColor,
+                          // Title and custom header widget
+                          if (customHeaderWidget != null)
+                            Expanded(child: customHeaderWidget!)
+                          else
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: isMobile ? 18 : 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(
+                                    context,
+                                  ).appBarTheme.foregroundColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
 
                           // Actions
                           if (actions != null) ...actions!,
@@ -125,12 +130,7 @@ class MbxManagementScaffold extends StatelessWidget {
                     ),
 
                     // Content
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: child,
-                      ),
-                    ),
+                    Expanded(child: child),
                   ],
                 ),
               ),

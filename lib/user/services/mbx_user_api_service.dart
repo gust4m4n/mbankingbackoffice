@@ -2,14 +2,40 @@ import 'package:mbankingbackoffice/apis/mbx_apis.dart';
 import 'package:mbankingbackoffice/user/models/mbx_user_model.dart';
 
 class MbxUserApiService {
-  /// Get all users with pagination
-  static Future<ApiXResponse> getUsers({int page = 1, int perPage = 10}) async {
+  /// Get all users with pagination, search, and filters
+  static Future<ApiXResponse> getUsers({
+    int page = 1,
+    int perPage = 10,
+    String? search,
+    String? name,
+    String? phone,
+    String? status,
+  }) async {
     try {
-      print('API Request - GET /api/users (page: $page, perPage: $perPage)');
+      final params = <String, String>{
+        'page': page.toString(),
+        'per_page': perPage.toString(),
+      };
+
+      // Add search parameters if provided
+      if (search != null && search.isNotEmpty) {
+        params['search'] = search;
+      }
+      if (name != null && name.isNotEmpty) {
+        params['name'] = name;
+      }
+      if (phone != null && phone.isNotEmpty) {
+        params['phone'] = phone;
+      }
+      if (status != null && status.isNotEmpty) {
+        params['status'] = status;
+      }
+
+      print('API Request - GET /api/admin/users (page: $page, perPage: $perPage, search: $search, name: $name, phone: $phone, status: $status)');
 
       final response = await MbxApi.get(
-        endpoint: '/api/users',
-        params: {'page': page.toString(), 'per_page': perPage.toString()},
+        endpoint: '/api/admin/users',
+        params: params,
         headers: {},
       );
 

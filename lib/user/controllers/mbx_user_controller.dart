@@ -17,14 +17,40 @@ class MbxUserController extends GetxController {
   // Selected user for view/delete
   MbxUserModel? selectedUser;
 
+  // Search and filter controllers
+  final searchController = TextEditingController();
+  final nameFilterController = TextEditingController();
+  final phoneFilterController = TextEditingController();
+
+  // Filter states
+  var selectedStatus = ''.obs;
+  var isFilterActive = false.obs;
+
+  // Available status options for filtering
+  final statusOptions = <String>['active', 'inactive', 'suspended', 'pending'];
+
   @override
   void onInit() {
     super.onInit();
     loadUsers();
   }
 
-  /// Load users list
-  Future<void> loadUsers({int page = 1}) async {
+  @override
+  void onClose() {
+    searchController.dispose();
+    nameFilterController.dispose();
+    phoneFilterController.dispose();
+    super.onClose();
+  }
+
+  /// Load users list with search and filters
+  Future<void> loadUsers({
+    int page = 1,
+    String? search,
+    String? name,
+    String? phone,
+    String? status,
+  }) async {
     try {
       isLoading.value = true;
       currentPage.value = page;
@@ -32,6 +58,12 @@ class MbxUserController extends GetxController {
       final response = await MbxUserApiService.getUsers(
         page: page,
         perPage: perPage.value,
+        search: search ?? searchController.text.trim(),
+        name: name ?? nameFilterController.text.trim(),
+        phone: phone ?? phoneFilterController.text.trim(),
+        status:
+            status ??
+            (selectedStatus.value.isEmpty ? null : selectedStatus.value),
       );
 
       if (response.statusCode == 200) {
@@ -136,6 +168,37 @@ class MbxUserController extends GetxController {
   /// Refresh user list
   void refreshUsers() {
     loadUsers(page: currentPage.value);
+  }
+
+  /// Search users
+  void searchUsers() {
+    _checkFilterStatus();
+    loadUsers(page: 1);
+  }
+
+  /// Clear search and filters
+  void clearSearchAndFilters() {
+    searchController.clear();
+    nameFilterController.clear();
+    phoneFilterController.clear();
+    selectedStatus.value = '';
+    isFilterActive.value = false;
+    loadUsers(page: 1);
+  }
+
+  /// Apply filters
+  void applyFilters() {
+    _checkFilterStatus();
+    loadUsers(page: 1);
+  }
+
+  /// Check if any filter is active
+  void _checkFilterStatus() {
+    isFilterActive.value =
+        searchController.text.trim().isNotEmpty ||
+        nameFilterController.text.trim().isNotEmpty ||
+        phoneFilterController.text.trim().isNotEmpty ||
+        selectedStatus.value.isNotEmpty;
   }
 
   // Private methods

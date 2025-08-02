@@ -1,3 +1,4 @@
+import 'package:mbankingbackoffice/admin/controllers/mbx_admin_controller.dart';
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
@@ -565,7 +566,7 @@ class MbxAdminDetailDialog extends StatelessWidget {
 
   void _editAdmin() {
     Get.back();
-    ToastX.showSuccess(msg: 'Edit admin feature akan segera tersedia');
+    Get.find<MbxAdminController>().showEditAdminDialog(admin);
   }
 
   void _toggleStatus() {
@@ -580,27 +581,6 @@ class MbxAdminDetailDialog extends StatelessWidget {
 
   void _deleteAdmin() {
     Get.back();
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: Text('Are you sure you want to delete admin "${admin.name}"?'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              Get.back();
-              ToastX.showSuccess(
-                msg: 'Delete admin feature akan segera tersedia',
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
+    Get.find<MbxAdminController>().deleteAdmin(admin);
   }
 }

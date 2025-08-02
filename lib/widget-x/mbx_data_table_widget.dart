@@ -125,7 +125,7 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
           } else {
             return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
-              child: Align(alignment: Alignment.topLeft, child: dataTable),
+              child: dataTable,
             );
           }
         },
@@ -170,53 +170,60 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
       '[DEBUG BUILD] Building DataTable with ${widget.rows.length} rows, enableHighlight: ${widget.enableHighlight}',
     );
 
-    return DataTable(
-      columnSpacing: 16,
-      dataRowMinHeight: 56,
-      dataRowMaxHeight: 72,
-      showBottomBorder: false,
-      headingRowColor: WidgetStateProperty.all(
-        isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],
-      ),
-      dataTextStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-      headingTextStyle: TextStyle(
-        color: isDarkMode ? Colors.white : Colors.black,
-        fontWeight: FontWeight.bold,
-      ),
-      sortColumnIndex: widget.sortColumn != null
-          ? widget.columns.indexWhere((col) => col.sortKey == widget.sortColumn)
-          : null,
-      sortAscending: widget.sortAscending,
-      columns: [
-        // Regular columns
-        ...widget.columns.map((column) {
-          return DataColumn(
-            label: Align(
-              alignment: _getAlignment(column.textAlign),
-              child: Text(
-                column.label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+    return SizedBox(
+      width: double.infinity,
+      child: DataTable(
+        columnSpacing: 16,
+        dataRowMinHeight: 56,
+        dataRowMaxHeight: 72,
+        showBottomBorder: false,
+        headingRowColor: WidgetStateProperty.all(
+          isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],
+        ),
+        dataTextStyle: TextStyle(
+          color: isDarkMode ? Colors.white : Colors.black,
+        ),
+        headingTextStyle: TextStyle(
+          color: isDarkMode ? Colors.white : Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        sortColumnIndex: widget.sortColumn != null
+            ? widget.columns.indexWhere(
+                (col) => col.sortKey == widget.sortColumn,
+              )
+            : null,
+        sortAscending: widget.sortAscending,
+        columns: [
+          // Regular columns
+          ...widget.columns.map((column) {
+            return DataColumn(
+              label: Align(
+                alignment: _getAlignment(column.textAlign),
+                child: Text(
+                  column.label,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              onSort: column.sortable && widget.enableSorting
+                  ? (columnIndex, ascending) {
+                      if (widget.onSort != null && column.sortKey != null) {
+                        widget.onSort!(column.sortKey!, ascending);
+                      }
+                    }
+                  : null,
+            );
+          }),
+          // Actions column if any row has actions
+          if (widget.rows.any((row) => row.actions.isNotEmpty))
+            const DataColumn(
+              label: Text(
+                'Actions',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            onSort: column.sortable && widget.enableSorting
-                ? (columnIndex, ascending) {
-                    if (widget.onSort != null && column.sortKey != null) {
-                      widget.onSort!(column.sortKey!, ascending);
-                    }
-                  }
-                : null,
-          );
-        }),
-        // Actions column if any row has actions
-        if (widget.rows.any((row) => row.actions.isNotEmpty))
-          const DataColumn(
-            label: Text(
-              'Actions',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-      ],
-      rows: widget.rows.map((row) => _buildDataRow(row, isDarkMode)).toList(),
+        ],
+        rows: widget.rows.map((row) => _buildDataRow(row, isDarkMode)).toList(),
+      ),
     );
   }
 
