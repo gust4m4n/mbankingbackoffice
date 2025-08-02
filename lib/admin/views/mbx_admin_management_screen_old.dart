@@ -1,6 +1,7 @@
 import 'package:mbankingbackoffice/admin/controllers/mbx_simple_admin_controller.dart';
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
 import 'package:mbankingbackoffice/preferences/mbx_preferences_vm_users.dart';
+import 'package:mbankingbackoffice/theme/controllers/mbx_theme_controller.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxAdminManagementScreen extends StatelessWidget {
@@ -10,8 +11,11 @@ class MbxAdminManagementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final controller = Get.put(MbxAdminController());
+      final themeController = Get.find<MbxThemeController>();
+      final isDarkMode = themeController.isDarkMode;
+
       return Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: isDarkMode ? const Color(0xFF121212) : Colors.grey[50],
         body: Row(
           children: [
             // Sidebar (reuse from home screen)
@@ -117,10 +121,14 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     height: 80,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDarkMode
+                          ? const Color(0xFF1E1E1E)
+                          : Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withOpacity(
+                            isDarkMode ? 0.3 : 0.05,
+                          ),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -138,7 +146,9 @@ class MbxAdminManagementScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 18 : 24,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF1A1D29),
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : const Color(0xFF1A1D29),
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -182,11 +192,15 @@ class MbxAdminManagementScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(24.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDarkMode
+                              ? const Color(0xFF1E1E1E)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withOpacity(
+                                isDarkMode ? 0.3 : 0.05,
+                              ),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -194,70 +208,6 @@ class MbxAdminManagementScreen extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            // Table Header
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[50],
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  topRight: Radius.circular(12),
-                                ),
-                              ),
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  bool isSmallScreen =
-                                      constraints.maxWidth < 400;
-
-                                  if (isSmallScreen) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Administrators',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Total: ${controller.totalAdmins.value} admins',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return Row(
-                                      children: [
-                                        const Expanded(
-                                          child: Text(
-                                            'Administrators',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Total: ${controller.totalAdmins.value} admins',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-
                             // Loading State
                             if (controller.isLoading.value)
                               const Expanded(
@@ -310,7 +260,20 @@ class MbxAdminManagementScreen extends StatelessWidget {
                                       dataRowMinHeight: 56,
                                       dataRowMaxHeight: 72,
                                       headingRowColor: WidgetStateProperty.all(
-                                        Colors.grey[100],
+                                        isDarkMode
+                                            ? const Color(0xFF2A2A2A)
+                                            : Colors.grey[100],
+                                      ),
+                                      dataTextStyle: TextStyle(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                      headingTextStyle: TextStyle(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       columns: const [
                                         DataColumn(
@@ -409,7 +372,9 @@ class MbxAdminManagementScreen extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[50],
+                                  color: isDarkMode
+                                      ? const Color(0xFF2A2A2A)
+                                      : Colors.grey[50],
                                   borderRadius: const BorderRadius.only(
                                     bottomLeft: Radius.circular(12),
                                     bottomRight: Radius.circular(12),
@@ -419,7 +384,11 @@ class MbxAdminManagementScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Page ${controller.currentPage.value} of ${controller.totalPages.value}',
-                                      style: TextStyle(color: Colors.grey[600]),
+                                      style: TextStyle(
+                                        color: isDarkMode
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
                                     ),
                                     const Spacer(),
                                     IconButton(
@@ -427,7 +396,12 @@ class MbxAdminManagementScreen extends StatelessWidget {
                                           controller.currentPage.value > 1
                                           ? controller.previousPage
                                           : null,
-                                      icon: const Icon(Icons.chevron_left),
+                                      icon: Icon(
+                                        Icons.chevron_left,
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
                                     IconButton(
                                       onPressed:
@@ -435,7 +409,12 @@ class MbxAdminManagementScreen extends StatelessWidget {
                                               controller.totalPages.value
                                           ? controller.nextPage
                                           : null,
-                                      icon: const Icon(Icons.chevron_right),
+                                      icon: Icon(
+                                        Icons.chevron_right,
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -614,38 +593,22 @@ class MbxAdminManagementScreen extends StatelessWidget {
   }
 
   void _showFeatureNotAvailable(String featureName) {
-    ToastX.showSuccess(msg: '$featureName akan segera tersedia');
+    MbxDialogController.showFeatureNotAvailable(featureName);
   }
 
-  void _logout() {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Konfirmasi Logout'),
-        content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
-          ElevatedButton(
-            onPressed: () async {
-              Get.back();
-              Get.loading();
+  void _logout() async {
+    final confirmed = await MbxDialogController.showLogoutConfirmation();
+    if (confirmed == true) {
+      MbxDialogController.showLoadingDialog(message: 'Logging out...');
 
-              // Clear stored token
-              await MbxUserPreferencesVM.setToken('');
+      // Clear stored token
+      await MbxUserPreferencesVM.setToken('');
 
-              // Navigate to login
-              Future.delayed(const Duration(milliseconds: 500), () {
-                Get.back();
-                Get.offAllNamed('/login');
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
+      // Navigate to login
+      Future.delayed(const Duration(milliseconds: 500), () {
+        MbxDialogController.hideLoadingDialog();
+        Get.offAllNamed('/login');
+      });
+    }
   }
 }

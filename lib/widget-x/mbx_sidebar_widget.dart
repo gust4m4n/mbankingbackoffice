@@ -252,15 +252,6 @@ class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
                       ),
                     ),
                   ),
-                  if (isActive)
-                    Container(
-                      width: 4,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.white : const Color(0xFF1976D2),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
                   if (isHovered && !isActive)
                     Icon(
                       Icons.chevron_right,
@@ -279,38 +270,22 @@ class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
   }
 
   void _showFeatureNotAvailable(String featureName) {
-    ToastX.showSuccess(msg: '$featureName akan segera tersedia');
+    MbxDialogController.showFeatureNotAvailable(featureName);
   }
 
-  void _logout() {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Konfirmasi Logout'),
-        content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
-          ElevatedButton(
-            onPressed: () async {
-              Get.back();
-              Get.loading();
+  void _logout() async {
+    final confirmed = await MbxDialogController.showLogoutConfirmation();
+    if (confirmed == true) {
+      MbxDialogController.showLoadingDialog(message: 'Logging out...');
 
-              // Clear stored token
-              await MbxUserPreferencesVM.setToken('');
+      // Clear stored token
+      await MbxUserPreferencesVM.setToken('');
 
-              // Navigate to login
-              Future.delayed(const Duration(milliseconds: 500), () {
-                Get.back();
-                Get.offAllNamed('/login');
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
+      // Navigate to login
+      Future.delayed(const Duration(milliseconds: 500), () {
+        MbxDialogController.hideLoadingDialog();
+        Get.offAllNamed('/login');
+      });
+    }
   }
 }

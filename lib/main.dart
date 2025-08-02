@@ -71,6 +71,9 @@ Future<void> main() async {
   // Initialize theme controller
   Get.put(MbxThemeController(), permanent: true);
 
+  // Initialize dialog controller
+  Get.put(MbxDialogController(), permanent: true);
+
   // Initialize eKYC services
   print('Initializing eKYC services...');
   Get.put(UpgradeDataService(), permanent: true);

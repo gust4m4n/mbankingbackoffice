@@ -40,81 +40,6 @@ class MbxUserManagementScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Table Header
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[50],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  bool isSmallScreen = constraints.maxWidth < 400;
-
-                  if (isSmallScreen) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Users',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'Total: ${controller.totalUsers.value} users',
-                            style: TextStyle(
-                              color: isDarkMode
-                                  ? const Color(0xFFB0B0B0)
-                                  : Colors.grey[600],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'Users',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              'Total: ${controller.totalUsers.value} users',
-                              style: TextStyle(
-                                color: isDarkMode
-                                    ? const Color(0xFFB0B0B0)
-                                    : Colors.grey[600],
-                                fontSize: 14,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-            ),
-
             // Loading State
             if (controller.isLoading.value)
               const Expanded(child: Center(child: CircularProgressIndicator()))
@@ -330,6 +255,6 @@ class MbxUserManagementScreen extends StatelessWidget {
   }
 
   void _showFeatureNotAvailable(String featureName) {
-    ToastX.showSuccess(msg: '\$featureName akan segera tersedia');
+    MbxDialogController.showFeatureNotAvailable(featureName);
   }
 }
