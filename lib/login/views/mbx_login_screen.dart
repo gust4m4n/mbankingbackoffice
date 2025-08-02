@@ -212,17 +212,17 @@ class MbxLoginScreen extends StatelessWidget {
                                     'Syarat & Ketentuan',
                                     fontSize: 12.0,
                                     color: isDarkMode
-                                        ? Colors.white.withOpacity(0.85)
-                                        : Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.w400,
+                                        ? Colors.blue.shade300
+                                        : const Color(0xFF1976D2),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 TextX(
                                   ' • ',
                                   fontSize: 12.0,
                                   color: isDarkMode
-                                      ? Colors.white.withOpacity(0.5)
-                                      : Colors.white.withOpacity(0.6),
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                                 ),
                                 InkWellX(
                                   clicked: () {
@@ -232,9 +232,9 @@ class MbxLoginScreen extends StatelessWidget {
                                     'Kebijakan Privasi',
                                     fontSize: 12.0,
                                     color: isDarkMode
-                                        ? Colors.white.withOpacity(0.85)
-                                        : Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.w400,
+                                        ? Colors.blue.shade300
+                                        : const Color(0xFF1976D2),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
