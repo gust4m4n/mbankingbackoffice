@@ -89,6 +89,7 @@ class _MbxAddAdminDialogState extends State<MbxAddAdminDialog> {
             // Form Content
             Flexible(
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: Form(
                   key: _formKey,

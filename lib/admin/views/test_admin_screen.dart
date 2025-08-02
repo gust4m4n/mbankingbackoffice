@@ -53,6 +53,7 @@ Data: ${response.jason.mapValue}
             const SizedBox(height: 20),
             Expanded(
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 child: Text(
                   debugInfo,
                   style: const TextStyle(fontFamily: 'monospace', fontSize: 12),

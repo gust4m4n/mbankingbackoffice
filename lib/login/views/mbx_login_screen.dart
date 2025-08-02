@@ -10,6 +10,8 @@ class MbxLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return GetBuilder<MbxLoginController>(
       init: MbxLoginController(),
       builder: (controller) => MbxScreen(
@@ -24,6 +26,7 @@ class MbxLoginScreen extends StatelessWidget {
           ),
           child: Center(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               padding: EdgeInsets.all(
                 MediaQuery.of(context).size.width < 600 ? 16.0 : 32.0,
               ),
@@ -208,14 +211,18 @@ class MbxLoginScreen extends StatelessWidget {
                                   child: TextX(
                                     'Syarat & Ketentuan',
                                     fontSize: 12.0,
-                                    color: ColorX.theme,
+                                    color: isDarkMode
+                                        ? Colors.white.withOpacity(0.85)
+                                        : Colors.white.withOpacity(0.9),
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
                                 TextX(
                                   ' • ',
                                   fontSize: 12.0,
-                                  color: ColorX.gray,
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.5)
+                                      : Colors.white.withOpacity(0.6),
                                 ),
                                 InkWellX(
                                   clicked: () {
@@ -224,7 +231,9 @@ class MbxLoginScreen extends StatelessWidget {
                                   child: TextX(
                                     'Kebijakan Privasi',
                                     fontSize: 12.0,
-                                    color: ColorX.theme,
+                                    color: isDarkMode
+                                        ? Colors.white.withOpacity(0.85)
+                                        : Colors.white.withOpacity(0.9),
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),

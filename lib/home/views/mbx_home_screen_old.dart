@@ -104,6 +104,7 @@ class MbxHomeScreen extends StatelessWidget {
                     // Navigation Menu
                     Expanded(
                       child: ListView(
+                        physics: const ClampingScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         children: [
                           _buildMenuItem(

@@ -20,6 +20,7 @@ class MbxElectricityPicker extends GetWidget<MbxElectricityController> {
         child: Wrap(
           children: [
             ListView(
+              physics: const ClampingScrollPhysics(),
               shrinkWrap: true,
               padding: EdgeInsets.only(
                 left: 16.0,
@@ -27,7 +28,6 @@ class MbxElectricityPicker extends GetWidget<MbxElectricityController> {
                 right: 16.0,
                 bottom: 16.0,
               ),
-              physics: ClampingScrollPhysics(),
               children: [
                 ContainerX(
                   backgroundColor: ColorX.theme,

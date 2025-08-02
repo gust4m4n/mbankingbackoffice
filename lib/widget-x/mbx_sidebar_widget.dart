@@ -66,12 +66,7 @@ class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
                   ),
                 ),
                 // Dark Mode Switch
-                const MbxDarkModeSwitch(
-                  showLabel: false,
-                  iconSize: 18,
-                  activeColor: Colors.amber,
-                  inactiveColor: Colors.white70,
-                ),
+                const MbxDarkModeSwitch(iconSize: 18, showLabel: false),
               ],
             ),
           ),
@@ -79,6 +74,7 @@ class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
           // Navigation Menu
           Expanded(
             child: ListView(
+              physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               children: [
                 _buildMenuItem(

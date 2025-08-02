@@ -47,6 +47,7 @@ class MbxAdminDetailDialog extends StatelessWidget {
             // Content
             Expanded(
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

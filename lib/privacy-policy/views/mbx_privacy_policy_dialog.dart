@@ -30,12 +30,16 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
   void _loadPrivacyPolicy() async {
     privacyPolicyVM.request().then((resp) {
       if (mounted) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+        final titleColor = isDarkMode ? '#FFFFFF' : '#343a40';
+        final contentColor = isDarkMode ? '#E0E0E0' : '#343a40';
+
         setState(() {
           html =
               '''
-          <span style="font-family: 'Roboto'; font-weight: bold; font-size: 24pt; color: #343a40">${privacyPolicyVM.privacyPolicy.title}</span>
+          <span style="font-family: 'Roboto'; font-weight: bold; font-size: 24pt; color: $titleColor">${privacyPolicyVM.privacyPolicy.title}</span>
           <br><br>
-          <span style="font-family: 'Roboto'; font-weight: normal; font-size: 15pt; color: #343a40">${privacyPolicyVM.privacyPolicy.content}</span>
+          <span style="font-family: 'Roboto'; font-weight: normal; font-size: 15pt; color: $contentColor">${privacyPolicyVM.privacyPolicy.content}</span>
           ''';
         });
       }
@@ -77,16 +81,18 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
               child: privacyPolicyVM.loading
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                       child: html.isNotEmpty
                           ? HtmlWidget(
                               html,
                               textStyle: TextStyle(
                                 color: isDarkMode
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontSize: 14,
-                                height: 1.6,
+                                    ? Colors.white.withOpacity(0.9)
+                                    : Colors.black.withOpacity(0.8),
+                                fontSize: 15,
+                                height: 1.7,
+                                fontWeight: FontWeight.w400,
                               ),
                             )
                           : Center(
@@ -94,8 +100,9 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
                                 'Memuat kebijakan privasi...',
                                 style: TextStyle(
                                   color: isDarkMode
-                                      ? const Color(0xFF808080)
-                                      : Colors.grey,
+                                      ? Colors.white.withOpacity(0.7)
+                                      : Colors.black.withOpacity(0.6),
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
@@ -139,7 +146,7 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
               size: 20,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,17 +156,16 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isDarkMode ? Colors.white : const Color(0xFF1F2937),
+                    color: isDarkMode ? Colors.white : Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
                   'Kebijakan privasi dan perlindungan data',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     color: isDarkMode
                         ? const Color(0xFFB0B0B0)
-                        : const Color(0xFF6B7280),
+                        : Colors.grey[600],
                   ),
                 ),
               ],
@@ -169,11 +175,10 @@ class _MbxPrivacyPolicyDialogState extends State<MbxPrivacyPolicyDialog> {
             onPressed: () => Get.back(),
             icon: Icon(
               Icons.close,
-              color: isDarkMode
-                  ? const Color(0xFFB0B0B0)
-                  : const Color(0xFF6B7280),
+              color: isDarkMode ? Colors.white : Colors.black54,
             ),
-            tooltip: 'Tutup',
+            tooltip: 'Close',
+            splashRadius: 20,
           ),
         ],
       ),
