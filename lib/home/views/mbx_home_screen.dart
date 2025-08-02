@@ -147,9 +147,9 @@ class MbxHomeScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Quick Stats Overview
+              // All time
               _buildSectionTitle(
-                'Quick Stats Overview',
+                'All time',
                 icon: Icons.dashboard,
                 color: const Color(0xFF607D8B),
               ),
@@ -308,7 +308,7 @@ class MbxHomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(
-          'Transaction Statistics by Period',
+          'Periods',
           icon: Icons.bar_chart,
           color: const Color(0xFFFF9800),
         ),
@@ -322,11 +322,27 @@ class MbxHomeScreen extends StatelessWidget {
                 dashboard.topupTransactions.today,
                 dashboard.withdrawTransactions.today,
                 dashboard.transferTransactions.today,
-                const Color(0xFF4CAF50),
+                const Color(0xFFFF9800),
                 context,
               ),
             ),
             const SizedBox(width: 16),
+            Expanded(
+              child: _buildPeriodStatsCard(
+                'This Week',
+                0, // Will be updated when backend provides thisWeek data
+                0, // Will be updated when backend provides thisWeek data
+                0, // Will be updated when backend provides thisWeek data
+                0, // Will be updated when backend provides thisWeek data
+                const Color(0xFF4CAF50),
+                context,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
             Expanded(
               child: _buildPeriodStatsCard(
                 'This Month',
@@ -901,7 +917,7 @@ class MbxHomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 20),
 
-        // Charts Grid
+        // Charts Grid - Only Last 7 Days and Last 30 Days
         LayoutBuilder(
           builder: (context, constraints) {
             bool isMobile = constraints.maxWidth < 1200;
@@ -909,35 +925,27 @@ class MbxHomeScreen extends StatelessWidget {
             if (isMobile) {
               return Column(
                 children: [
-                  _buildMonthlyChart(dashboard.performance!, context),
+                  _buildLast7DaysChart(dashboard.performance!, context),
                   const SizedBox(height: 20),
-                  _buildWeeklyChart(dashboard.performance!, context),
-                  const SizedBox(height: 20),
-                  _buildYearlyChart(dashboard.performance!, context),
+                  _buildLast30DaysChart(dashboard.performance!, context),
                 ],
               );
             } else {
-              return Column(
+              return Row(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildMonthlyChart(
-                          dashboard.performance!,
-                          context,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: _buildWeeklyChart(
-                          dashboard.performance!,
-                          context,
-                        ),
-                      ),
-                    ],
+                  Expanded(
+                    child: _buildLast7DaysChart(
+                      dashboard.performance!,
+                      context,
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  _buildYearlyChart(dashboard.performance!, context),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: _buildLast30DaysChart(
+                      dashboard.performance!,
+                      context,
+                    ),
+                  ),
                 ],
               );
             }
@@ -971,7 +979,7 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMonthlyChart(
+  Widget _buildLast7DaysChart(
     MbxPerformanceStats performance,
     BuildContext context,
   ) {
@@ -986,7 +994,7 @@ class MbxHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildChartTitle('Monthly Performance (Amount)', context),
+          _buildChartTitle('Last 7 Days Performance', context),
           const SizedBox(height: 20),
           Expanded(
             child: LineChart(
@@ -1016,13 +1024,14 @@ class MbxHomeScreen extends StatelessWidget {
                       interval: 1,
                       getTitlesWidget: (double value, TitleMeta meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < performance.monthly.length) {
-                          final period = performance.monthly[index].period;
+                        if (index >= 0 &&
+                            index < performance.last7Days.length) {
+                          final period = performance.last7Days[index].period;
                           return SideTitleWidget(
                             axisSide: meta.axisSide,
                             child: Text(
-                              period.length > 3
-                                  ? period.substring(0, 3)
+                              period.length > 5
+                                  ? period.substring(period.length - 5)
                                   : period,
                               style: TextStyle(
                                 fontSize: 10,
@@ -1069,22 +1078,22 @@ class MbxHomeScreen extends StatelessWidget {
                   ),
                 ),
                 minX: 0,
-                maxX: (performance.monthly.length - 1).toDouble(),
+                maxX: (performance.last7Days.length - 1).toDouble(),
                 minY: 0,
-                maxY: performance.monthly.isNotEmpty
-                    ? performance.monthly
+                maxY: performance.last7Days.isNotEmpty
+                    ? performance.last7Days
                               .map((e) => e.amount)
                               .reduce((a, b) => a > b ? a : b) *
                           1.2
                     : 100,
                 lineBarsData: [
                   LineChartBarData(
-                    spots: performance.monthly.asMap().entries.map((entry) {
+                    spots: performance.last7Days.asMap().entries.map((entry) {
                       return FlSpot(entry.key.toDouble(), entry.value.amount);
                     }).toList(),
                     isCurved: true,
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF2196F3), Color(0xFF21CBF3)],
+                      colors: [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
                     ),
                     barWidth: 3,
                     isStrokeCapRound: true,
@@ -1093,8 +1102,8 @@ class MbxHomeScreen extends StatelessWidget {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF2196F3).withOpacity(0.3),
-                          const Color(0xFF21CBF3).withOpacity(0.1),
+                          const Color(0xFF00BCD4).withOpacity(0.3),
+                          const Color(0xFF4DD0E1).withOpacity(0.1),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -1110,7 +1119,7 @@ class MbxHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklyChart(
+  Widget _buildLast30DaysChart(
     MbxPerformanceStats performance,
     BuildContext context,
   ) {
@@ -1125,7 +1134,7 @@ class MbxHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildChartTitle('Weekly Performance (Transactions)', context),
+          _buildChartTitle('Last 30 Days Performance', context),
           const SizedBox(height: 20),
           Expanded(
             child: LineChart(
@@ -1152,176 +1161,18 @@ class MbxHomeScreen extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 30,
-                      interval: 1,
+                      interval: performance.last30Days.length > 10 ? 5 : 1,
                       getTitlesWidget: (double value, TitleMeta meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < performance.weekly.length) {
+                        if (index >= 0 &&
+                            index < performance.last30Days.length) {
+                          final period = performance.last30Days[index].period;
                           return SideTitleWidget(
                             axisSide: meta.axisSide,
                             child: Text(
-                              performance.weekly[index].period,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
-                                color: isDark
-                                    ? Colors.white70
-                                    : Colors.grey[700],
-                              ),
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: null,
-                      reservedSize: 40,
-                      getTitlesWidget: (double value, TitleMeta meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
-                            color: isDark ? Colors.white70 : Colors.grey[700],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(
-                  show: true,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey.withOpacity(0.2),
-                      width: 1,
-                    ),
-                    left: BorderSide(
-                      color: Colors.grey.withOpacity(0.2),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                minX: 0,
-                maxX: (performance.weekly.length - 1).toDouble(),
-                minY: 0,
-                maxY: performance.weekly.isNotEmpty
-                    ? performance.weekly
-                              .map((e) => e.count.toDouble())
-                              .reduce((a, b) => a > b ? a : b) *
-                          1.2
-                    : 100,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: performance.weekly.asMap().entries.map((entry) {
-                      return FlSpot(
-                        entry.key.toDouble(),
-                        entry.value.count.toDouble(),
-                      );
-                    }).toList(),
-                    isCurved: true,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4CAF50), Color(0xFF8BC34A)],
-                    ),
-                    barWidth: 3,
-                    isStrokeCapRound: true,
-                    dotData: const FlDotData(show: true),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF4CAF50).withOpacity(0.3),
-                          const Color(0xFF8BC34A).withOpacity(0.1),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildYearlyChart(
-    MbxPerformanceStats performance,
-    BuildContext context,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Filter out years with zero data
-    final validYearlyData = performance.yearly
-        .where((data) => data.count > 0)
-        .toList();
-
-    if (validYearlyData.isEmpty) {
-      return Container(
-        height: 300,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark ? Colors.grey[900] : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Text(
-            'No yearly data available',
-            style: TextStyle(color: isDark ? Colors.white : Colors.grey[800]),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      height: 300,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[900] : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildChartTitle('Yearly Performance (Amount)', context),
-          const SizedBox(height: 20),
-          Expanded(
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.withOpacity(0.2),
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 1,
-                      getTitlesWidget: (double value, TitleMeta meta) {
-                        final index = value.toInt();
-                        if (index >= 0 && index < validYearlyData.length) {
-                          return SideTitleWidget(
-                            axisSide: meta.axisSide,
-                            child: Text(
-                              validYearlyData[index].period,
+                              period.length > 5
+                                  ? period.substring(period.length - 5)
+                                  : period,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w400,
@@ -1367,22 +1218,22 @@ class MbxHomeScreen extends StatelessWidget {
                   ),
                 ),
                 minX: 0,
-                maxX: (validYearlyData.length - 1).toDouble(),
+                maxX: (performance.last30Days.length - 1).toDouble(),
                 minY: 0,
-                maxY: validYearlyData.isNotEmpty
-                    ? validYearlyData
+                maxY: performance.last30Days.isNotEmpty
+                    ? performance.last30Days
                               .map((e) => e.amount)
                               .reduce((a, b) => a > b ? a : b) *
                           1.2
                     : 100,
                 lineBarsData: [
                   LineChartBarData(
-                    spots: validYearlyData.asMap().entries.map((entry) {
+                    spots: performance.last30Days.asMap().entries.map((entry) {
                       return FlSpot(entry.key.toDouble(), entry.value.amount);
                     }).toList(),
                     isCurved: true,
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF9C27B0), Color(0xFFE91E63)],
+                      colors: [Color(0xFFFF5722), Color(0xFFFF8A65)],
                     ),
                     barWidth: 3,
                     isStrokeCapRound: true,
@@ -1391,8 +1242,8 @@ class MbxHomeScreen extends StatelessWidget {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF9C27B0).withOpacity(0.3),
-                          const Color(0xFFE91E63).withOpacity(0.1),
+                          const Color(0xFFFF5722).withOpacity(0.3),
+                          const Color(0xFFFF8A65).withOpacity(0.1),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,

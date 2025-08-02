@@ -21,14 +21,15 @@ class MbxAdminManagementScreen extends StatelessWidget {
   }
 
   Widget _buildAdminContent(MbxAdminController controller) {
+    final isDarkMode = Theme.of(Get.context!).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(Get.context!).cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -40,7 +41,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[50],
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -57,7 +58,12 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Text(
                       'Total: ${controller.totalAdmins.value}',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? const Color(0xFFB0B0B0)
+                            : Colors.grey[600],
+                        fontSize: 14,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -71,7 +77,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
             const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (controller.admins.isEmpty)
             // Empty State
-            const Expanded(
+            Expanded(
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -79,17 +85,26 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     Icon(
                       Icons.admin_panel_settings_outlined,
                       size: 64,
-                      color: Colors.grey,
+                      color: isDarkMode ? const Color(0xFF808080) : Colors.grey,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       'No administrators found',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: isDarkMode
+                            ? const Color(0xFF808080)
+                            : Colors.grey,
+                      ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Administrators will appear here once added',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? const Color(0xFF808080)
+                            : Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -106,7 +121,9 @@ class MbxAdminManagementScreen extends StatelessWidget {
                     columnSpacing: 16,
                     dataRowMinHeight: 56,
                     dataRowMaxHeight: 72,
-                    headingRowColor: WidgetStateProperty.all(Colors.grey[100]),
+                    headingRowColor: WidgetStateProperty.all(
+                      isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[100],
+                    ),
                     columns: const [
                       DataColumn(
                         label: Text(

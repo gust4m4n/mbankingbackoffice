@@ -24,14 +24,15 @@ class MbxUserManagementScreen extends StatelessWidget {
 
   Widget _buildUserContent(MbxUserController controller) {
     return Obx(() {
+      final isDarkMode = Theme.of(Get.context!).brightness == Brightness.dark;
       return Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(Get.context!).cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -43,7 +44,7 @@ class MbxUserManagementScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[50],
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
@@ -70,7 +71,9 @@ class MbxUserManagementScreen extends StatelessWidget {
                           child: Text(
                             'Total: ${controller.totalUsers.value} users',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: isDarkMode
+                                  ? const Color(0xFFB0B0B0)
+                                  : Colors.grey[600],
                               fontSize: 14,
                             ),
                           ),
@@ -96,7 +99,9 @@ class MbxUserManagementScreen extends StatelessWidget {
                             child: Text(
                               'Total: ${controller.totalUsers.value} users',
                               style: TextStyle(
-                                color: Colors.grey[600],
+                                color: isDarkMode
+                                    ? const Color(0xFFB0B0B0)
+                                    : Colors.grey[600],
                                 fontSize: 14,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -115,21 +120,36 @@ class MbxUserManagementScreen extends StatelessWidget {
               const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (controller.users.isEmpty)
               // Empty State
-              const Expanded(
+              Expanded(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.people_outline, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
+                      Icon(
+                        Icons.people_outline,
+                        size: 64,
+                        color: isDarkMode
+                            ? const Color(0xFF808080)
+                            : Colors.grey,
+                      ),
+                      const SizedBox(height: 16),
                       Text(
                         'No users found',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: isDarkMode
+                              ? const Color(0xFF808080)
+                              : Colors.grey,
+                        ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Users will appear here once they register',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? const Color(0xFF808080)
+                              : Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -149,7 +169,7 @@ class MbxUserManagementScreen extends StatelessWidget {
                       dataRowMinHeight: 56,
                       dataRowMaxHeight: 72,
                       headingRowColor: WidgetStateProperty.all(
-                        Colors.grey[100],
+                        isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[100],
                       ),
                       columns: const [
                         DataColumn(
