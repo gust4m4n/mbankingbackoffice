@@ -11,6 +11,9 @@ class MbxLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final screenSize = MediaQuery.of(context).size;
+    final isTablet = screenSize.width >= 768;
+    final isMobile = screenSize.width < 768;
 
     return GetBuilder<MbxLoginController>(
       init: MbxLoginController(),
@@ -24,21 +27,57 @@ class MbxLoginScreen extends StatelessWidget {
               colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
             ),
           ),
-          child: Center(
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              padding: EdgeInsets.all(
-                MediaQuery.of(context).size.width < 600 ? 16.0 : 32.0,
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  double maxWidth = constraints.maxWidth < 600
-                      ? constraints.maxWidth * 0.9
-                      : 400;
-                  double cardPadding = constraints.maxWidth < 600 ? 20.0 : 32.0;
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Responsive breakpoints
+              double horizontalPadding = isMobile
+                  ? 16.0
+                  : isTablet
+                  ? 48.0
+                  : 64.0;
 
-                  return Container(
-                    constraints: BoxConstraints(maxWidth: maxWidth),
+              double verticalPadding = isMobile
+                  ? 16.0
+                  : isTablet
+                  ? 32.0
+                  : 48.0;
+
+              double maxWidth = isMobile
+                  ? constraints.maxWidth * 0.95
+                  : isTablet
+                  ? 480.0
+                  : 420.0;
+
+              double cardPadding = isMobile
+                  ? 20.0
+                  : isTablet
+                  ? 32.0
+                  : 40.0;
+
+              double logoSize = isMobile
+                  ? 70.0
+                  : isTablet
+                  ? 80.0
+                  : 90.0;
+
+              double titleFontSize = isMobile
+                  ? 22.0
+                  : isTablet
+                  ? 24.0
+                  : 26.0;
+
+              return Center(
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding,
+                    vertical: verticalPadding,
+                  ),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: maxWidth,
+                      minHeight: isMobile ? 0 : constraints.maxHeight * 0.6,
+                    ),
                     child: Card(
                       elevation: 8,
                       shape: RoundedRectangleBorder(
@@ -53,16 +92,16 @@ class MbxLoginScreen extends StatelessWidget {
                             Align(
                               alignment: Alignment.topRight,
                               child: MbxDarkModeSwitch(
-                                iconSize: 18,
+                                iconSize: isMobile ? 16 : 18,
                                 showLabel: false,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: isMobile ? 12 : 16),
 
                             // Logo or App Icon
                             Container(
-                              width: 80,
-                              height: 80,
+                              width: logoSize,
+                              height: logoSize,
                               decoration: BoxDecoration(
                                 color: ColorX.theme,
                                 borderRadius: BorderRadius.circular(16),
@@ -70,25 +109,25 @@ class MbxLoginScreen extends StatelessWidget {
                               child: Icon(
                                 Icons.admin_panel_settings,
                                 color: Colors.white,
-                                size: 40,
+                                size: logoSize * 0.5,
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: isMobile ? 20 : 24),
 
                             // Title
                             TextX(
                               'MBanking BackOffice',
-                              fontSize: 24.0,
+                              fontSize: titleFontSize,
                               fontWeight: FontWeight.bold,
                               color: ColorX.theme,
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: isMobile ? 6 : 8),
                             TextX(
                               'Web Admin Panel',
-                              fontSize: 14.0,
+                              fontSize: isMobile ? 13.0 : 14.0,
                               color: ColorX.gray,
                             ),
-                            const SizedBox(height: 32),
+                            SizedBox(height: isMobile ? 24 : 32),
 
                             // Email Field
                             ContainerError(
@@ -111,7 +150,7 @@ class MbxLoginScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: isMobile ? 12 : 16),
 
                             // Password Field
                             ContainerError(
@@ -145,12 +184,12 @@ class MbxLoginScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: isMobile ? 20 : 24),
 
                             // Login Button
                             SizedBox(
                               width: double.infinity,
-                              height: 48,
+                              height: isMobile ? 44 : 48,
                               child: controller.isLoading
                                   ? Container(
                                       decoration: BoxDecoration(
@@ -184,7 +223,7 @@ class MbxLoginScreen extends StatelessWidget {
                                       },
                                     ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: isMobile ? 12 : 16),
 
                             // Forgot Password Link
                             InkWellX(
@@ -193,16 +232,17 @@ class MbxLoginScreen extends StatelessWidget {
                               },
                               child: TextX(
                                 'Lupa Password?',
-                                fontSize: 14.0,
+                                fontSize: isMobile ? 13.0 : 14.0,
                                 color: ColorX.theme,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: isMobile ? 20 : 24),
 
                             // Terms & Conditions and Privacy Policy Links
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 InkWellX(
                                   clicked: () {
@@ -210,7 +250,7 @@ class MbxLoginScreen extends StatelessWidget {
                                   },
                                   child: TextX(
                                     'Syarat & Ketentuan',
-                                    fontSize: 12.0,
+                                    fontSize: isMobile ? 11.0 : 12.0,
                                     color: isDarkMode
                                         ? Colors.blue.shade300
                                         : const Color(0xFF1976D2),
@@ -219,7 +259,7 @@ class MbxLoginScreen extends StatelessWidget {
                                 ),
                                 TextX(
                                   ' • ',
-                                  fontSize: 12.0,
+                                  fontSize: isMobile ? 11.0 : 12.0,
                                   color: isDarkMode
                                       ? Colors.grey.shade400
                                       : Colors.grey.shade600,
@@ -230,7 +270,7 @@ class MbxLoginScreen extends StatelessWidget {
                                   },
                                   child: TextX(
                                     'Kebijakan Privasi',
-                                    fontSize: 12.0,
+                                    fontSize: isMobile ? 11.0 : 12.0,
                                     color: isDarkMode
                                         ? Colors.blue.shade300
                                         : const Color(0xFF1976D2),
@@ -239,12 +279,12 @@ class MbxLoginScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: isMobile ? 12 : 16),
 
                             // Version
                             TextX(
                               controller.version,
-                              fontSize: 13.0,
+                              fontSize: isMobile ? 12.0 : 13.0,
                               fontWeight: FontWeight.w400,
                               color: ColorX.gray,
                             ),
@@ -252,10 +292,10 @@ class MbxLoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
