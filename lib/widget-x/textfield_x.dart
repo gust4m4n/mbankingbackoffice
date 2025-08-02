@@ -25,7 +25,7 @@ class TextFieldX extends StatelessWidget {
   final Function(String value)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
 
-  TextFieldX({
+  const TextFieldX({
     super.key,
     required this.hint,
     required this.obscureText,
@@ -50,8 +50,8 @@ class TextFieldX extends StatelessWidget {
     this.focusNode,
     this.onChanged,
     this.inputFormatters,
-  }) : backgroundColor = backgroundColor ?? ColorX.white,
-       borderColor = borderColor ?? ColorX.lightGray;
+  }) : backgroundColor = backgroundColor ?? const Color(0xffffffff),
+       borderColor = borderColor ?? const Color(0xffd3d3d3);
 
   PopupMenuItem popupItemView({
     required String title,
@@ -121,12 +121,14 @@ class TextFieldX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return ContainerX(
       backgroundColor: (rightIcon != null || leftIcon != null)
-          ? ColorX.white
+          ? (isDarkMode ? Colors.transparent : Colors.white)
           : readOnly == true
-          ? ColorX.gray
-          : backgroundColor,
+          ? (isDarkMode ? const Color(0xff404040) : const Color(0xff6c757d))
+          : (isDarkMode ? Colors.transparent : backgroundColor),
       height: height,
       padding: EdgeInsets.only(
         left: borderWidth > 0.0 ? ((leftIcon != null) ? 0.0 : 12.0) : 0.0,
@@ -135,7 +137,7 @@ class TextFieldX extends StatelessWidget {
         bottom: 0.0,
       ),
       borderWidth: borderWidth,
-      borderColor: borderColor,
+      borderColor: isDarkMode ? const Color(0xff4a4a4c) : borderColor,
       cornerRadius: cornerRadius,
       child: Row(
         children: [
@@ -158,7 +160,7 @@ class TextFieldX extends StatelessWidget {
               obscureText: obscureText,
               style: TextStyle(
                 height: 1.2,
-                color: ColorX.black,
+                color: isDarkMode ? const Color(0xffe8e8e8) : Colors.black,
                 fontSize: fontSize,
                 fontWeight: fontWeight,
                 fontFamily: fontFamily,
@@ -185,7 +187,9 @@ class TextFieldX extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 hintText: hint,
                 hintStyle: TextStyle(
-                  color: ColorX.lightGray,
+                  color: isDarkMode
+                      ? const Color(0xff808080)
+                      : ColorX.lightGray,
                   fontSize: fontSize,
                   fontWeight: fontWeight,
                   fontFamily: fontFamily,

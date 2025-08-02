@@ -1,3 +1,4 @@
+import 'package:mbankingbackoffice/theme/widgets/mbx_dark_mode_switch.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 import 'mbx_login_controller.dart';
@@ -43,6 +44,16 @@ class MbxLoginScreen extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            // Dark Mode Switch
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: MbxDarkModeSwitch(
+                                iconSize: 18,
+                                showLabel: false,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
                             // Logo or App Icon
                             Container(
                               width: 80,
