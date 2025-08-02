@@ -118,7 +118,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
             emptyTitle: 'No transactions found',
             emptySubtitle: 'Transactions will appear here once processed',
             enableHighlight: true,
-            highlightColor: Colors.green.withOpacity(0.3),
+            enableRowOnlyHighlight: true,
             minTableWidth: 890,
           ),
 

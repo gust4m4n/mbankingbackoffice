@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "MBankingCore Admin API",
-    "description": "🔧 **ADMIN-ONLY API Collection** for MBankingCore running on PORT 8080\n\n## 🎯 Admin Features Coverage:\n- ✅ Admin Authentication (Login/Logout)\n- ✅ Admin Dashboard with comprehensive statistics\n- ✅ Admin CRUD Management\n- ✅ Transaction Monitoring & Management\n- ✅ Transaction Reversal Operations\n- ✅ Configuration Management\n- ✅ Admin Content Management (Terms & Privacy Policy)\n- ✅ Audit Trails & Security Monitoring\n- ✅ User Management (Admin view)\n- ✅ Admin User Balance Top-up\n\n## 📊 Admin Dashboard Statistics:\n- 👥 Total Users: 6,067+\n- 👨‍💼 Total Admins: 50+\n- 💳 Total Transactions: 35,375+\n- 💰 Transaction Analytics by time periods\n- 📈 Performance metrics and trends\n\n## 🔐 Admin Authentication Flow:\n1. **Admin Login** → Submit admin credentials and get admin access_token\n2. **Get Dashboard** → View comprehensive system statistics\n3. **Access Admin Endpoints** → Full admin operations\n4. **Admin Logout** → Invalidate admin session\n\n## 🛠️ Admin Management Operations:\n- **Get All Admins** → List all administrators with pagination\n- **Get Admin by ID** → Retrieve specific admin details\n- **Create Admin** → Add new administrator account\n- **Update Admin** → Modify admin account details\n- **Delete Admin** → Remove administrator account\n\n## 💳 Transaction Management:\n- **Get All Transactions** → Monitor all user transactions with filtering\n- **Reverse Transaction** → Reverse any transaction type with reason\n- **Admin Topup User Balance** → Admin can top-up user balance directly\n- **Transaction Analytics** → View transaction trends and statistics\n\n## 👥 User Management (Admin Only):\n- **Get All Users** → List all users with advanced search and filtering\n- **Get User by ID** → Retrieve specific user details\n- **Admin Topup User Balance** → Top-up user balance with admin privileges\n\n## ⚙️ Configuration Management:\n- **Get All Configs** → List all system configuration values\n- **Get Config by Key** → Retrieve specific configuration value\n- **Set Config** → Create or update configuration values\n- **Delete Config** → Remove configuration values\n- **Admin Terms & Conditions** → Manage admin-specific terms and conditions\n- **Admin Privacy Policy** → Manage admin-specific privacy policy\n\n## 🔍 Audit & Security Monitoring:\n- **Get Audit Logs** → Review all system activities with filtering\n  - Filter by entity type (user, transaction, admin, etc.)\n  - Filter by action (CREATE, READ, UPDATE, DELETE)\n  - Filter by user/admin ID, date range, IP address\n  - Pagination support for large datasets\n- **Get Login Audit Logs** → Monitor authentication activities\n  - Filter by login type (user_login, admin_login, logout)\n  - Filter by status (success, failed, blocked)\n  - Device information and failure reasons\n\n## 🚨 Security Features:\n- JWT Token-based authentication\n- Role-based access control\n- Comprehensive audit trails\n- Failed login monitoring\n- IP address tracking\n- Device session management\n\n## ⚠️ Important Notes:\n- **Admin Token Required** → All endpoints require admin authentication\n- **Role Permissions** → Different admin roles may have different permissions\n- **Audit Compliance** → All admin actions are logged for security\n- **Rate Limiting** → Admin actions may be rate-limited for security\n\n## 🔧 Environment Variables Required:\n- `base_url` → Server base URL (http://localhost:8080)\n- `admin_email` → Admin email for login\n- `admin_password` → Admin password for login\n- `admin_token` → Admin access token (auto-set after login)\n- `admin_id` → Admin ID (auto-set after login)\n- `admin_role` → Admin role (auto-set after login)\n- `config_key` → Configuration key for config operations\n- `config_value` → Configuration value for config operations\n- `admin_terms_content` → Admin terms & conditions content\n- `admin_privacy_content` → Admin privacy policy content\n- `target_user_id` → User ID for admin operations (topup, etc.)\n- `topup_amount` → Amount to topup user balance\n- `topup_description` → Description for topup transaction\n\n## 📋 Testing Order:\n1. **Admin Authentication** → Login to get admin token\n2. **Dashboard Overview** → View system statistics\n3. **Admin Management** → CRUD operations on admin accounts\n4. **Configuration Management** → Manage system settings and content\n5. **Transaction Monitoring** → View and manage transactions\n6. **Admin User Balance Management** → Top-up user balances\n7. **Transaction Reversal** → Reverse transactions if needed\n8. **Audit Review** → Monitor system activities and security\n9. **Admin Logout** → Clean session termination",
+    "description": "🔧 **ADMIN-ONLY API Collection** for MBankingCore running on PORT 8080\n\n## 🎯 Admin Features Coverage:\n- ✅ Admin Authentication (Login/Logout)\n- ✅ Admin Dashboard with comprehensive statistics\n- ✅ Admin CRUD Management\n- ✅ Transaction Monitoring & Management\n- ✅ Transaction Reversal Operations\n- ✅ **Checker-Maker System** (Dual Approval Workflow) 🆕\n- ✅ **Approval Threshold Management** 🆕\n- ✅ Configuration Management\n- ✅ Admin Content Management (Terms & Privacy Policy)\n- ✅ Audit Trails & Security Monitoring\n- ✅ User Management (Admin view)\n- ✅ Admin User Balance Top-up\n- ✅ **Soft Delete System** (Users & Admins) 🆕\n\n## 📊 Admin Dashboard Statistics:\n- 👥 Total Users: 6,067+\n- 👨‍💼 Total Admins: 50+\n- 💳 Total Transactions: 35,375+\n- 💰 Transaction Analytics by time periods\n- 📈 Performance metrics and trends\n\n## 🔐 Admin Authentication Flow:\n1. **Admin Login** → Submit admin credentials and get admin access_token\n2. **Get Dashboard** → View comprehensive system statistics\n3. **Access Admin Endpoints** → Full admin operations\n4. **Admin Logout** → Invalidate admin session\n\n## 🛠️ Admin Management Operations:\n- **Get All Admins** → List all administrators with pagination\n- **Get Admin by ID** → Retrieve specific admin details\n- **Create Admin** → Add new administrator account\n- **Update Admin** → Modify admin account details\n- **Delete Admin** → Remove administrator account\n\n## 💳 Transaction Management:\n- **Get All Transactions** → Monitor all user transactions with filtering\n- **Reverse Transaction** → Reverse any transaction type with reason\n- **Admin Topup User Balance** → Admin can top-up user balance directly\n- **Admin Adjust User Balance** → Credit/debit adjustments with reason tracking\n- **Admin Set User Balance** → Set exact balance amount with audit trail\n- **Get User Balance History** → View detailed balance change history\n- **Transaction Analytics** → View transaction trends and statistics\n\n## ⚖️ Checker-Maker System (Dual Approval) 🆕:\n- **Create Pending Transaction (Maker)** → Submit high-value transactions for approval\n  - Supports: topup, withdraw, transfer, balance_adjustment, balance_set\n  - Automatic threshold validation based on transaction type and amount\n  - Segregation of duties: Maker cannot approve own transactions\n- **Get Pending Transactions** → View all transactions awaiting approval\n  - Filter by status (pending, approved, rejected, expired)\n  - Filter by transaction type, maker admin, target user\n  - Pagination support for large datasets\n- **Approve Transaction (Checker)** → Approve pending transactions\n  - Validates checker is different from maker\n  - Automatically executes approved transaction\n  - Creates audit trail for approval decision\n- **Reject Transaction (Checker)** → Reject pending transactions\n  - Requires rejection reason/comments\n  - Prevents transaction execution\n  - Maintains audit trail for compliance\n- **Get Approval Statistics** → View approval system metrics\n  - Statistics by transaction type, admin, time period\n  - Approval rates, rejection rates, expiration tracking\n  - Performance analytics for compliance reporting\n\n## 🎯 Approval Threshold Management 🆕:\n- **Get All Approval Thresholds** → List all approval thresholds\n- **Get Approval Threshold by Type** → Get threshold for specific transaction type\n- **Create/Update Approval Threshold** → Configure approval rules\n  - Set amount thresholds requiring approval\n  - Configure dual approval thresholds for ultra-high values\n  - Set auto-expiration timeouts\n  - Activate/deactivate thresholds\n- **Deactivate Approval Threshold** → Disable threshold rules\n\n## 🛡️ Security & Compliance Features:\n- **Segregation of Duties** → Maker-checker separation enforced\n- **Configurable Thresholds** → Based on transaction type and amount\n- **Auto-Expiration** → Prevents stale approvals (12-48 hours)\n- **Dual Approval** → Ultra-high value transactions require two approvals\n- **Comprehensive Audit Trail** → All approval actions logged\n- **Risk-Based Controls** → Different thresholds for different risk levels\n\n## 👥 User Management (Admin Only):\n- **Get All Users** → List all users with advanced search and filtering\n- **Get User by ID** → Retrieve specific user details\n- **Admin User Balance Management** → Comprehensive balance operations\n  - **Topup** → Add funds to user balance\n  - **Adjust** → Credit/debit with reason (positive/negative amounts)\n  - **Set Balance** → Set exact balance amount\n  - **Balance History** → View all balance-affecting transactions\n\n## ⚙️ Configuration Management:\n- **Get All Configs** → List all system configuration values\n- **Get Config by Key** → Retrieve specific configuration value\n- **Set Config** → Create or update configuration values\n- **Delete Config** → Remove configuration values\n- **Admin Terms & Conditions** → Manage admin-specific terms and conditions\n- **Admin Privacy Policy** → Manage admin-specific privacy policy\n\n## 🔍 Audit & Security Monitoring:\n- **Get Audit Logs** → Review all system activities with filtering\n  - Filter by entity type (user, transaction, admin, etc.)\n  - Filter by action (CREATE, READ, UPDATE, DELETE)\n  - Filter by user/admin ID, date range, IP address\n  - Pagination support for large datasets\n- **Get Login Audit Logs** → Monitor authentication activities\n  - Filter by login type (user_login, admin_login, logout)\n  - Filter by status (success, failed, blocked)\n  - Device information and failure reasons\n\n## 🚨 Security Features:\n- JWT Token-based authentication\n- Role-based access control\n- Comprehensive audit trails\n- Failed login monitoring\n- IP address tracking\n- Device session management\n- **Checker-Maker Approval Controls** 🆕\n- **Configurable Risk Thresholds** 🆕\n\n## ⚠️ Important Notes:\n- **Admin Token Required** → All endpoints require admin authentication\n- **Role Permissions** → Different admin roles may have different permissions\n- **Audit Compliance** → All admin actions are logged for security\n- **Rate Limiting** → Admin actions may be rate-limited for security\n- **Dual Approval** → High-value transactions require checker approval 🆕\n\n## 🔧 Environment Variables Required:\n- `base_url` → Server base URL (http://localhost:8080)\n- `admin_email` → Admin email for login\n- `admin_password` → Admin password for login\n- `admin_token` → Admin access token (auto-set after login)\n- `admin_id` → Admin ID (auto-set after login)\n- `admin_role` → Admin role (auto-set after login)\n- `config_key` → Configuration key for config operations\n- `config_value` → Configuration value for config operations\n- `admin_terms_content` → Admin terms & conditions content\n- `admin_privacy_content` → Admin privacy policy content\n- `target_user_id` → User ID for admin operations (topup, etc.)\n- `topup_amount` → Amount to topup user balance\n- `topup_description` → Description for topup transaction\n- `adjustment_amount` → Amount for balance adjustment (positive for credit, negative for debit)\n- `adjustment_reason` → Reason for balance adjustment (minimum 10 characters)\n- `adjustment_type` → Type of adjustment (adjustment, correction, manual_correction, error_correction)\n- `adjustment_description` → Optional description for adjustment\n- `set_balance_amount` → Target balance amount for set balance operation\n- `set_balance_reason` → Reason for setting balance (minimum 10 characters)\n- `set_balance_description` → Optional description for set balance operation\n- `balance_history_page` → Page number for balance history pagination\n- `balance_history_limit` → Items per page for balance history\n- `balance_history_type` → Filter balance history by transaction type\n- `pending_transaction_id` → ID of pending transaction for approval/rejection 🆕\n- `checker_maker_transaction_type` → Type: topup, withdraw, transfer, balance_adjustment, balance_set 🆕\n- `checker_maker_amount` → Transaction amount for checker-maker 🆕\n- `checker_maker_description` → Description for checker-maker transaction 🆕\n- `checker_maker_target_user_id` → Target user ID for checker-maker transaction 🆕\n- `approval_comments` → Comments for approval decision 🆕\n- `rejection_comments` → Comments for rejection decision 🆕\n- `threshold_transaction_type` → Transaction type for threshold management 🆕\n- `threshold_amount` → Amount threshold for approval requirement 🆕\n- `threshold_requires_dual` → Boolean for dual approval requirement 🆕\n- `threshold_dual_amount` → Amount threshold for dual approval 🆕\n- `threshold_expire_hours` → Hours until pending transaction expires 🆕\n- `target_user_id` → User ID for soft delete operations 🆕\n- `deleted_user_id` → ID of deleted user for restore/permanent delete 🆕\n- `deleted_admin_id` → ID of deleted admin for restore/permanent delete 🆕\n- `deleted_user_page` → Page number for deleted users pagination 🆕\n- `deleted_user_per_page` → Items per page for deleted users 🆕\n- `deleted_admin_page` → Page number for deleted admins pagination 🆕\n- `deleted_admin_per_page` → Items per page for deleted admins 🆕\n\n## 📋 Testing Order:\n1. **Admin Authentication** → Login to get admin token\n2. **Dashboard Overview** → View system statistics\n3. **Admin Management** → CRUD operations on admin accounts\n4. **Approval Threshold Management** → Configure approval rules 🆕\n5. **Configuration Management** → Manage system settings and content\n6. **Transaction Monitoring** → View and manage transactions\n7. **Checker-Maker Operations** → Test dual approval workflow 🆕\n8. **Admin User Balance Management** → Top-up user balances\n9. **Transaction Reversal** → Reverse transactions if needed\n10. **Audit Review** → Monitor system activities and security\n11. **Admin Logout** → Clean session termination",
     "_postman_id": "admin-api-collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -477,6 +477,151 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get Deleted Admins",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has deleted admins data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('admins');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.admins).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Deleted admin records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.admins.length > 0) {",
+                  "        const admin = responseJson.data.admins[0];",
+                  "        pm.expect(admin).to.have.property('id');",
+                  "        pm.expect(admin).to.have.property('name');",
+                  "        pm.expect(admin).to.have.property('email');",
+                  "        pm.expect(admin).to.have.property('role');",
+                  "        pm.expect(admin).to.have.property('deleted_at');",
+                  "        pm.expect(admin.deleted_at).to.not.be.null;",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/deleted?page={{deleted_admin_page}}&per_page={{deleted_admin_per_page}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{deleted_admin_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{deleted_admin_per_page}}",
+                  "description": "Items per page (default: 10, max: 100)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms admin restoration', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('email');",
+                  "    pm.expect(responseJson.data).to.have.property('restored_at');",
+                  "    pm.expect(responseJson.message).to.include('restored');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/{{deleted_admin_id}}/restore",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "{{deleted_admin_id}}", "restore"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms permanent deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('permanently deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/admins/{{deleted_admin_id}}/permanent",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "admins", "{{deleted_admin_id}}", "permanent"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -712,6 +857,548 @@
               "raw": "{{base_url}}/api/admin/users/{{target_user_id}}/topup",
               "host": ["{{base_url}}"],
               "path": ["api", "admin", "users", "{{target_user_id}}", "topup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Adjust User Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Balance adjustment data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_name');",
+                  "    pm.expect(responseJson.data).to.have.property('adjustment_amount');",
+                  "    pm.expect(responseJson.data).to.have.property('adjustment_type');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_before');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_after');",
+                  "    pm.expect(responseJson.data).to.have.property('reason');",
+                  "    pm.expect(responseJson.data).to.have.property('admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('admin_name');",
+                  "});",
+                  "",
+                  "pm.test('Balance calculation is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const adjustmentAmount = responseJson.data.adjustment_amount;",
+                  "    const balanceBefore = responseJson.data.balance_before;",
+                  "    const balanceAfter = responseJson.data.balance_after;",
+                  "    pm.expect(balanceAfter).to.equal(balanceBefore + adjustmentAmount);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": {{adjustment_amount}},\n    \"reason\": \"{{adjustment_reason}}\",\n    \"type\": \"{{adjustment_type}}\",\n    \"description\": \"{{adjustment_description}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/{{target_user_id}}/adjust",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users", "{{target_user_id}}", "adjust"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Set User Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Balance set data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_name');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_before');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_after');",
+                  "    pm.expect(responseJson.data).to.have.property('adjustment_amount');",
+                  "    pm.expect(responseJson.data).to.have.property('reason');",
+                  "    pm.expect(responseJson.data).to.have.property('admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('admin_name');",
+                  "});",
+                  "",
+                  "pm.test('Balance is set correctly', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const balanceAfter = responseJson.data.balance_after;",
+                  "    const requestedBalance = parseInt(pm.environment.get('set_balance_amount'));",
+                  "    pm.expect(balanceAfter).to.equal(requestedBalance);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"balance\": {{set_balance_amount}},\n    \"reason\": \"{{set_balance_reason}}\",\n    \"description\": \"{{set_balance_description}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/{{target_user_id}}/set-balance",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users", "{{target_user_id}}", "set-balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Balance History",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Balance history data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('user');",
+                  "    pm.expect(responseJson.data).to.have.property('balance_history');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.balance_history).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('User data has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('name');",
+                  "    pm.expect(user).to.have.property('current_balance');",
+                  "    pm.expect(user).to.have.property('status');",
+                  "});",
+                  "",
+                  "pm.test('Balance history transactions have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.balance_history.length > 0) {",
+                  "        const transaction = responseJson.data.balance_history[0];",
+                  "        pm.expect(transaction).to.have.property('id');",
+                  "        pm.expect(transaction).to.have.property('type');",
+                  "        pm.expect(transaction).to.have.property('amount');",
+                  "        pm.expect(transaction).to.have.property('balance_before');",
+                  "        pm.expect(transaction).to.have.property('balance_after');",
+                  "        pm.expect(transaction).to.have.property('created_at');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/{{target_user_id}}/balance-history?page={{balance_history_page}}&limit={{balance_history_limit}}&type={{balance_history_type}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users", "{{target_user_id}}", "balance-history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{balance_history_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{balance_history_limit}}",
+                  "description": "Items per page (default: 20, max: 100)"
+                },
+                {
+                  "key": "type",
+                  "value": "{{balance_history_type}}",
+                  "description": "Filter by transaction type"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 User Management",
+      "description": "Admin user management operations including soft delete functionality",
+      "item": [
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has users data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('users');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.users).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('User records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.users.length > 0) {",
+                  "        const user = responseJson.data.users[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('name');",
+                  "        pm.expect(user).to.have.property('phone');",
+                  "        pm.expect(user).to.have.property('balance');",
+                  "        pm.expect(user).to.have.property('status');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users?page={{user_page}}&per_page={{user_per_page}}&search={{user_search}}&name={{user_name_filter}}&phone={{user_phone_filter}}&status={{user_status_filter}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{user_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{user_per_page}}",
+                  "description": "Items per page (default: 10, max: 100)"
+                },
+                {
+                  "key": "search",
+                  "value": "{{user_search}}",
+                  "description": "Search across name and phone"
+                },
+                {
+                  "key": "name",
+                  "value": "{{user_name_filter}}",
+                  "description": "Filter by user name"
+                },
+                {
+                  "key": "phone",
+                  "value": "{{user_phone_filter}}",
+                  "description": "Filter by phone number"
+                },
+                {
+                  "key": "status",
+                  "value": "{{user_status_filter}}",
+                  "description": "Filter by user status"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has user data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('phone');",
+                  "    pm.expect(responseJson.data).to.have.property('balance');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/{{target_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users", "{{target_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User (Soft Delete)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms soft deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('phone');",
+                  "    pm.expect(responseJson.data).to.have.property('deleted_at');",
+                  "    pm.expect(responseJson.message).to.include('soft deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{target_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{target_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has deleted users data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('users');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.users).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Deleted user records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.users.length > 0) {",
+                  "        const user = responseJson.data.users[0];",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('name');",
+                  "        pm.expect(user).to.have.property('phone');",
+                  "        pm.expect(user).to.have.property('deleted_at');",
+                  "        pm.expect(user.deleted_at).to.not.be.null;",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/deleted?page={{deleted_user_page}}&per_page={{deleted_user_per_page}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "deleted"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{deleted_user_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{deleted_user_per_page}}",
+                  "description": "Items per page (default: 10, max: 100)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms user restoration', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('phone');",
+                  "    pm.expect(responseJson.data).to.have.property('restored_at');",
+                  "    pm.expect(responseJson.message).to.include('restored');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{deleted_user_id}}/restore",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{deleted_user_id}}", "restore"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Permanent Delete User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms permanent deletion', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('permanently deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{deleted_user_id}}/permanent",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{deleted_user_id}}", "permanent"]
             }
           },
           "response": []
@@ -1105,6 +1792,555 @@
       ]
     },
     {
+      "name": "⚖️ Checker-Maker System",
+      "description": "Dual approval system for high-value transactions with maker-checker workflow",
+      "item": [
+        {
+          "name": "Create Pending Transaction (Maker)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has pending transaction data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_type');",
+                  "    pm.expect(responseJson.data).to.have.property('amount');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "    pm.expect(responseJson.data).to.have.property('maker_admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('expires_at');",
+                  "});",
+                  "",
+                  "pm.test('Transaction status is pending', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data.status).to.equal('pending');",
+                  "});",
+                  "",
+                  "// Save pending transaction ID for approval testing",
+                  "pm.test('Save pending transaction ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('pending_transaction_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_type\": \"{{checker_maker_transaction_type}}\",\n  \"amount\": {{checker_maker_amount}},\n  \"description\": \"{{checker_maker_description}}\",\n  \"target_user_id\": {{checker_maker_target_user_id}},\n  \"metadata\": {\n    \"balance\": {{checker_maker_balance}},\n    \"reason\": \"{{checker_maker_reason}}\",\n    \"adjustment_type\": \"{{checker_maker_adjustment_type}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/checker-maker/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "checker-maker", "transactions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Transactions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has pending transactions list', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('transactions');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.transactions).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Pending transaction records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.transactions.length > 0) {",
+                  "        const transaction = responseJson.data.transactions[0];",
+                  "        pm.expect(transaction).to.have.property('id');",
+                  "        pm.expect(transaction).to.have.property('transaction_type');",
+                  "        pm.expect(transaction).to.have.property('amount');",
+                  "        pm.expect(transaction).to.have.property('status');",
+                  "        pm.expect(transaction).to.have.property('maker_admin_name');",
+                  "        pm.expect(transaction).to.have.property('target_user_name');",
+                  "        pm.expect(transaction).to.have.property('created_at');",
+                  "        pm.expect(transaction).to.have.property('expires_at');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/checker-maker/transactions?page={{checker_maker_page}}&limit={{checker_maker_limit}}&status={{checker_maker_status_filter}}&transaction_type={{checker_maker_type_filter}}&maker_admin_id={{checker_maker_maker_filter}}&target_user_id={{checker_maker_user_filter}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "checker-maker", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{checker_maker_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{checker_maker_limit}}",
+                  "description": "Items per page (default: 20, max: 100)"
+                },
+                {
+                  "key": "status",
+                  "value": "{{checker_maker_status_filter}}",
+                  "description": "Filter by status: pending, approved, rejected, expired"
+                },
+                {
+                  "key": "transaction_type",
+                  "value": "{{checker_maker_type_filter}}",
+                  "description": "Filter by type: topup, withdraw, transfer, balance_adjustment, balance_set"
+                },
+                {
+                  "key": "maker_admin_id",
+                  "value": "{{checker_maker_maker_filter}}",
+                  "description": "Filter by maker admin ID"
+                },
+                {
+                  "key": "target_user_id",
+                  "value": "{{checker_maker_user_filter}}",
+                  "description": "Filter by target user ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Transaction (Checker)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms approval', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "    pm.expect(responseJson.data).to.have.property('checker_admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('approved_at');",
+                  "    pm.expect(responseJson.data).to.have.property('executed_transaction_id');",
+                  "});",
+                  "",
+                  "pm.test('Transaction status is approved and executed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data.status).to.equal('approved');",
+                  "    pm.expect(responseJson.data.executed_transaction_id).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"comments\": \"{{approval_comments}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/checker-maker/transactions/{{pending_transaction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "checker-maker", "transactions", "{{pending_transaction_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Transaction (Checker)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms rejection', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('status');",
+                  "    pm.expect(responseJson.data).to.have.property('checker_admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('rejected_at');",
+                  "    pm.expect(responseJson.data).to.have.property('rejection_reason');",
+                  "});",
+                  "",
+                  "pm.test('Transaction status is rejected', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data.status).to.equal('rejected');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"reject\",\n  \"comments\": \"{{rejection_comments}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/checker-maker/transactions/{{pending_transaction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "checker-maker", "transactions", "{{pending_transaction_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Approval Statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has approval statistics', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('total_pending');",
+                  "    pm.expect(responseJson.data).to.have.property('total_approved');",
+                  "    pm.expect(responseJson.data).to.have.property('total_rejected');",
+                  "    pm.expect(responseJson.data).to.have.property('total_expired');",
+                  "    pm.expect(responseJson.data).to.have.property('stats_by_type');",
+                  "    pm.expect(responseJson.data).to.have.property('stats_by_admin');",
+                  "});",
+                  "",
+                  "pm.test('Statistics are numeric values', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data.total_pending).to.be.a('number');",
+                  "    pm.expect(responseJson.data.total_approved).to.be.a('number');",
+                  "    pm.expect(responseJson.data.total_rejected).to.be.a('number');",
+                  "    pm.expect(responseJson.data.total_expired).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/checker-maker/stats?start_date={{stats_start_date}}&end_date={{stats_end_date}}&transaction_type={{stats_type_filter}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "checker-maker", "stats"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "{{stats_start_date}}",
+                  "description": "Start date for statistics (YYYY-MM-DD)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "{{stats_end_date}}",
+                  "description": "End date for statistics (YYYY-MM-DD)"
+                },
+                {
+                  "key": "transaction_type",
+                  "value": "{{stats_type_filter}}",
+                  "description": "Filter by transaction type"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Approval Threshold Management",
+      "description": "Manage approval thresholds for different transaction types in checker-maker system",
+      "item": [
+        {
+          "name": "Get All Approval Thresholds",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has approval thresholds list', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Threshold records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.length > 0) {",
+                  "        const threshold = responseJson.data[0];",
+                  "        pm.expect(threshold).to.have.property('id');",
+                  "        pm.expect(threshold).to.have.property('transaction_type');",
+                  "        pm.expect(threshold).to.have.property('amount_threshold');",
+                  "        pm.expect(threshold).to.have.property('requires_dual_approval');",
+                  "        pm.expect(threshold).to.have.property('dual_approval_threshold');",
+                  "        pm.expect(threshold).to.have.property('auto_expire_hours');",
+                  "        pm.expect(threshold).to.have.property('is_active');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/approval-thresholds?active_only={{threshold_active_only}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "approval-thresholds"],
+              "query": [
+                {
+                  "key": "active_only",
+                  "value": "{{threshold_active_only}}",
+                  "description": "Filter active thresholds only (true/false)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Approval Threshold by Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has threshold data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_type');",
+                  "    pm.expect(responseJson.data).to.have.property('amount_threshold');",
+                  "    pm.expect(responseJson.data).to.have.property('requires_dual_approval');",
+                  "    pm.expect(responseJson.data).to.have.property('is_active');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/approval-thresholds/{{threshold_transaction_type}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "approval-thresholds", "{{threshold_transaction_type}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create or Update Approval Threshold",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "pm.test('Response has threshold data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('transaction_type');",
+                  "    pm.expect(responseJson.data).to.have.property('amount_threshold');",
+                  "    pm.expect(responseJson.data).to.have.property('requires_dual_approval');",
+                  "    pm.expect(responseJson.data).to.have.property('is_active');",
+                  "});",
+                  "",
+                  "// Save created/updated threshold for further testing",
+                  "pm.test('Save threshold ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('threshold_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_type\": \"{{threshold_transaction_type}}\",\n  \"amount_threshold\": {{threshold_amount}},\n  \"requires_dual_approval\": {{threshold_requires_dual}},\n  \"dual_approval_threshold\": {{threshold_dual_amount}},\n  \"auto_expire_hours\": {{threshold_expire_hours}},\n  \"is_active\": {{threshold_is_active}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/approval-thresholds",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "approval-thresholds"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Approval Threshold",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms deactivation', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson.message).to.include('deactivated');",
+                  "});",
+                  "",
+                  "pm.test('Threshold is deactivated', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('is_active');",
+                  "    pm.expect(responseJson.data.is_active).to.equal(false);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/approval-thresholds/{{threshold_transaction_type}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "approval-thresholds", "{{threshold_transaction_type}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "🔍 Audit & Security",
       "description": "Audit trails and security monitoring for admin operations",
       "item": [
@@ -1330,7 +2566,7 @@
     },
     {
       "key": "admin_endpoints",
-      "value": "20",
+      "value": "23",
       "type": "string"
     },
     {
@@ -1356,6 +2592,56 @@
     {
       "key": "admin_privacy_content",
       "value": "Updated Admin Privacy Policy for MBankingCore Administration Panel...",
+      "type": "string"
+    },
+    {
+      "key": "adjustment_amount",
+      "value": "50000",
+      "type": "string"
+    },
+    {
+      "key": "adjustment_reason",
+      "value": "Balance adjustment for testing purposes",
+      "type": "string"
+    },
+    {
+      "key": "adjustment_type",
+      "value": "adjustment",
+      "type": "string"
+    },
+    {
+      "key": "adjustment_description",
+      "value": "Admin balance adjustment test",
+      "type": "string"
+    },
+    {
+      "key": "set_balance_amount",
+      "value": "100000",
+      "type": "string"
+    },
+    {
+      "key": "set_balance_reason",
+      "value": "Setting balance for system testing",
+      "type": "string"
+    },
+    {
+      "key": "set_balance_description",
+      "value": "Admin set balance operation test",
+      "type": "string"
+    },
+    {
+      "key": "balance_history_page",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "balance_history_limit",
+      "value": "20",
+      "type": "string"
+    },
+    {
+      "key": "balance_history_type",
+      "value": "",
       "type": "string"
     }
   ]

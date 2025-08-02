@@ -55,6 +55,7 @@ class MbxDataTableWidget extends StatefulWidget {
   final Set<String> selectedRows;
   final bool enableSelection;
   final bool enableHighlight;
+  final bool enableRowOnlyHighlight;
   final Color? highlightColor;
   final double? minTableWidth;
 
@@ -75,6 +76,7 @@ class MbxDataTableWidget extends StatefulWidget {
     this.selectedRows = const {},
     this.enableSelection = false,
     this.enableHighlight = true,
+    this.enableRowOnlyHighlight = false,
     this.highlightColor,
     this.minTableWidth,
   });
@@ -172,6 +174,7 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
       columnSpacing: 16,
       dataRowMinHeight: 56,
       dataRowMaxHeight: 72,
+      showBottomBorder: false,
       headingRowColor: WidgetStateProperty.all(
         isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],
       ),
@@ -255,7 +258,9 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
           : null,
       cells: [
         // Data cells based on columns
-        ...widget.columns.map((column) {
+        ...widget.columns.asMap().entries.map((entry) {
+          final index = entry.key;
+          final column = entry.value;
           final value = row.data[column.sortKey] ?? '';
 
           Widget content;
@@ -269,32 +274,41 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
             );
           }
 
+          // Only the first cell should handle mouse events for row-only highlighting
+          final shouldHandleMouse =
+              !widget.enableRowOnlyHighlight || index == 0;
+
           return DataCell(
-            MouseRegion(
-              onEnter: (_) {
-                if (widget.enableHighlight) {
-                  print(
-                    '[DEBUG HOVER] Entering row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
-                  );
-                  setState(() => hoveredRowId = row.id);
-                }
-              },
-              onExit: (_) {
-                if (widget.enableHighlight) {
-                  print(
-                    '[DEBUG HOVER] Exiting row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
-                  );
-                  setState(() => hoveredRowId = null);
-                }
-              },
-              child: InkWell(
-                onTap: row.onTap,
-                child: SizedBox(
-                  width: column.width,
-                  child: Align(
-                    alignment: _getAlignment(column.textAlign),
-                    child: content,
-                  ),
+            InkWell(
+              onTap: row.onTap,
+              onHover: widget.enableRowOnlyHighlight
+                  ? (isHovering) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Row ${row.id} hover: $isHovering (ROW-ONLY mode, cell: $index)',
+                        );
+                        setState(
+                          () => hoveredRowId = isHovering ? row.id : null,
+                        );
+                      }
+                    }
+                  : shouldHandleMouse
+                  ? (isHovering) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Cell ${row.id} hover: $isHovering (COLUMN mode)',
+                        );
+                        setState(
+                          () => hoveredRowId = isHovering ? row.id : null,
+                        );
+                      }
+                    }
+                  : null,
+              child: SizedBox(
+                width: column.width,
+                child: Align(
+                  alignment: _getAlignment(column.textAlign),
+                  child: content,
                 ),
               ),
             ),
@@ -304,34 +318,63 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
         // Actions cell if actions column exists
         if (widget.rows.any((row) => row.actions.isNotEmpty))
           DataCell(
-            MouseRegion(
-              onEnter: (_) {
-                if (widget.enableHighlight) {
-                  print(
-                    '[DEBUG HOVER] Entering actions row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
-                  );
-                  setState(() => hoveredRowId = row.id);
-                }
-              },
-              onExit: (_) {
-                if (widget.enableHighlight) {
-                  print(
-                    '[DEBUG HOVER] Exiting actions row: ${row.id} (enableHighlight: ${widget.enableHighlight})',
-                  );
-                  setState(() => hoveredRowId = null);
-                }
-              },
-              child: SizedBox(
-                width: 140,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: row.actions,
+            widget.enableRowOnlyHighlight
+                ? MouseRegion(
+                    onEnter: (_) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Entering actions row: ${row.id} (ROW-ONLY mode)',
+                        );
+                        setState(() => hoveredRowId = row.id);
+                      }
+                    },
+                    onExit: (_) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Exiting actions row: ${row.id} (ROW-ONLY mode)',
+                        );
+                        setState(() => hoveredRowId = null);
+                      }
+                    },
+                    child: SizedBox(
+                      width: 140,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: row.actions,
+                        ),
+                      ),
+                    ),
+                  )
+                : MouseRegion(
+                    onEnter: (_) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Entering actions row: ${row.id} (enableHighlight: ${widget.enableHighlight}, rowOnly: ${widget.enableRowOnlyHighlight})',
+                        );
+                        setState(() => hoveredRowId = row.id);
+                      }
+                    },
+                    onExit: (_) {
+                      if (widget.enableHighlight) {
+                        print(
+                          '[DEBUG HOVER] Exiting actions row: ${row.id} (enableHighlight: ${widget.enableHighlight}, rowOnly: ${widget.enableRowOnlyHighlight})',
+                        );
+                        setState(() => hoveredRowId = null);
+                      }
+                    },
+                    child: SizedBox(
+                      width: 140,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: row.actions,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
       ],
     );

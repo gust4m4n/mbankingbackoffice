@@ -120,7 +120,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
             emptyIcon: Icons.admin_panel_settings_outlined,
             emptyTitle: 'No administrators found',
             emptySubtitle: 'Create your first admin to get started',
-            enableHighlight: true,
+            enableHighlight: false,
             minTableWidth: 740,
           ),
 

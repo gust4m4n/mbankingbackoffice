@@ -117,6 +117,7 @@ class MbxUserManagementScreen extends StatelessWidget {
               emptyTitle: 'No users found',
               emptySubtitle: 'Users will appear here once they register',
               enableHighlight: true,
+              enableRowOnlyHighlight: true,
               minTableWidth: 770,
             ),
 

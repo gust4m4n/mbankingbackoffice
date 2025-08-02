@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
 import 'package:mbankingbackoffice/admin/services/mbx_admin_api_service.dart';
+import 'package:mbankingbackoffice/admin/views/mbx_admin_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxAdminController extends GetxController {
@@ -99,7 +100,7 @@ class MbxAdminController extends GetxController {
   /// View admin details
   void viewAdmin(MbxAdminModel admin) {
     selectedAdmin = admin;
-    Get.dialog(_buildAdminDetailsDialog(admin), barrierDismissible: true);
+    MbxAdminDetailDialog.show(Get.context!, admin);
   }
 
   /// Show create admin dialog
