@@ -1,5 +1,6 @@
 import 'package:mbankingbackoffice/admin/models/mbx_admin_model.dart';
 import 'package:mbankingbackoffice/admin/services/mbx_admin_api_service.dart';
+import 'package:mbankingbackoffice/admin/views/mbx_admin_detail_dialog.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxAdminController extends GetxController {
@@ -120,7 +121,7 @@ class MbxAdminController extends GetxController {
   }
 
   void viewAdmin(MbxAdminModel admin) {
-    print('View admin: ${admin.name}');
+    MbxAdminDetailDialog.show(Get.context!, admin);
   }
 
   void deleteAdmin(MbxAdminModel admin) {

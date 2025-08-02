@@ -82,12 +82,6 @@ class MbxManagementScaffold extends StatelessWidget {
                           ),
 
                           // Actions
-                          // Dark Mode Switch
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: MbxDarkModeSwitch(showLabel: true),
-                          ),
-
                           if (actions != null) ...actions!,
 
                           // Add button
@@ -119,6 +113,12 @@ class MbxManagementScaffold extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                           ],
+
+                          // Dark Mode Switch (moved to rightmost position)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: MbxDarkModeSwitch(showLabel: false),
+                          ),
 
                           // Refresh button
                           if (onRefreshPressed != null)
