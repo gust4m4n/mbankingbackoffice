@@ -30,13 +30,6 @@ class MbxUserManagementScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(Get.context!).cardColor,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           children: [

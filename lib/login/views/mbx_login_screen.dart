@@ -85,7 +85,7 @@ class MbxLoginScreen extends StatelessWidget {
                         minHeight: isMobile ? 0 : constraints.maxHeight * 0.6,
                       ),
                       child: Card(
-                        elevation: 8,
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                           side: BorderSide(

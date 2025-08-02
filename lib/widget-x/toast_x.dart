@@ -4,24 +4,36 @@ class ToastX {
   static FlashController? controller;
 
   static showSuccess({required String msg}) {
+    final isDarkMode = Get.context != null
+        ? Theme.of(Get.context!).brightness == Brightness.dark
+        : false;
+
     ToastX.snackBarCustom(
       widget: BasicToast(
-        backgroundColor: ColorX.green,
-        textColor: ColorX.white,
+        backgroundColor: isDarkMode
+            ? const Color(0xFF2E7D32).withOpacity(0.9) // Soft dark green
+            : const Color(0xFF4CAF50).withOpacity(0.9), // Soft light green
+        textColor: Colors.white,
         msg: msg,
       ),
-      duration: 4000,
+      duration: 2500,
     );
   }
 
   static showError({required String msg}) {
+    final isDarkMode = Get.context != null
+        ? Theme.of(Get.context!).brightness == Brightness.dark
+        : false;
+
     ToastX.snackBarCustom(
       widget: BasicToast(
-        backgroundColor: ColorX.red,
-        textColor: ColorX.white,
+        backgroundColor: isDarkMode
+            ? const Color(0xFFD32F2F).withOpacity(0.9) // Soft dark red
+            : const Color(0xFFE57373).withOpacity(0.9), // Soft light red
+        textColor: Colors.white,
         msg: msg,
       ),
-      duration: 4000,
+      duration: 3000,
     );
   }
 
@@ -54,8 +66,8 @@ class ToastX {
           controller: controller,
           elevation: 0.0,
           behavior: FlashBehavior.floating,
-          position: FlashPosition.bottom,
-          padding: EdgeInsets.all(0.0),
+          position: FlashPosition.bottom, // Pindah kembali ke bottom
+          padding: const EdgeInsets.all(0.0),
           dismissDirections: const [FlashDismissDirection.vertical],
           content: widget,
         );
@@ -83,35 +95,40 @@ class BasicToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContainerX(
-      backgroundColor: ColorX.transparent,
-      padding: EdgeInsets.symmetric(
-        horizontal: 32.0,
-        vertical: 16.0,
-      ), // Kurangi padding vertikal
-      child: Center(
-        child: ContainerX(
-          backgroundColor: backgroundColor,
-          padding: EdgeInsets.only(
-            left: 16.0,
-            top: 12.0,
-            right: 16.0,
-            bottom: 12.0,
-          ),
-          cornerRadius: 16.0,
-          child: Wrap(
-            children: [
-              TextX(
-                msg,
-                color: textColor,
-                fontSize: 15.0,
-                fontWeight: FontWeight.w500,
-                textAlign: TextAlign.center,
-                maxLines: 16,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth:
+                    screenWidth - 32, // Screen width minus horizontal padding
+                minWidth: 120, // Minimal width untuk toast yang sangat pendek
               ),
-            ],
+              child: ContainerX(
+                backgroundColor: backgroundColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                cornerRadius: 16.0,
+                child: TextX(
+                  msg,
+                  color: textColor,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
+                  maxLines: 16,
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -123,18 +140,38 @@ class BasicSnackBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContainerX(
-      backgroundColor: ColorX.theme,
-      padding: EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0, bottom: 8.0),
-      child: Wrap(
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextX(
-            msg,
-            color: ColorX.white,
-            fontSize: 15.0,
-            fontWeight: FontWeight.w500,
-            textAlign: TextAlign.start,
-            maxLines: 16,
+          Flexible(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth:
+                    screenWidth - 32, // Screen width minus horizontal padding
+                minWidth: 120, // Minimal width untuk toast yang sangat pendek
+              ),
+              child: ContainerX(
+                backgroundColor: ColorX.theme,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                cornerRadius: 16.0,
+                child: TextX(
+                  msg,
+                  color: ColorX.white,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
+                  maxLines: 16,
+                ),
+              ),
+            ),
           ),
         ],
       ),

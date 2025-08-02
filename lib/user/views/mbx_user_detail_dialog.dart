@@ -30,14 +30,6 @@ class MbxUserDetailDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
-              spreadRadius: 0,
-            ),
-          ],
         ),
         child: Column(
           children: [
@@ -123,13 +115,6 @@ class MbxUserDetailDialog extends StatelessWidget {
           colors: [const Color(0xFF1976D2), const Color(0xFF1565C0)],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF1976D2).withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Row(
         children: [

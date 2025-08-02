@@ -30,14 +30,6 @@ class MbxAdminDetailDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
-              spreadRadius: 0,
-            ),
-          ],
         ),
         child: Column(
           children: [
@@ -179,13 +171,6 @@ class MbxAdminDetailDialog extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF1976D2).withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Center(
               child: Text(

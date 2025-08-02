@@ -42,14 +42,6 @@ class MbxTransactionDetailDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
-              spreadRadius: 0,
-            ),
-          ],
         ),
         child: Column(
           children: [
@@ -188,13 +180,6 @@ class MbxTransactionDetailDialog extends StatelessWidget {
           colors: [transactionColor, transactionColor.withOpacity(0.8)],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: transactionColor.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

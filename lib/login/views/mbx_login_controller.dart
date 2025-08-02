@@ -175,19 +175,27 @@ class MbxLoginController extends GetxController {
         // Save admin token
         await MbxUserPreferencesVM.setToken(response.data!.accessToken);
 
-        // Toast dengan durasi lebih singkat untuk tidak menghalangi
-        ToastX.snackBarCustom(
-          widget: BasicToast(
-            backgroundColor: ColorX.green,
-            textColor: ColorX.white,
-            msg: 'Login berhasil! Selamat datang ${response.data!.admin.name}',
-          ),
-          duration: 2000, // Kurangi dari 4000ms ke 2000ms
-        );
+        // Navigate immediately - no blocking toast
+        Get.offAllNamed('/home');
 
-        // Navigate to dashboard/home
-        Future.delayed(const Duration(milliseconds: 500), () {
-          Get.offAllNamed('/home');
+        // Show welcome message after navigation (non-blocking)
+        Future.delayed(const Duration(milliseconds: 200), () {
+          Get.snackbar(
+            'Login Berhasil',
+            'Selamat datang ${response.data!.admin.name}',
+            backgroundColor:
+                Theme.of(Get.context!).brightness == Brightness.dark
+                ? const Color(0xFF2E7D32).withOpacity(0.9)
+                : const Color(0xFF4CAF50).withOpacity(0.9),
+            colorText: Colors.white,
+            duration: const Duration(seconds: 2),
+            snackPosition: SnackPosition.BOTTOM,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 8,
+            isDismissible: true,
+            forwardAnimationCurve: Curves.easeOut,
+            reverseAnimationCurve: Curves.easeIn,
+          );
         });
       } else {
         ToastX.showError(msg: response.message);

@@ -124,15 +124,6 @@ class MbxAdminManagementScreen extends StatelessWidget {
                       color: isDarkMode
                           ? const Color(0xFF1E1E1E)
                           : Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(
-                            isDarkMode ? 0.3 : 0.05,
-                          ),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) {
@@ -196,15 +187,6 @@ class MbxAdminManagementScreen extends StatelessWidget {
                               ? const Color(0xFF1E1E1E)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(
-                                isDarkMode ? 0.3 : 0.05,
-                              ),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Column(
                           children: [
@@ -604,10 +586,15 @@ class MbxAdminManagementScreen extends StatelessWidget {
       // Clear stored token
       await MbxUserPreferencesVM.setToken('');
 
-      // Navigate to login
+      // Navigate to login and show success message
       Future.delayed(const Duration(milliseconds: 500), () {
         MbxDialogController.hideLoadingDialog();
         Get.offAllNamed('/login');
+
+        // Show logout success toast after navigation
+        Future.delayed(const Duration(milliseconds: 200), () {
+          ToastX.showSuccess(msg: 'Logout berhasil');
+        });
       });
     }
   }

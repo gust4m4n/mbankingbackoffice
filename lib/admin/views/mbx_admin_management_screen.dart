@@ -37,41 +37,6 @@ class MbxAdminManagementScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Table Header
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[50],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Text(
-                  'Administrators',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Total: ${controller.totalAdmins.value}',
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? const Color(0xFFB0B0B0)
-                            : Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           // Loading State
           if (controller.isLoading.value)
             const Expanded(child: Center(child: CircularProgressIndicator()))

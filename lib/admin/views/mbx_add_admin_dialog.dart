@@ -71,14 +71,6 @@ class _MbxAddAdminDialogState extends State<MbxAddAdminDialog> {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.15),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
-              spreadRadius: 0,
-            ),
-          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
