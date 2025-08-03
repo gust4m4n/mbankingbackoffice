@@ -34,151 +34,151 @@ class MbxUserManagementScreen extends StatelessWidget {
       children: [
         // User Table Container
         Expanded(
-          child: GetBuilder<MbxUserController>(
-            builder: (controller) {
-              return Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    // User Table using reusable component
-                    Expanded(
-                      child: MbxDataTableWidget(
-                        isLoading: controller.isLoading.value,
-                        columns: [
-                          MbxDataColumn(
-                            label: 'Name',
-                            sortable: true,
-                            sortKey: 'name',
-                            customWidget: (data) => _buildNameCell(data),
-                          ),
-                          const MbxDataColumn(
-                            label: 'Phone',
-                            sortable: true,
-                            sortKey: 'phone',
-                          ),
-                          MbxDataColumn(
-                            label: 'Balance',
-                            sortable: true,
-                            sortKey: 'balance',
-                            textAlign: TextAlign.right,
-                            customWidget: (data) => _buildBalanceCell(data),
-                          ),
-                          MbxDataColumn(
-                            label: 'Status',
-                            sortable: true,
-                            sortKey: 'status',
-                            customWidget: (data) => _buildStatusCell(data),
-                          ),
-                        ],
-                        rows: controller.users.map((user) {
-                          return MbxDataRow(
-                            id: user.id.toString(),
-                            data: {
-                              'name': user.name,
-                              'phone': user.phone,
-                              'balance': user.balance,
-                              'status': user.status,
-                              'isActive': user.isActive,
-                              'user': user,
-                            },
-                            actions: [
-                              // Compact action buttons with smaller size
-                              SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: IconButton(
-                                  onPressed: () => _topupUser(user),
-                                  icon: const Icon(
-                                    Icons.add_circle_outline,
-                                    size: 14,
-                                    color: Color(0xFF1976D2),
-                                  ),
-                                  tooltip: 'Top Up',
-                                  padding: EdgeInsets.zero,
-                                  splashRadius: 14,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                // User Table using reusable component
+                Expanded(
+                  child: Obx(
+                    () => MbxDataTableWidget(
+                      isLoading: controller.isLoading.value,
+                      columns: [
+                        MbxDataColumn(
+                          label: 'Name',
+                          sortable: true,
+                          sortKey: 'name',
+                          customWidget: (data) => _buildNameCell(data),
+                        ),
+                        const MbxDataColumn(
+                          label: 'Phone',
+                          sortable: true,
+                          sortKey: 'phone',
+                        ),
+                        MbxDataColumn(
+                          label: 'Balance',
+                          sortable: true,
+                          sortKey: 'balance',
+                          textAlign: TextAlign.right,
+                          customWidget: (data) => _buildBalanceCell(data),
+                        ),
+                        MbxDataColumn(
+                          label: 'Status',
+                          sortable: true,
+                          sortKey: 'status',
+                          customWidget: (data) => _buildStatusCell(data),
+                        ),
+                      ],
+                      rows: controller.users.map((user) {
+                        return MbxDataRow(
+                          id: user.id.toString(),
+                          data: {
+                            'name': user.name,
+                            'phone': user.phone,
+                            'balance': user.balance,
+                            'status': user.status,
+                            'isActive': user.isActive,
+                            'user': user,
+                          },
+                          actions: [
+                            // Compact action buttons with smaller size
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: IconButton(
+                                onPressed: () => _topupUser(user),
+                                icon: const Icon(
+                                  Icons.add_circle_outline,
+                                  size: 14,
+                                  color: Color(0xFF1976D2),
                                 ),
+                                tooltip: 'Top Up',
+                                padding: EdgeInsets.zero,
+                                splashRadius: 14,
                               ),
+                            ),
 
-                              SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: IconButton(
-                                  onPressed: () => _adjustUser(user),
-                                  icon: const Icon(
-                                    Icons.tune_rounded,
-                                    size: 14,
-                                    color: Color(0xFFFF9800),
-                                  ),
-                                  tooltip: 'Adjust',
-                                  padding: EdgeInsets.zero,
-                                  splashRadius: 14,
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: IconButton(
+                                onPressed: () => _adjustUser(user),
+                                icon: const Icon(
+                                  Icons.tune_rounded,
+                                  size: 14,
+                                  color: Color(0xFFFF9800),
                                 ),
+                                tooltip: 'Adjust',
+                                padding: EdgeInsets.zero,
+                                splashRadius: 14,
                               ),
+                            ),
 
-                              SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: IconButton(
-                                  onPressed: () => _viewBalanceHistory(user),
-                                  icon: const Icon(
-                                    Icons.history_rounded,
-                                    size: 14,
-                                    color: Color(0xFF673AB7),
-                                  ),
-                                  tooltip: 'History',
-                                  padding: EdgeInsets.zero,
-                                  splashRadius: 14,
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: IconButton(
+                                onPressed: () => _viewBalanceHistory(user),
+                                icon: const Icon(
+                                  Icons.history_rounded,
+                                  size: 14,
+                                  color: Color(0xFF673AB7),
                                 ),
+                                tooltip: 'History',
+                                padding: EdgeInsets.zero,
+                                splashRadius: 14,
                               ),
+                            ),
 
-                              SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: IconButton(
-                                  onPressed: () => _viewUser(user),
-                                  icon: const Icon(
-                                    Icons.visibility_outlined,
-                                    size: 14,
-                                  ),
-                                  tooltip: 'View',
-                                  padding: EdgeInsets.zero,
-                                  splashRadius: 14,
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: IconButton(
+                                onPressed: () => _viewUser(user),
+                                icon: const Icon(
+                                  Icons.visibility_outlined,
+                                  size: 14,
                                 ),
+                                tooltip: 'View',
+                                padding: EdgeInsets.zero,
+                                splashRadius: 14,
                               ),
-                            ],
-                            onTap: () => _viewUser(user),
-                          );
-                        }).toList(),
-                        emptyIcon: Icons.people_outline,
-                        emptyTitle: 'No users found',
-                        emptySubtitle:
-                            'Users will appear here once they register',
-                        enableHighlight: true,
-                        enableRowOnlyHighlight: true,
-                      ),
+                            ),
+                          ],
+                          onTap: () => _viewUser(user),
+                        );
+                      }).toList(),
+                      emptyIcon: Icons.people_outline,
+                      emptyTitle: 'No users found',
+                      emptySubtitle:
+                          'Users will appear here once they register',
+                      enableHighlight: true,
+                      enableRowOnlyHighlight: true,
                     ),
-
-                    // Pagination
-                    MbxPaginationWidget(
-                      currentPage: controller.currentPage.value,
-                      totalPages: controller.totalPages.value,
-                      totalItems: controller.totalUsers.value,
-                      itemsPerPage: controller.perPage.value,
-                      onPrevious: controller.previousPage,
-                      onNext: controller.nextPage,
-                      onFirst: controller.firstPage,
-                      onLast: controller.lastPage,
-                      onPageChanged: controller.goToPage,
-                    ),
-                  ],
+                  ),
                 ),
-              );
-            },
+
+                // Pagination
+                Obx(
+                  () => MbxPaginationWidget(
+                    currentPage: controller.currentPage.value,
+                    totalPages: controller.totalPages.value,
+                    totalItems: controller.totalUsers.value,
+                    itemsPerPage: controller.perPage.value,
+                    onPrevious: controller.previousPage,
+                    onNext: controller.nextPage,
+                    onFirst: controller.firstPage,
+                    onLast: controller.lastPage,
+                    onPageChanged: controller.goToPage,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -15,25 +15,31 @@ class MbxTransactionManagementScreen extends StatelessWidget {
           title: 'Transaction Management',
           currentRoute: '/transaction-management',
           showAddButton: false,
-          child: _buildTransactionContent(controller),
+          child: _buildTransactionContent(controller, context),
         );
       },
     );
   }
 
-  Widget _buildTransactionContent(MbxTransactionController controller) {
+  Widget _buildTransactionContent(
+    MbxTransactionController controller,
+    BuildContext context,
+  ) {
     return Column(
       children: [
         // Transaction Table
-        Expanded(child: Obx(() => _buildTransactionTable(controller))),
+        Expanded(child: _buildTransactionTable(controller, context)),
       ],
     );
   }
 
-  Widget _buildTransactionTable(MbxTransactionController controller) {
+  Widget _buildTransactionTable(
+    MbxTransactionController controller,
+    BuildContext context,
+  ) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(Get.context!).cardColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -162,27 +168,32 @@ class MbxTransactionManagementScreen extends StatelessWidget {
 
   Widget _buildUserCell(Map<String, dynamic> data) {
     final transaction = data['transaction'] as MbxTransactionModel;
-    final isDarkMode = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          transaction.userName,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          transaction.maskedAccountNumber,
-          style: TextStyle(
-            fontSize: 12,
-            color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
-            fontFamily: 'monospace',
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    return Builder(
+      builder: (context) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              transaction.userName,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              transaction.maskedAccountNumber,
+              style: TextStyle(
+                fontSize: 12,
+                color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
+                fontFamily: 'monospace',
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        );
+      },
     );
   }
 
