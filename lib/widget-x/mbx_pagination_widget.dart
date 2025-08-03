@@ -26,13 +26,10 @@ class MbxPaginationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Always show pagination info, but disable controls if only 1 page
-    final isMobile = MediaQuery.of(context).size.width < 768;
+    // Desktop-only layout for macOS and web desktop with overflow protection
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final startItem = ((currentPage - 1) * itemsPerPage) + 1;
-    final endItem = (currentPage * itemsPerPage > totalItems)
-        ? totalItems
-        : currentPage * itemsPerPage;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 1000; // Compact layout for smaller windows
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -43,333 +40,97 @@ class MbxPaginationWidget extends StatelessWidget {
           bottomRight: Radius.circular(12),
         ),
       ),
-      child: Column(
-        children: [
-          // Navigation Row
-          Row(
-            children: [
-              // Left Side: Page Navigation Buttons
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Previous Button
+      child: isCompact
+          ? _buildCompactLayout(context, isDarkMode)
+          : _buildFullLayout(context, isDarkMode),
+    );
+  }
+
+  Widget _buildFullLayout(BuildContext context, bool isDarkMode) {
+    return Row(
+      children: [
+        // Left Side: Page Navigation Buttons
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Previous Button
+                _buildPageButton(
+                  context,
+                  icon: Icons.chevron_left,
+                  onPressed: currentPage > 1 ? onPrevious : null,
+                  tooltip: 'Previous Page',
+                ),
+
+                // First Page Button
+                if (totalPages > 5) ...[
+                  const SizedBox(width: 8),
                   _buildPageButton(
                     context,
-                    icon: Icons.chevron_left,
-                    onPressed: currentPage > 1 ? onPrevious : null,
-                    tooltip: 'Previous Page',
-                  ),
-
-                  // Desktop: First Page + Page Numbers + Next/Last Buttons
-                  if (!isMobile) ...[
-                    // First Page Button
-                    if (totalPages > 5) ...[
-                      const SizedBox(width: 8),
-                      _buildPageButton(
-                        context,
-                        icon: Icons.first_page,
-                        onPressed: currentPage > 1 ? onFirst : null,
-                        tooltip: 'First Page',
-                      ),
-                    ],
-
-                    const SizedBox(width: 16),
-
-                    // Page Numbers
-                    ..._buildPageNumbers(context),
-
-                    const SizedBox(width: 16),
-
-                    // Next Button
-                    _buildPageButton(
-                      context,
-                      icon: Icons.chevron_right,
-                      onPressed: currentPage < totalPages ? onNext : null,
-                      tooltip: 'Next Page',
-                    ),
-
-                    // Last Page Button
-                    if (totalPages > 5) ...[
-                      const SizedBox(width: 8),
-                      _buildPageButton(
-                        context,
-                        icon: Icons.last_page,
-                        onPressed: currentPage < totalPages ? onLast : null,
-                        tooltip: 'Last Page',
-                      ),
-                    ],
-                  ],
-
-                  // Mobile: Just show next button after prev
-                  if (isMobile) ...[
-                    const SizedBox(width: 16),
-                    _buildPageButton(
-                      context,
-                      icon: Icons.chevron_right,
-                      onPressed: currentPage < totalPages ? onNext : null,
-                      tooltip: 'Next Page',
-                    ),
-                  ],
-
-                  // Desktop: Jump Page TextField - positioned next to page buttons
-                  if (!isMobile && totalPages > 3) ...[
-                    const SizedBox(width: 16),
-                    Text(
-                      'Go to:',
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? const Color(0xFFB0B0B0)
-                            : Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      width: 100,
-                      height: 36,
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: isDarkMode ? const Color(0xFFF0F0F0) : null,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide: BorderSide(
-                              color: isDarkMode
-                                  ? const Color(0xff4a4a4a)
-                                  : Colors.grey[400]!,
-                              width: 1,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide: BorderSide(
-                              color: isDarkMode
-                                  ? const Color(0xff4a4a4a)
-                                  : Colors.grey[400]!,
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF1976D2),
-                              width: 2,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: isDarkMode
-                              ? const Color(0xff161616)
-                              : Colors.white,
-                          hintText: currentPage.toString(),
-                          hintStyle: TextStyle(
-                            color: isDarkMode
-                                ? const Color(0xFF808080)
-                                : Colors.grey[500],
-                            fontSize: 14,
-                          ),
-                        ),
-                        onSubmitted: (value) {
-                          final pageNumber = int.tryParse(value);
-                          if (pageNumber != null &&
-                              pageNumber >= 1 &&
-                              pageNumber <= totalPages &&
-                              pageNumber != currentPage) {
-                            onPageChanged?.call(pageNumber);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-
-              // Center: Stretchable Space
-              const Spacer(),
-
-              // Right Side: Mobile Page Info & Total Items
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Mobile: Page info with inline text field
-                  if (isMobile) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isDarkMode
-                            ? const Color(0xff161616)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: isDarkMode
-                              ? const Color(0xff2a2a2a)
-                              : Colors.grey[300]!,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (totalPages > 3) ...[
-                            SizedBox(
-                              width: 30,
-                              height: 24,
-                              child: TextField(
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDarkMode
-                                      ? const Color(0xFFF0F0F0)
-                                      : null,
-                                ),
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(2),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                    borderSide: BorderSide(
-                                      color: isDarkMode
-                                          ? const Color(0xff4a4a4a)
-                                          : Colors.grey[400]!,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                    borderSide: BorderSide(
-                                      color: isDarkMode
-                                          ? const Color(0xff4a4a4a)
-                                          : Colors.grey[400]!,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFF1976D2),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  filled: true,
-                                  fillColor: isDarkMode
-                                      ? const Color(0xff1a1a1a)
-                                      : Colors.grey[50],
-                                  hintText: currentPage.toString(),
-                                  hintStyle: TextStyle(
-                                    color: isDarkMode
-                                        ? const Color(0xFF808080)
-                                        : Colors.grey[500],
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                onSubmitted: (value) {
-                                  final pageNumber = int.tryParse(value);
-                                  if (pageNumber != null &&
-                                      pageNumber >= 1 &&
-                                      pageNumber <= totalPages &&
-                                      pageNumber != currentPage) {
-                                    onPageChanged?.call(pageNumber);
-                                  }
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '/',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: isDarkMode
-                                    ? const Color(0xFFF0F0F0)
-                                    : null,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                          ],
-                          Text(
-                            totalPages > 3
-                                ? totalPages.toString()
-                                : '$currentPage / $totalPages',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: isDarkMode
-                                  ? const Color(0xFFF0F0F0)
-                                  : null,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  // Total Items Info - positioned at far right
-                  Text(
-                    'Total: $totalItems items',
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? const Color(0xFFB0B0B0)
-                          : Colors.grey[600],
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    icon: Icons.first_page,
+                    onPressed: currentPage > 1 ? onFirst : null,
+                    tooltip: 'First Page',
                   ),
                 ],
-              ),
-            ],
-          ),
 
-          // Mobile info
-          if (isMobile) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Showing $startItem-$endItem of $totalItems items',
-              style: TextStyle(
-                color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
-                fontSize: 12,
-              ),
-            ),
-            if (totalPages > 3) ...[
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                const SizedBox(width: 16),
+
+                // Page Numbers
+                ..._buildPageNumbers(context),
+
+                const SizedBox(width: 16),
+
+                // Next Button
+                _buildPageButton(
+                  context,
+                  icon: Icons.chevron_right,
+                  onPressed: currentPage < totalPages ? onNext : null,
+                  tooltip: 'Next Page',
+                ),
+
+                // Last Page Button
+                if (totalPages > 5) ...[
+                  const SizedBox(width: 8),
+                  _buildPageButton(
+                    context,
+                    icon: Icons.last_page,
+                    onPressed: currentPage < totalPages ? onLast : null,
+                    tooltip: 'Last Page',
+                  ),
+                ],
+
+                // Jump Page TextField - positioned next to page buttons
+                if (totalPages > 3) ...[
+                  const SizedBox(width: 16),
                   Text(
                     'Go to:',
                     style: TextStyle(
                       color: isDarkMode
                           ? const Color(0xFFB0B0B0)
                           : Colors.grey[600],
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(width: 8),
                   SizedBox(
                     width: 100,
-                    height: 32,
+                    height: 36,
                     child: TextField(
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         color: isDarkMode ? const Color(0xFFF0F0F0) : null,
                       ),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 6,
-                          vertical: 6,
+                          vertical: 8,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                           borderSide: BorderSide(
                             color: isDarkMode
                                 ? const Color(0xff4a4a4a)
@@ -378,7 +139,7 @@ class MbxPaginationWidget extends StatelessWidget {
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                           borderSide: BorderSide(
                             color: isDarkMode
                                 ? const Color(0xff4a4a4a)
@@ -387,7 +148,7 @@ class MbxPaginationWidget extends StatelessWidget {
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                           borderSide: const BorderSide(
                             color: Color(0xFF1976D2),
                             width: 2,
@@ -402,7 +163,7 @@ class MbxPaginationWidget extends StatelessWidget {
                           color: isDarkMode
                               ? const Color(0xFF808080)
                               : Colors.grey[500],
-                          fontSize: 12,
+                          fontSize: 14,
                         ),
                       ),
                       onSubmitted: (value) {
@@ -417,11 +178,171 @@ class MbxPaginationWidget extends StatelessWidget {
                     ),
                   ),
                 ],
+              ],
+            ),
+          ),
+        ),
+
+        // Right Side: Total Items Info
+        Container(
+          margin: const EdgeInsets.only(left: 16),
+          child: Text(
+            'Total: $totalItems items',
+            style: TextStyle(
+              color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCompactLayout(BuildContext context, bool isDarkMode) {
+    return Row(
+      children: [
+        // Left Side: Simplified Navigation
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Previous Button
+            _buildPageButton(
+              context,
+              icon: Icons.chevron_left,
+              onPressed: currentPage > 1 ? onPrevious : null,
+              tooltip: 'Previous Page',
+            ),
+
+            const SizedBox(width: 8),
+
+            // Current Page / Total Pages
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDarkMode ? const Color(0xff161616) : Colors.white,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: isDarkMode
+                      ? const Color(0xff4a4a4a)
+                      : Colors.grey[300]!,
+                ),
+              ),
+              child: Text(
+                '$currentPage / $totalPages',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: isDarkMode
+                      ? const Color(0xFFF0F0F0)
+                      : Colors.grey[700],
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 8),
+
+            // Next Button
+            _buildPageButton(
+              context,
+              icon: Icons.chevron_right,
+              onPressed: currentPage < totalPages ? onNext : null,
+              tooltip: 'Next Page',
+            ),
+
+            // Go to TextField (compact version)
+            if (totalPages > 3) ...[
+              const SizedBox(width: 12),
+              Text(
+                'Go:',
+                style: TextStyle(
+                  color: isDarkMode
+                      ? const Color(0xFFB0B0B0)
+                      : Colors.grey[600],
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 6),
+              SizedBox(
+                width: 60,
+                height: 32,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDarkMode ? const Color(0xFFF0F0F0) : null,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 6,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: BorderSide(
+                        color: isDarkMode
+                            ? const Color(0xff4a4a4a)
+                            : Colors.grey[400]!,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: BorderSide(
+                        color: isDarkMode
+                            ? const Color(0xff4a4a4a)
+                            : Colors.grey[400]!,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1976D2),
+                        width: 2,
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: isDarkMode
+                        ? const Color(0xff161616)
+                        : Colors.white,
+                    hintText: currentPage.toString(),
+                    hintStyle: TextStyle(
+                      color: isDarkMode
+                          ? const Color(0xFF808080)
+                          : Colors.grey[500],
+                      fontSize: 12,
+                    ),
+                  ),
+                  onSubmitted: (value) {
+                    final pageNumber = int.tryParse(value);
+                    if (pageNumber != null &&
+                        pageNumber >= 1 &&
+                        pageNumber <= totalPages &&
+                        pageNumber != currentPage) {
+                      onPageChanged?.call(pageNumber);
+                    }
+                  },
+                ),
               ),
             ],
           ],
-        ],
-      ),
+        ),
+
+        // Center: Stretchable Space
+        const Spacer(),
+
+        // Right Side: Total Items Info (shortened)
+        Text(
+          'Total: $totalItems',
+          style: TextStyle(
+            color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
