@@ -110,18 +110,10 @@ class MbxPaginationWidget extends StatelessWidget {
                       tooltip: 'Next Page',
                     ),
                   ],
-                ],
-              ),
 
-              // Center: Stretchable Space
-              const Spacer(),
-
-              // Right Side: Page Info & Jump TextField
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Desktop: Jump Page TextField
+                  // Desktop: Jump Page TextField - positioned next to page buttons
                   if (!isMobile && totalPages > 3) ...[
+                    const SizedBox(width: 16),
                     Text(
                       'Go to:',
                       style: TextStyle(
@@ -194,7 +186,16 @@ class MbxPaginationWidget extends StatelessWidget {
                       ),
                     ),
                   ],
+                ],
+              ),
 
+              // Center: Stretchable Space
+              const Spacer(),
+
+              // Right Side: Mobile Page Info & Total Items
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   // Mobile: Page info with inline text field
                   if (isMobile) ...[
                     Container(
@@ -407,16 +408,6 @@ class MbxPaginationWidget extends StatelessWidget {
                           onPageChanged?.call(pageNumber);
                         }
                       },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'of $totalPages',
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? const Color(0xFFB0B0B0)
-                          : Colors.grey[600],
-                      fontSize: 12,
                     ),
                   ),
                 ],
