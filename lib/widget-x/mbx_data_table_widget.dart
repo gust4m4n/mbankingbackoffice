@@ -104,31 +104,19 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
       );
     }
 
-    // Data Table
+    // Data Table with Sticky Header
     return Expanded(
       child: LayoutBuilder(
         builder: (context, constraints) {
           final minTableWidth = widget.minTableWidth ?? _calculateMinWidth();
           final needsScroll = minTableWidth > constraints.maxWidth;
 
-          Widget dataTable = _buildDataTable(isDarkMode);
+          Widget dataTable = _buildStickyHeaderTable(isDarkMode);
 
           if (needsScroll) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: const ClampingScrollPhysics(),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const ClampingScrollPhysics(),
-                child: SizedBox(width: minTableWidth, child: dataTable),
-              ),
-            );
+            return SizedBox(width: minTableWidth, child: dataTable);
           } else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: const ClampingScrollPhysics(),
-              child: dataTable,
-            );
+            return dataTable;
           }
         },
       ),
@@ -167,69 +155,129 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
     );
   }
 
-  Widget _buildDataTable(bool isDarkMode) {
+  Widget _buildStickyHeaderTable(bool isDarkMode) {
     print(
-      '[DEBUG BUILD] Building DataTable with ${widget.rows.length} rows, enableHighlight: ${widget.enableHighlight}',
+      '[DEBUG BUILD] Building Sticky Header DataTable with ${widget.rows.length} rows, enableHighlight: ${widget.enableHighlight}',
     );
 
-    return SizedBox(
-      width: double.infinity,
-      child: DataTable(
-        columnSpacing: 16,
-        dataRowMinHeight: 35, // Increased from 32 to 35 (~9% increase)
-        dataRowMaxHeight: 44, // Increased from 40 to 44 (10% increase)
-        showBottomBorder: false,
-        headingRowColor: WidgetStateProperty.all(
-          isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],
+    return Column(
+      children: [
+        // Fixed Header
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],
+            border: Border(
+              bottom: BorderSide(
+                color: isDarkMode ? const Color(0xFF3A3A3A) : Colors.grey[300]!,
+                width: 1,
+              ),
+            ),
+          ),
+          child: _buildHeaderRow(isDarkMode),
         ),
-        dataTextStyle: TextStyle(
-          color: isDarkMode ? Colors.white : Colors.black,
+
+        // Scrollable Data Rows
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            physics: const ClampingScrollPhysics(),
+            child: _buildDataRowsOnly(isDarkMode),
+          ),
         ),
-        headingTextStyle: TextStyle(
-          color: isDarkMode ? Colors.white : Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-        sortColumnIndex: widget.sortColumn != null
-            ? widget.columns.indexWhere(
-                (col) => col.sortKey == widget.sortColumn,
-              )
-            : null,
-        sortAscending: widget.sortAscending,
-        columns: [
-          // Regular columns
-          ...widget.columns.map((column) {
-            return DataColumn(
-              label: Align(
-                alignment: _getAlignment(column.textAlign),
-                child: Text(
-                  column.label,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+      ],
+    );
+  }
+
+  Widget _buildHeaderRow(bool isDarkMode) {
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          // Regular column headers
+          ...widget.columns.asMap().entries.map((entry) {
+            final index = entry.key;
+            final column = entry.value;
+
+            return Expanded(
+              flex: _getColumnFlex(index),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  mainAxisAlignment: _getMainAxisAlignment(column.textAlign),
+                  children: [
+                    Flexible(
+                      child: Text(
+                        column.label.toUpperCase(),
+                        style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (column.sortable && widget.enableSorting) ...[
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () {
+                          if (widget.onSort != null && column.sortKey != null) {
+                            final isCurrentColumn =
+                                widget.sortColumn == column.sortKey;
+                            final newAscending = isCurrentColumn
+                                ? !widget.sortAscending
+                                : true;
+                            widget.onSort!(column.sortKey!, newAscending);
+                          }
+                        },
+                        child: Icon(
+                          widget.sortColumn == column.sortKey
+                              ? (widget.sortAscending
+                                    ? Icons.arrow_upward
+                                    : Icons.arrow_downward)
+                              : Icons.unfold_more,
+                          size: 16,
+                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              onSort: column.sortable && widget.enableSorting
-                  ? (columnIndex, ascending) {
-                      if (widget.onSort != null && column.sortKey != null) {
-                        widget.onSort!(column.sortKey!, ascending);
-                      }
-                    }
-                  : null,
             );
           }),
-          // Actions column if any row has actions
+
+          // Actions column header if any row has actions
           if (widget.rows.any((row) => row.actions.isNotEmpty))
-            const DataColumn(
-              label: Text(
-                'Actions',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Container(
+              width: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(
+                'ACTIONS',
+                style: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
         ],
-        rows: widget.rows.map((row) => _buildDataRow(row, isDarkMode)).toList(),
       ),
     );
   }
 
-  DataRow _buildDataRow(MbxDataRow row, bool isDarkMode) {
+  Widget _buildDataRowsOnly(bool isDarkMode) {
+    return Column(
+      children: widget.rows
+          .map((row) => _buildCustomDataRow(row, isDarkMode))
+          .toList(),
+    );
+  }
+
+  Widget _buildCustomDataRow(MbxDataRow row, bool isDarkMode) {
     print(
       '[DEBUG ROW] Building row ${row.id} - hovered: ${hoveredRowId == row.id}, enableHighlight: ${widget.enableHighlight}',
     );
@@ -255,141 +303,114 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
 
     print('[DEBUG COLOR] Row ${row.id} final color: $rowColor');
 
-    return DataRow(
-      selected: isSelected,
-      color: WidgetStateProperty.all(rowColor),
-      onSelectChanged: widget.enableSelection
-          ? (selected) {
-              if (widget.onRowSelected != null) {
-                widget.onRowSelected!(row.id);
-              }
+    return MouseRegion(
+      onEnter: widget.enableHighlight
+          ? (_) {
+              setState(() {
+                hoveredRowId = row.id;
+              });
             }
           : null,
-      cells: [
-        // Data cells based on columns
-        ...widget.columns.asMap().entries.map((entry) {
-          final index = entry.key;
-          final column = entry.value;
-          final value = row.data[column.sortKey] ?? '';
+      onExit: widget.enableHighlight
+          ? (_) {
+              setState(() {
+                hoveredRowId = null;
+              });
+            }
+          : null,
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 35, maxHeight: 44),
+        color: rowColor,
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              // Data cells based on columns
+              ...widget.columns.asMap().entries.map((entry) {
+                final index = entry.key;
+                final column = entry.value;
+                final value = row.data[column.sortKey] ?? '';
 
-          Widget content;
-          if (column.customWidget != null) {
-            content = column.customWidget!(row.data);
-          } else {
-            content = Text(
-              value.toString(),
-              style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-              overflow: TextOverflow.ellipsis,
-            );
-          }
-
-          // Only the first cell should handle mouse events for row-only highlighting
-          final shouldHandleMouse =
-              !widget.enableRowOnlyHighlight || index == 0;
-
-          return DataCell(
-            InkWell(
-              onTap: row.onTap,
-              onHover: widget.enableRowOnlyHighlight
-                  ? (isHovering) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Row ${row.id} hover: $isHovering (ROW-ONLY mode, cell: $index)',
-                        );
-                        setState(
-                          () => hoveredRowId = isHovering ? row.id : null,
-                        );
-                      }
-                    }
-                  : shouldHandleMouse
-                  ? (isHovering) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Cell ${row.id} hover: $isHovering (COLUMN mode)',
-                        );
-                        setState(
-                          () => hoveredRowId = isHovering ? row.id : null,
-                        );
-                      }
-                    }
-                  : null,
-              child: SizedBox(
-                width: column.width,
-                child: Align(
-                  alignment: _getAlignment(column.textAlign),
-                  child: content,
-                ),
-              ),
-            ),
-          );
-        }),
-
-        // Actions cell if actions column exists
-        if (widget.rows.any((row) => row.actions.isNotEmpty))
-          DataCell(
-            widget.enableRowOnlyHighlight
-                ? MouseRegion(
-                    onEnter: (_) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Entering actions row: ${row.id} (ROW-ONLY mode)',
-                        );
-                        setState(() => hoveredRowId = row.id);
-                      }
-                    },
-                    onExit: (_) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Exiting actions row: ${row.id} (ROW-ONLY mode)',
-                        );
-                        setState(() => hoveredRowId = null);
-                      }
-                    },
-                    child: SizedBox(
-                      width: 140,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: row.actions,
-                        ),
-                      ),
+                Widget content;
+                if (column.customWidget != null) {
+                  content = column.customWidget!(row.data);
+                } else {
+                  content = Text(
+                    value.toString(),
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 14,
                     ),
-                  )
-                : MouseRegion(
-                    onEnter: (_) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Entering actions row: ${row.id} (enableHighlight: ${widget.enableHighlight}, rowOnly: ${widget.enableRowOnlyHighlight})',
-                        );
-                        setState(() => hoveredRowId = row.id);
-                      }
-                    },
-                    onExit: (_) {
-                      if (widget.enableHighlight) {
-                        print(
-                          '[DEBUG HOVER] Exiting actions row: ${row.id} (enableHighlight: ${widget.enableHighlight}, rowOnly: ${widget.enableRowOnlyHighlight})',
-                        );
-                        setState(() => hoveredRowId = null);
-                      }
-                    },
-                    child: SizedBox(
-                      width: 140,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: row.actions,
-                        ),
-                      ),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: column.textAlign,
+                  );
+                }
+
+                return Expanded(
+                  flex: _getColumnFlex(index),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Align(
+                      alignment: _getAlignment(column.textAlign),
+                      child: content,
                     ),
                   ),
+                );
+              }),
+
+              // Actions cell
+              if (widget.rows.any((row) => row.actions.isNotEmpty))
+                Container(
+                  width: 100,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: row.actions.isNotEmpty
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: row.actions.map((action) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                              ),
+                              child: action,
+                            );
+                          }).toList(),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 
-  Alignment _getAlignment(TextAlign textAlign) {
+  int _getColumnFlex(int index) {
+    // You can customize flex values based on column requirements
+    // For now, using equal flex for all columns
+    return 1;
+  }
+
+  MainAxisAlignment _getMainAxisAlignment(TextAlign? textAlign) {
+    switch (textAlign) {
+      case TextAlign.left:
+        return MainAxisAlignment.start;
+      case TextAlign.right:
+        return MainAxisAlignment.end;
+      case TextAlign.center:
+        return MainAxisAlignment.center;
+      default:
+        return MainAxisAlignment.start;
+    }
+  }
+
+  Alignment _getAlignment(TextAlign? textAlign) {
     switch (textAlign) {
       case TextAlign.left:
         return Alignment.centerLeft;
