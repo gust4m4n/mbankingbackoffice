@@ -90,24 +90,6 @@ class MbxUserManagementScreen extends StatelessWidget {
                             tooltip: 'View',
                             splashRadius: 20,
                           ),
-                          IconButton(
-                            onPressed: () => _editUser(user),
-                            icon: const Icon(Icons.edit_outlined, size: 18),
-                            tooltip: 'Edit',
-                            splashRadius: 20,
-                          ),
-                          IconButton(
-                            onPressed: () => _deactivateUser(user),
-                            icon: Icon(
-                              user.isActive
-                                  ? Icons.block
-                                  : Icons.check_circle_outline,
-                              size: 18,
-                            ),
-                            color: user.isActive ? Colors.red : Colors.green,
-                            tooltip: user.isActive ? 'Deactivate' : 'Activate',
-                            splashRadius: 20,
-                          ),
                         ],
                         onTap: () => _viewUser(user),
                       );
@@ -209,19 +191,5 @@ class MbxUserManagementScreen extends StatelessWidget {
 
   void _viewUser(MbxUserModel user) {
     MbxUserDetailDialog.show(Get.context!, user);
-  }
-
-  void _editUser(MbxUserModel user) {
-    _showFeatureNotAvailable('Edit User');
-  }
-
-  void _deactivateUser(MbxUserModel user) {
-    _showFeatureNotAvailable(
-      '${user.isActive ? 'Deactivate' : 'Activate'} User',
-    );
-  }
-
-  void _showFeatureNotAvailable(String featureName) {
-    MbxDialogController.showFeatureNotAvailable(featureName);
   }
 }
