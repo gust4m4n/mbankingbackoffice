@@ -15,7 +15,6 @@ class MbxTransactionManagementScreen extends StatelessWidget {
           title: 'Transaction Management',
           currentRoute: '/transaction-management',
           showAddButton: false,
-          onRefreshPressed: controller.refreshTransactions,
           child: _buildTransactionContent(controller),
         );
       },

@@ -19,7 +19,6 @@ class MbxAdminManagementScreen extends StatelessWidget {
           currentRoute: '/admin-management',
           showAddButton: true,
           onAddPressed: controller.showCreateAdminDialog,
-          onRefreshPressed: controller.refreshAdmins,
           child: _buildAdminContent(controller),
         );
       },

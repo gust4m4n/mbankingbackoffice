@@ -25,7 +25,6 @@ class MbxHomeScreen extends StatelessWidget {
           title: 'Dashboard',
           currentRoute: '/home',
           showAddButton: false,
-          onRefreshPressed: () => controller.refreshDashboard(),
           child: _buildDashboardContent(controller, context, isDark),
         );
       },

@@ -7,7 +7,6 @@ class MbxManagementScaffold extends StatelessWidget {
   final List<Widget>? actions;
   final bool showAddButton;
   final VoidCallback? onAddPressed;
-  final VoidCallback? onRefreshPressed;
   final Widget? customHeaderWidget;
 
   const MbxManagementScaffold({
@@ -18,7 +17,6 @@ class MbxManagementScaffold extends StatelessWidget {
     this.actions,
     this.showAddButton = false,
     this.onAddPressed,
-    this.onRefreshPressed,
     this.customHeaderWidget,
   });
 
@@ -117,14 +115,6 @@ class MbxManagementScaffold extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                           ],
-
-                          // Refresh button
-                          if (onRefreshPressed != null)
-                            IconButton(
-                              onPressed: onRefreshPressed,
-                              icon: const Icon(Icons.refresh),
-                              tooltip: 'Refresh',
-                            ),
                         ],
                       ),
                     ),
