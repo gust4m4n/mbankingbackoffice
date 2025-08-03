@@ -121,21 +121,24 @@ class _MbxTableBodyState extends State<MbxTableBody> {
                   Container(
                     width: widget.actionsColumnWidth,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
+                      horizontal: 4,
                       vertical: 4,
                     ),
                     child: row.actions.isNotEmpty
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: row.actions.map((action) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 2,
-                                ),
-                                child: action,
-                              );
-                            }).toList(),
+                        ? SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: row.actions.map((action) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 1,
+                                  ),
+                                  child: action,
+                                );
+                              }).toList(),
+                            ),
                           )
                         : const SizedBox.shrink(),
                   ),

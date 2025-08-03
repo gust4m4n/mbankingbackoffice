@@ -72,7 +72,7 @@ class _MbxStickyTableState extends State<MbxStickyTable> {
           final needsScroll = minWidth > constraints.maxWidth;
           final hasActions = widget.rows.any((row) => row.actions.isNotEmpty);
           final actionsColumnTitle = 'ACTIONS';
-          final actionsColumnWidth = 100.0;
+          final actionsColumnWidth = 140.0;
 
           Widget dataTable = Column(
             children: [
