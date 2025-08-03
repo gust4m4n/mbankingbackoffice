@@ -49,17 +49,20 @@ class MbxUserManagementScreen extends StatelessWidget {
                     isLoading: controller.isLoading.value,
                     columns: [
                       MbxDataColumn(
+                        key: 'name',
                         label: 'Name',
                         sortable: true,
                         sortKey: 'name',
                         customWidget: (data) => _buildNameCell(data),
                       ),
                       const MbxDataColumn(
+                        key: 'phone',
                         label: 'Phone',
                         sortable: true,
                         sortKey: 'phone',
                       ),
                       MbxDataColumn(
+                        key: 'balance',
                         label: 'Balance',
                         sortable: true,
                         sortKey: 'balance',
@@ -67,6 +70,7 @@ class MbxUserManagementScreen extends StatelessWidget {
                         customWidget: (data) => _buildBalanceCell(data),
                       ),
                       MbxDataColumn(
+                        key: 'status',
                         label: 'Status',
                         sortable: true,
                         sortKey: 'status',
@@ -75,7 +79,14 @@ class MbxUserManagementScreen extends StatelessWidget {
                     ],
                     rows: controller.users.map((user) {
                       return MbxDataRow(
+                        key: user.id.toString(),
                         id: user.id.toString(),
+                        cells: {
+                          'name': MbxDataCell(value: user.name),
+                          'phone': MbxDataCell(value: user.phone),
+                          'balance': MbxDataCell(value: user.balance),
+                          'status': MbxDataCell(value: user.status),
+                        },
                         data: {
                           'name': user.name,
                           'phone': user.phone,

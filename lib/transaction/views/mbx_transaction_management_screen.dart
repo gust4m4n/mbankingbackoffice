@@ -49,12 +49,14 @@ class MbxTransactionManagementScreen extends StatelessWidget {
             isLoading: controller.isLoading.value,
             columns: [
               const MbxDataColumn(
+                key: 'id',
                 label: 'ID',
                 width: 120,
                 sortable: true,
                 sortKey: 'id',
               ),
               MbxDataColumn(
+                key: 'type',
                 label: 'Type',
                 width: 140,
                 sortable: true,
@@ -62,6 +64,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                 customWidget: (data) => _buildTypeCell(data),
               ),
               MbxDataColumn(
+                key: 'userName',
                 label: 'User',
                 width: 180,
                 sortable: true,
@@ -69,6 +72,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                 customWidget: (data) => _buildUserCell(data),
               ),
               MbxDataColumn(
+                key: 'amount',
                 label: 'Amount',
                 width: 130,
                 sortable: true,
@@ -77,6 +81,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                 customWidget: (data) => _buildAmountCell(data),
               ),
               MbxDataColumn(
+                key: 'status',
                 label: 'Status',
                 width: 120,
                 sortable: true,
@@ -84,6 +89,7 @@ class MbxTransactionManagementScreen extends StatelessWidget {
                 customWidget: (data) => _buildStatusCell(data),
               ),
               const MbxDataColumn(
+                key: 'date',
                 label: 'Date',
                 width: 140,
                 sortable: true,
@@ -92,7 +98,16 @@ class MbxTransactionManagementScreen extends StatelessWidget {
             ],
             rows: controller.transactions.map((transaction) {
               return MbxDataRow(
+                key: transaction.id.toString(),
                 id: transaction.id.toString(),
+                cells: {
+                  'id': MbxDataCell(value: transaction.id),
+                  'type': MbxDataCell(value: transaction.type),
+                  'userName': MbxDataCell(value: transaction.userName),
+                  'amount': MbxDataCell(value: transaction.amount),
+                  'status': MbxDataCell(value: transaction.status),
+                  'date': MbxDataCell(value: transaction.formattedCreatedAt),
+                },
                 data: {
                   'id': transaction.id,
                   'type': transaction.type,

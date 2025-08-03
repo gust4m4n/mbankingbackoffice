@@ -46,6 +46,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
                       isLoading: controller.isLoading.value,
                       columns: [
                         MbxDataColumn(
+                          key: 'name',
                           label: 'Name',
                           width: 180,
                           sortable: true,
@@ -53,12 +54,14 @@ class MbxAdminManagementScreen extends StatelessWidget {
                           customWidget: (data) => _buildNameCell(data),
                         ),
                         const MbxDataColumn(
+                          key: 'email',
                           label: 'Email',
                           width: 200,
                           sortable: true,
                           sortKey: 'email',
                         ),
                         MbxDataColumn(
+                          key: 'role',
                           label: 'Role',
                           width: 120,
                           sortable: true,
@@ -66,6 +69,7 @@ class MbxAdminManagementScreen extends StatelessWidget {
                           customWidget: (data) => _buildRoleCell(data),
                         ),
                         MbxDataColumn(
+                          key: 'status',
                           label: 'Status',
                           width: 100,
                           sortable: true,
@@ -75,7 +79,14 @@ class MbxAdminManagementScreen extends StatelessWidget {
                       ],
                       rows: controller.admins.map((admin) {
                         return MbxDataRow(
+                          key: admin.id.toString(),
                           id: admin.id.toString(),
+                          cells: {
+                            'name': MbxDataCell(value: admin.name),
+                            'email': MbxDataCell(value: admin.email),
+                            'role': MbxDataCell(value: admin.displayRole),
+                            'status': MbxDataCell(value: admin.displayStatus),
+                          },
                           data: {
                             'name': admin.name,
                             'email': admin.email,
