@@ -11,7 +11,7 @@ class MbxUserController extends GetxController {
   var users = <MbxUserModel>[].obs;
   var totalUsers = 0.obs;
   var currentPage = 1.obs;
-  var perPage = 10.obs;
+  var perPage = 32.obs; // Changed from 10 to 32
   var totalPages = 1.obs;
 
   // Selected user for view/delete

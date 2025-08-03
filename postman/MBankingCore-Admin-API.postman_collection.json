@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "MBankingCore Admin API",
-    "description": "🔧 **ADMIN-ONLY API Collection** for MBankingCore running on PORT 8080\n\n## 🎯 Admin Features Coverage:\n- ✅ Admin Authentication (Login/Logout)\n- ✅ Admin Dashboard with comprehensive statistics\n- ✅ Admin CRUD Management\n- ✅ Transaction Monitoring & Management\n- ✅ Transaction Reversal Operations\n- ✅ **Checker-Maker System** (Dual Approval Workflow) 🆕\n- ✅ **Approval Threshold Management** 🆕\n- ✅ Configuration Management\n- ✅ Admin Content Management (Terms & Privacy Policy)\n- ✅ Audit Trails & Security Monitoring\n- ✅ User Management (Admin view)\n- ✅ Admin User Balance Top-up\n- ✅ **Soft Delete System** (Users & Admins) 🆕\n\n## 📊 Admin Dashboard Statistics:\n- 👥 Total Users: 6,067+\n- 👨‍💼 Total Admins: 50+\n- 💳 Total Transactions: 35,375+\n- 💰 Transaction Analytics by time periods\n- 📈 Performance metrics and trends\n\n## 🔐 Admin Authentication Flow:\n1. **Admin Login** → Submit admin credentials and get admin access_token\n2. **Get Dashboard** → View comprehensive system statistics\n3. **Access Admin Endpoints** → Full admin operations\n4. **Admin Logout** → Invalidate admin session\n\n## 🛠️ Admin Management Operations:\n- **Get All Admins** → List all administrators with pagination\n- **Get Admin by ID** → Retrieve specific admin details\n- **Create Admin** → Add new administrator account\n- **Update Admin** → Modify admin account details\n- **Delete Admin** → Remove administrator account\n\n## 💳 Transaction Management:\n- **Get All Transactions** → Monitor all user transactions with filtering\n- **Reverse Transaction** → Reverse any transaction type with reason\n- **Admin Topup User Balance** → Admin can top-up user balance directly\n- **Admin Adjust User Balance** → Credit/debit adjustments with reason tracking\n- **Admin Set User Balance** → Set exact balance amount with audit trail\n- **Get User Balance History** → View detailed balance change history\n- **Transaction Analytics** → View transaction trends and statistics\n\n## ⚖️ Checker-Maker System (Dual Approval) 🆕:\n- **Create Pending Transaction (Maker)** → Submit high-value transactions for approval\n  - Supports: topup, withdraw, transfer, balance_adjustment, balance_set\n  - Automatic threshold validation based on transaction type and amount\n  - Segregation of duties: Maker cannot approve own transactions\n- **Get Pending Transactions** → View all transactions awaiting approval\n  - Filter by status (pending, approved, rejected, expired)\n  - Filter by transaction type, maker admin, target user\n  - Pagination support for large datasets\n- **Approve Transaction (Checker)** → Approve pending transactions\n  - Validates checker is different from maker\n  - Automatically executes approved transaction\n  - Creates audit trail for approval decision\n- **Reject Transaction (Checker)** → Reject pending transactions\n  - Requires rejection reason/comments\n  - Prevents transaction execution\n  - Maintains audit trail for compliance\n- **Get Approval Statistics** → View approval system metrics\n  - Statistics by transaction type, admin, time period\n  - Approval rates, rejection rates, expiration tracking\n  - Performance analytics for compliance reporting\n\n## 🎯 Approval Threshold Management 🆕:\n- **Get All Approval Thresholds** → List all approval thresholds\n- **Get Approval Threshold by Type** → Get threshold for specific transaction type\n- **Create/Update Approval Threshold** → Configure approval rules\n  - Set amount thresholds requiring approval\n  - Configure dual approval thresholds for ultra-high values\n  - Set auto-expiration timeouts\n  - Activate/deactivate thresholds\n- **Deactivate Approval Threshold** → Disable threshold rules\n\n## 🛡️ Security & Compliance Features:\n- **Segregation of Duties** → Maker-checker separation enforced\n- **Configurable Thresholds** → Based on transaction type and amount\n- **Auto-Expiration** → Prevents stale approvals (12-48 hours)\n- **Dual Approval** → Ultra-high value transactions require two approvals\n- **Comprehensive Audit Trail** → All approval actions logged\n- **Risk-Based Controls** → Different thresholds for different risk levels\n\n## 👥 User Management (Admin Only):\n- **Get All Users** → List all users with advanced search and filtering\n- **Get User by ID** → Retrieve specific user details\n- **Admin User Balance Management** → Comprehensive balance operations\n  - **Topup** → Add funds to user balance\n  - **Adjust** → Credit/debit with reason (positive/negative amounts)\n  - **Set Balance** → Set exact balance amount\n  - **Balance History** → View all balance-affecting transactions\n\n## ⚙️ Configuration Management:\n- **Get All Configs** → List all system configuration values\n- **Get Config by Key** → Retrieve specific configuration value\n- **Set Config** → Create or update configuration values\n- **Delete Config** → Remove configuration values\n- **Admin Terms & Conditions** → Manage admin-specific terms and conditions\n- **Admin Privacy Policy** → Manage admin-specific privacy policy\n\n## 🔍 Audit & Security Monitoring:\n- **Get Audit Logs** → Review all system activities with filtering\n  - Filter by entity type (user, transaction, admin, etc.)\n  - Filter by action (CREATE, READ, UPDATE, DELETE)\n  - Filter by user/admin ID, date range, IP address\n  - Pagination support for large datasets\n- **Get Login Audit Logs** → Monitor authentication activities\n  - Filter by login type (user_login, admin_login, logout)\n  - Filter by status (success, failed, blocked)\n  - Device information and failure reasons\n\n## 🚨 Security Features:\n- JWT Token-based authentication\n- Role-based access control\n- Comprehensive audit trails\n- Failed login monitoring\n- IP address tracking\n- Device session management\n- **Checker-Maker Approval Controls** 🆕\n- **Configurable Risk Thresholds** 🆕\n\n## ⚠️ Important Notes:\n- **Admin Token Required** → All endpoints require admin authentication\n- **Role Permissions** → Different admin roles may have different permissions\n- **Audit Compliance** → All admin actions are logged for security\n- **Rate Limiting** → Admin actions may be rate-limited for security\n- **Dual Approval** → High-value transactions require checker approval 🆕\n\n## 🔧 Environment Variables Required:\n- `base_url` → Server base URL (http://localhost:8080)\n- `admin_email` → Admin email for login\n- `admin_password` → Admin password for login\n- `admin_token` → Admin access token (auto-set after login)\n- `admin_id` → Admin ID (auto-set after login)\n- `admin_role` → Admin role (auto-set after login)\n- `config_key` → Configuration key for config operations\n- `config_value` → Configuration value for config operations\n- `admin_terms_content` → Admin terms & conditions content\n- `admin_privacy_content` → Admin privacy policy content\n- `target_user_id` → User ID for admin operations (topup, etc.)\n- `topup_amount` → Amount to topup user balance\n- `topup_description` → Description for topup transaction\n- `adjustment_amount` → Amount for balance adjustment (positive for credit, negative for debit)\n- `adjustment_reason` → Reason for balance adjustment (minimum 10 characters)\n- `adjustment_type` → Type of adjustment (adjustment, correction, manual_correction, error_correction)\n- `adjustment_description` → Optional description for adjustment\n- `set_balance_amount` → Target balance amount for set balance operation\n- `set_balance_reason` → Reason for setting balance (minimum 10 characters)\n- `set_balance_description` → Optional description for set balance operation\n- `balance_history_page` → Page number for balance history pagination\n- `balance_history_limit` → Items per page for balance history\n- `balance_history_type` → Filter balance history by transaction type\n- `pending_transaction_id` → ID of pending transaction for approval/rejection 🆕\n- `checker_maker_transaction_type` → Type: topup, withdraw, transfer, balance_adjustment, balance_set 🆕\n- `checker_maker_amount` → Transaction amount for checker-maker 🆕\n- `checker_maker_description` → Description for checker-maker transaction 🆕\n- `checker_maker_target_user_id` → Target user ID for checker-maker transaction 🆕\n- `approval_comments` → Comments for approval decision 🆕\n- `rejection_comments` → Comments for rejection decision 🆕\n- `threshold_transaction_type` → Transaction type for threshold management 🆕\n- `threshold_amount` → Amount threshold for approval requirement 🆕\n- `threshold_requires_dual` → Boolean for dual approval requirement 🆕\n- `threshold_dual_amount` → Amount threshold for dual approval 🆕\n- `threshold_expire_hours` → Hours until pending transaction expires 🆕\n- `target_user_id` → User ID for soft delete operations 🆕\n- `deleted_user_id` → ID of deleted user for restore/permanent delete 🆕\n- `deleted_admin_id` → ID of deleted admin for restore/permanent delete 🆕\n- `deleted_user_page` → Page number for deleted users pagination 🆕\n- `deleted_user_per_page` → Items per page for deleted users 🆕\n- `deleted_admin_page` → Page number for deleted admins pagination 🆕\n- `deleted_admin_per_page` → Items per page for deleted admins 🆕\n\n## 📋 Testing Order:\n1. **Admin Authentication** → Login to get admin token\n2. **Dashboard Overview** → View system statistics\n3. **Admin Management** → CRUD operations on admin accounts\n4. **Approval Threshold Management** → Configure approval rules 🆕\n5. **Configuration Management** → Manage system settings and content\n6. **Transaction Monitoring** → View and manage transactions\n7. **Checker-Maker Operations** → Test dual approval workflow 🆕\n8. **Admin User Balance Management** → Top-up user balances\n9. **Transaction Reversal** → Reverse transactions if needed\n10. **Audit Review** → Monitor system activities and security\n11. **Admin Logout** → Clean session termination",
+    "description": "🔧 **ADMIN-ONLY API Collection** for MBankingCore running on PORT 8080\n\n## 🎯 Admin Features Coverage:\n- ✅ Admin Authentication (Login/Logout)\n- ✅ Admin Dashboard with comprehensive statistics\n- ✅ Admin CRUD Management\n- ✅ Transaction Monitoring & Management\n- ✅ Transaction Reversal Operations\n- ✅ **Checker-Maker System** (Dual Approval Workflow) 🆕\n- ✅ **Approval Threshold Management** 🆕\n- ✅ Configuration Management\n- ✅ Admin Content Management (Terms & Privacy Policy)\n- ✅ Audit Trails & Security Monitoring\n- ✅ User Management (Admin view)\n- ✅ Admin User Balance Top-up\n- ✅ **Soft Delete System** (Users & Admins) 🆕\n\n## 📊 Admin Dashboard Statistics:\n- 👥 Total Users: 6,067+\n- 👨‍💼 Total Admins: 50+\n- 💳 Total Transactions: 35,375+\n- 💰 Transaction Analytics by time periods\n- 📈 Performance metrics and trends\n\n## 🔐 Admin Authentication Flow:\n1. **Admin Login** → Submit admin credentials and get admin access_token\n2. **Get Dashboard** → View comprehensive system statistics\n3. **Access Admin Endpoints** → Full admin operations\n4. **Admin Logout** → Invalidate admin session\n\n## 🛠️ Admin Management Operations:\n- **Get All Admins** → List all administrators with pagination\n- **Get Admin by ID** → Retrieve specific admin details\n- **Create Admin** → Add new administrator account\n- **Update Admin** → Modify admin account details\n- **Delete Admin** → Remove administrator account\n\n## 💳 Transaction Management:\n- **Get All Transactions** → Monitor all user transactions with filtering\n- **Reverse Transaction** → Reverse any transaction type with reason\n- **Admin Topup User Balance** → Admin can top-up user balance directly\n- **Admin Adjust User Balance** → Credit/debit adjustments with reason tracking\n- **Admin Set User Balance** → Set exact balance amount with audit trail\n- **Get User Balance History** → View detailed balance change history\n- **Transaction Analytics** → View transaction trends and statistics\n\n## ⚖️ Checker-Maker System (Dual Approval) 🆕:\n- **Create Pending Transaction (Maker)** → Submit high-value transactions for approval\n  - Supports: topup, withdraw, transfer, balance_adjustment, balance_set\n  - Automatic threshold validation based on transaction type and amount\n  - Segregation of duties: Maker cannot approve own transactions\n- **Get Pending Transactions** → View all transactions awaiting approval\n  - Filter by status (pending, approved, rejected, expired)\n  - Filter by transaction type, maker admin, target user\n  - Pagination support for large datasets\n- **Approve Transaction (Checker)** → Approve pending transactions\n  - Validates checker is different from maker\n  - Automatically executes approved transaction\n  - Creates audit trail for approval decision\n- **Reject Transaction (Checker)** → Reject pending transactions\n  - Requires rejection reason/comments\n  - Prevents transaction execution\n  - Maintains audit trail for compliance\n- **Get Approval Statistics** → View approval system metrics\n  - Statistics by transaction type, admin, time period\n  - Approval rates, rejection rates, expiration tracking\n  - Performance analytics for compliance reporting\n\n## 🎯 Approval Threshold Management 🆕:\n- **Get All Approval Thresholds** → List all approval thresholds\n- **Get Approval Threshold by Type** → Get threshold for specific transaction type\n- **Create/Update Approval Threshold** → Configure approval rules\n  - Set amount thresholds requiring approval\n  - Configure dual approval thresholds for ultra-high values\n  - Set auto-expiration timeouts\n  - Activate/deactivate thresholds\n- **Deactivate Approval Threshold** → Disable threshold rules\n\n## 🛡️ Security & Compliance Features:\n- **Segregation of Duties** → Maker-checker separation enforced\n- **Configurable Thresholds** → Based on transaction type and amount\n- **Auto-Expiration** → Prevents stale approvals (12-48 hours)\n- **Dual Approval** → Ultra-high value transactions require two approvals\n- **Comprehensive Audit Trail** → All approval actions logged\n- **Risk-Based Controls** → Different thresholds for different risk levels\n\n## 👥 User Management (Admin Only):\n- **Get All Users** → List all users with advanced search and filtering\n- **Get User by ID** → Retrieve specific user details\n- **Delete User (Soft Delete)** → Soft delete user accounts 🆕\n- **Get Deleted Users** → List all soft-deleted users 🆕\n- **Restore User** → Restore soft-deleted users 🆕\n- **Permanent Delete User** → Permanently delete user accounts 🆕\n- **Admin User Balance Management** → Comprehensive balance operations\n  - **Topup** → Add funds to user balance\n  - **Adjust** → Credit/debit with reason (positive/negative amounts)\n  - **Set Balance** → Set exact balance amount\n  - **Balance History** → View all balance-affecting transactions\n\n### 📋 User Status Values:\n- **Active** → User account is active and fully functional\n- **Inactive** → User account is temporarily inactive\n- **Dormant** → User account is dormant due to inactivity\n- **Blocked** → User account is blocked due to policy violations\n- **Suspended** → User account is temporarily suspended\n- **Closed** → User account is permanently closed\n- **Pending Activation** → User account is awaiting activation\n- **Frozen** → User account is frozen for investigation\n- **Locked** → User account is locked due to security reasons\n- **Blacklisted** → User account is blacklisted and banned\n\n## ⚙️ Configuration Management:\n- **Get All Configs** → List all system configuration values\n- **Get Config by Key** → Retrieve specific configuration value\n- **Set Config** → Create or update configuration values\n- **Delete Config** → Remove configuration values\n- **Admin Terms & Conditions** → Manage admin-specific terms and conditions\n- **Admin Privacy Policy** → Manage admin-specific privacy policy\n\n## 🔍 Audit & Security Monitoring:\n- **Get Audit Logs** → Review all system activities with filtering\n  - Filter by entity type (user, transaction, admin, etc.)\n  - Filter by action (CREATE, READ, UPDATE, DELETE)\n  - Filter by user/admin ID, date range, IP address\n  - Pagination support for large datasets\n- **Get Login Audit Logs** → Monitor authentication activities\n  - Filter by login type (user_login, admin_login, logout)\n  - Filter by status (success, failed, blocked)\n  - Device information and failure reasons\n\n## 🚨 Security Features:\n- JWT Token-based authentication\n- Role-based access control\n- Comprehensive audit trails\n- Failed login monitoring\n- IP address tracking\n- Device session management\n- **Checker-Maker Approval Controls** 🆕\n- **Configurable Risk Thresholds** 🆕\n\n## ⚠️ Important Notes:\n- **Admin Token Required** → All endpoints require admin authentication\n- **Role Permissions** → Different admin roles may have different permissions\n- **Audit Compliance** → All admin actions are logged for security\n- **Rate Limiting** → Admin actions may be rate-limited for security\n- **Dual Approval** → High-value transactions require checker approval 🆕\n\n## 🔧 Environment Variables Required:\n- `base_url` → Server base URL (http://localhost:8080)\n- `admin_email` → Admin email for login\n- `admin_password` → Admin password for login\n- `admin_token` → Admin access token (auto-set after login)\n- `admin_id` → Admin ID (auto-set after login)\n- `admin_role` → Admin role (auto-set after login)\n- `config_key` → Configuration key for config operations\n- `config_value` → Configuration value for config operations\n- `admin_terms_content` → Admin terms & conditions content\n- `admin_privacy_content` → Admin privacy policy content\n- `target_user_id` → User ID for admin operations (topup, etc.)\n- `topup_amount` → Amount to topup user balance\n- `topup_description` → Description for topup transaction\n- `adjustment_amount` → Amount for balance adjustment (positive for credit, negative for debit)\n- `adjustment_reason` → Reason for balance adjustment (minimum 10 characters)\n- `adjustment_type` → Type of adjustment (adjustment, correction, manual_correction, error_correction)\n- `adjustment_description` → Optional description for adjustment\n- `set_balance_amount` → Target balance amount for set balance operation\n- `set_balance_reason` → Reason for setting balance (minimum 10 characters)\n- `set_balance_description` → Optional description for set balance operation\n- `balance_history_page` → Page number for balance history pagination\n- `balance_history_limit` → Items per page for balance history\n- `balance_history_type` → Filter balance history by transaction type\n- `pending_transaction_id` → ID of pending transaction for approval/rejection 🆕\n- `checker_maker_transaction_type` → Type: topup, withdraw, transfer, balance_adjustment, balance_set 🆕\n- `checker_maker_amount` → Transaction amount for checker-maker 🆕\n- `checker_maker_description` → Description for checker-maker transaction 🆕\n- `checker_maker_target_user_id` → Target user ID for checker-maker transaction 🆕\n- `approval_comments` → Comments for approval decision 🆕\n- `rejection_comments` → Comments for rejection decision 🆕\n- `threshold_transaction_type` → Transaction type for threshold management 🆕\n- `threshold_amount` → Amount threshold for approval requirement 🆕\n- `threshold_requires_dual` → Boolean for dual approval requirement 🆕\n- `threshold_dual_amount` → Amount threshold for dual approval 🆕\n- `threshold_expire_hours` → Hours until pending transaction expires 🆕\n- `target_user_id` → User ID for soft delete operations 🆕\n- `deleted_user_id` → ID of deleted user for restore/permanent delete 🆕\n- `deleted_admin_id` → ID of deleted admin for restore/permanent delete 🆕\n- `deleted_user_page` → Page number for deleted users pagination 🆕\n- `deleted_user_per_page` → Items per page for deleted users 🆕\n- `deleted_admin_page` → Page number for deleted admins pagination 🆕\n- `deleted_admin_per_page` → Items per page for deleted admins 🆕\n- `user_status_filter` → Filter users by status: Active, Inactive, Dormant, Blocked, Suspended, Closed, Pending Activation, Frozen, Locked, Blacklisted 🆕\n\n## 📋 Testing Order:\n1. **Admin Authentication** → Login to get admin token\n2. **Dashboard Overview** → View system statistics\n3. **Admin Management** → CRUD operations on admin accounts\n4. **Approval Threshold Management** → Configure approval rules 🆕\n5. **Configuration Management** → Manage system settings and content\n6. **Transaction Monitoring** → View and manage transactions\n7. **Checker-Maker Operations** → Test dual approval workflow 🆕\n8. **Admin User Balance Management** → Top-up user balances\n9. **Transaction Reversal** → Reverse transactions if needed\n10. **Audit Review** → Monitor system activities and security\n11. **Admin Logout** → Clean session termination",
     "_postman_id": "admin-api-collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -1089,7 +1089,7 @@
     },
     {
       "name": "👥 User Management",
-      "description": "Admin user management operations including soft delete functionality",
+      "description": "Admin user management operations including soft delete functionality and status management.\n\n**User Status Management:**\n- **Direct Status Update:** Immediate status change with admin authentication\n- **Maker-Checker Status Update:** Dual approval system for sensitive status changes\n- **Priority Levels:** low, normal, high, critical\n- **Auto-Expiration:** Pending requests expire after 24 hours\n- **Audit Trail:** Complete logging of all status changes\n\n**User Status Values:**\n- **Active (1):** User account is fully operational\n- **Inactive (0):** User account is temporarily disabled\n- **Blocked (2):** User account is blocked due to suspicious activity\n- **Dormant (3):** User account is inactive for extended period\n- **Suspended (4):** User account is temporarily suspended\n- **Closed (5):** User account is permanently closed\n- **Pending Activation (6):** User account awaiting activation\n- **Frozen (7):** User account is frozen due to regulatory requirements\n- **Locked (8):** User account is locked due to multiple failed attempts\n- **Blacklisted (9):** User account is blacklisted",
       "item": [
         {
           "name": "Get All Users",
@@ -1168,7 +1168,7 @@
                 {
                   "key": "status",
                   "value": "{{user_status_filter}}",
-                  "description": "Filter by user status"
+                  "description": "Filter by user status (Active, Inactive, Dormant, Blocked, Suspended, Closed, Pending Activation, Frozen, Locked, Blacklisted)"
                 }
               ]
             }
@@ -1399,6 +1399,353 @@
               "raw": "{{base_url}}/api/users/{{deleted_user_id}}/permanent",
               "host": ["{{base_url}}"],
               "path": ["api", "users", "{{deleted_user_id}}", "permanent"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status (Direct)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms status update', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('name');",
+                  "    pm.expect(responseJson.data).to.have.property('previous_status');",
+                  "    pm.expect(responseJson.data).to.have.property('new_status');",
+                  "    pm.expect(responseJson.data).to.have.property('reason');",
+                  "    pm.expect(responseJson.message).to.include('updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": {{update_status_value}},\n  \"reason\": \"{{update_status_reason}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{target_user_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{target_user_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Pending Status Change (Maker-Checker)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has pending status change data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_id');",
+                  "    pm.expect(responseJson.data).to.have.property('requested_status');",
+                  "    pm.expect(responseJson.data).to.have.property('status', 'pending');",
+                  "    pm.expect(responseJson.data).to.have.property('expires_at');",
+                  "});",
+                  "",
+                  "pm.test('Save pending status change ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('pending_status_change_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": {{pending_status_value}},\n  \"reason\": \"{{pending_status_reason}}\",\n  \"priority\": \"{{pending_status_priority}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{target_user_id}}/status/request",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{target_user_id}}", "status", "request"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Status Changes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has pending changes data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('pending_changes');",
+                  "    pm.expect(responseJson.data).to.have.property('pagination');",
+                  "    pm.expect(responseJson.data.pending_changes).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Pending change records have required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data.pending_changes.length > 0) {",
+                  "        const pending = responseJson.data.pending_changes[0];",
+                  "        pm.expect(pending).to.have.property('id');",
+                  "        pm.expect(pending).to.have.property('user_name');",
+                  "        pm.expect(pending).to.have.property('current_status_string');",
+                  "        pm.expect(pending).to.have.property('requested_status_string');",
+                  "        pm.expect(pending).to.have.property('maker_admin_name');",
+                  "        pm.expect(pending).to.have.property('priority');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/status-changes/pending?page={{pending_changes_page}}&per_page={{pending_changes_per_page}}&priority={{pending_changes_priority}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "status-changes", "pending"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{pending_changes_page}}",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{pending_changes_per_page}}",
+                  "description": "Items per page (default: 10, max: 100)"
+                },
+                {
+                  "key": "priority",
+                  "value": "{{pending_changes_priority}}",
+                  "description": "Filter by priority (low, normal, high, critical)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Pending Status Change",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms approval', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('status', 'approved');",
+                  "    pm.expect(responseJson.data).to.have.property('checker_admin_name');",
+                  "    pm.expect(responseJson.data).to.have.property('approved_at');",
+                  "    pm.expect(responseJson.message).to.include('approved');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"comments\": \"{{approval_comments}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/status-changes/{{pending_status_change_id}}/review",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "status-changes", "{{pending_status_change_id}}", "review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Pending Status Change",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms rejection', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('status', 'rejected');",
+                  "    pm.expect(responseJson.data).to.have.property('checker_admin_name');",
+                  "    pm.expect(responseJson.data).to.have.property('rejected_at');",
+                  "    pm.expect(responseJson.message).to.include('rejected');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"reject\",\n  \"comments\": \"{{rejection_reason}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/status-changes/{{pending_status_change_id}}/review",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "status-changes", "{{pending_status_change_id}}", "review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Set User Status (Maker-Checker)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has pending status change data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('id');",
+                  "    pm.expect(responseJson.data).to.have.property('user_id');",
+                  "    pm.expect(responseJson.data).to.have.property('requested_status');",
+                  "    pm.expect(responseJson.data).to.have.property('status', 'pending');",
+                  "    pm.expect(responseJson.data).to.have.property('maker_admin_id');",
+                  "    pm.expect(responseJson.data).to.have.property('expires_at');",
+                  "});",
+                  "",
+                  "pm.test('Admin maker-checker data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.data).to.have.property('maker_admin_name');",
+                  "    pm.expect(responseJson.data).to.have.property('priority');",
+                  "    pm.expect(responseJson.data).to.have.property('reason');",
+                  "    pm.expect(responseJson.message).to.include('pending approval');",
+                  "});",
+                  "",
+                  "pm.test('Save admin pending status change ID', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('admin_pending_status_change_id', responseJson.data.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": {{admin_set_status_value}},\n  \"reason\": \"{{admin_set_status_reason}}\",\n  \"priority\": \"{{admin_set_status_priority}}\",\n  \"comments\": \"{{admin_set_status_comments}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/users/{{target_user_id}}/status/request",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users", "{{target_user_id}}", "status", "request"]
             }
           },
           "response": []
@@ -2566,7 +2913,7 @@
     },
     {
       "key": "admin_endpoints",
-      "value": "23",
+      "value": "24",
       "type": "string"
     },
     {
@@ -2641,6 +2988,31 @@
     },
     {
       "key": "balance_history_type",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_set_status_value",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "admin_set_status_reason",
+      "value": "Admin initiated status change for security compliance",
+      "type": "string"
+    },
+    {
+      "key": "admin_set_status_priority",
+      "value": "high",
+      "type": "string"
+    },
+    {
+      "key": "admin_set_status_comments",
+      "value": "Status change requested by admin for policy compliance",
+      "type": "string"
+    },
+    {
+      "key": "admin_pending_status_change_id",
       "value": "",
       "type": "string"
     }

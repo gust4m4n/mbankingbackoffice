@@ -12,7 +12,7 @@ class MbxTransactionController extends GetxController {
   var transactions = <MbxTransactionModel>[].obs;
   var totalTransactions = 0.obs;
   var currentPage = 1.obs;
-  var perPage = 10.obs;
+  var perPage = 32.obs; // Changed from 10 to 32
   var totalPages = 1.obs;
 
   // Selected transaction for view/reversal

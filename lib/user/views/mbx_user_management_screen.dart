@@ -86,67 +86,67 @@ class MbxUserManagementScreen extends StatelessWidget {
                             'user': user,
                           },
                           actions: [
-                            // Compact action buttons with smaller size
+                            // Ultra compact action buttons
                             SizedBox(
-                              width: 32,
-                              height: 32,
+                              width: 24,
+                              height: 24,
                               child: IconButton(
                                 onPressed: () => _topupUser(user),
                                 icon: const Icon(
                                   Icons.add_circle_outline,
-                                  size: 14,
+                                  size: 11,
                                   color: Color(0xFF1976D2),
                                 ),
                                 tooltip: 'Top Up',
                                 padding: EdgeInsets.zero,
-                                splashRadius: 14,
+                                splashRadius: 10,
                               ),
                             ),
 
                             SizedBox(
-                              width: 32,
-                              height: 32,
+                              width: 24,
+                              height: 24,
                               child: IconButton(
                                 onPressed: () => _adjustUser(user),
                                 icon: const Icon(
                                   Icons.tune_rounded,
-                                  size: 14,
+                                  size: 11,
                                   color: Color(0xFFFF9800),
                                 ),
                                 tooltip: 'Adjust',
                                 padding: EdgeInsets.zero,
-                                splashRadius: 14,
+                                splashRadius: 10,
                               ),
                             ),
 
                             SizedBox(
-                              width: 32,
-                              height: 32,
+                              width: 24,
+                              height: 24,
                               child: IconButton(
                                 onPressed: () => _viewBalanceHistory(user),
                                 icon: const Icon(
                                   Icons.history_rounded,
-                                  size: 14,
+                                  size: 11,
                                   color: Color(0xFF673AB7),
                                 ),
                                 tooltip: 'History',
                                 padding: EdgeInsets.zero,
-                                splashRadius: 14,
+                                splashRadius: 10,
                               ),
                             ),
 
                             SizedBox(
-                              width: 32,
-                              height: 32,
+                              width: 24,
+                              height: 24,
                               child: IconButton(
                                 onPressed: () => _viewUser(user),
                                 icon: const Icon(
                                   Icons.visibility_outlined,
-                                  size: 14,
+                                  size: 11,
                                 ),
                                 tooltip: 'View',
                                 padding: EdgeInsets.zero,
-                                splashRadius: 14,
+                                splashRadius: 10,
                               ),
                             ),
                           ],
@@ -187,43 +187,32 @@ class MbxUserManagementScreen extends StatelessWidget {
 
   Widget _buildNameCell(Map<String, dynamic> data) {
     final user = data['user'] as MbxUserModel;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: const Color(0xFF1976D2),
-          child: Text(
-            user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            user.name,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+    return Container(
+      height: 35, // Increased from 32 to 35 (matching DataTable height)
+      alignment: Alignment.centerLeft,
+      child: Text(
+        user.name,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 
   Widget _buildBalanceCell(Map<String, dynamic> data) {
     final user = data['user'] as MbxUserModel;
-    return Text(
-      user.formattedBalance,
-      textAlign: TextAlign.right,
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Color(0xFF1976D2),
+    return Container(
+      height: 35, // Increased from 32 to 35 (matching DataTable height)
+      alignment: Alignment.centerRight,
+      child: Text(
+        user.formattedBalance,
+        textAlign: TextAlign.right,
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+          color: Color(0xFF1976D2),
+          fontSize: 13,
+        ),
+        overflow: TextOverflow.ellipsis,
       ),
-      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -232,19 +221,23 @@ class MbxUserManagementScreen extends StatelessWidget {
     final user = data['user'] as MbxUserModel;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: isActive
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        user.displayStatus,
-        style: TextStyle(
-          color: isActive ? Colors.green : Colors.red,
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
+      height: 32, // Fixed compact height
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: isActive
+              ? Colors.green.withOpacity(0.1)
+              : Colors.red.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          user.displayStatus,
+          style: TextStyle(
+            color: isActive ? Colors.green : Colors.red,
+            fontWeight: FontWeight.w500,
+            fontSize: 11,
+          ),
         ),
       ),
     );

@@ -174,8 +174,8 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
       width: double.infinity,
       child: DataTable(
         columnSpacing: 16,
-        dataRowMinHeight: 56,
-        dataRowMaxHeight: 72,
+        dataRowMinHeight: 35, // Increased from 32 to 35 (~9% increase)
+        dataRowMaxHeight: 44, // Increased from 40 to 44 (10% increase)
         showBottomBorder: false,
         headingRowColor: WidgetStateProperty.all(
           isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[100],

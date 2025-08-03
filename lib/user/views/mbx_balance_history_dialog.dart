@@ -47,7 +47,7 @@ class _MbxBalanceHistoryDialogState extends State<MbxBalanceHistoryDialog> {
       final response = await MbxBalanceService.getBalanceHistory(
         userId: widget.user.id,
         page: page,
-        limit: 20,
+        limit: 32, // Changed from 20 to 32
       );
 
       if (response.statusCode == 200) {
