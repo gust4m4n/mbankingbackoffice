@@ -115,15 +115,17 @@ class _MbxDataTableWidgetState extends State<MbxDataTableWidget> {
 
           if (needsScroll) {
             return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               physics: const ClampingScrollPhysics(),
               child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 physics: const ClampingScrollPhysics(),
-                child: dataTable,
+                child: SizedBox(width: minTableWidth, child: dataTable),
               ),
             );
           } else {
             return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
               physics: const ClampingScrollPhysics(),
               child: dataTable,
             );

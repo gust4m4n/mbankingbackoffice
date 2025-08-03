@@ -45,34 +45,6 @@ class MbxPaginationWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Info Row
-          if (!isMobile) ...[
-            Row(
-              children: [
-                Text(
-                  'Showing $startItem-$endItem of $totalItems items',
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? const Color(0xFFB0B0B0)
-                        : Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  'Page $currentPage of $totalPages',
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? const Color(0xFFB0B0B0)
-                        : Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-          ],
-
           // Navigation Row
           Row(
             children: [
@@ -334,6 +306,18 @@ class MbxPaginationWidget extends StatelessWidget {
                       ),
                     ),
                   ],
+
+                  // Total Items Info - positioned at far right
+                  Text(
+                    'Total: $totalItems items',
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? const Color(0xFFB0B0B0)
+                          : Colors.grey[600],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -492,15 +476,15 @@ class MbxPaginationWidget extends StatelessWidget {
     int start = 1;
     int end = totalPages;
 
-    // Calculate visible page range
-    if (totalPages > 7) {
-      if (currentPage <= 4) {
-        end = 7;
-      } else if (currentPage >= totalPages - 3) {
-        start = totalPages - 6;
+    // Calculate visible page range - limit to maximum 5 pages
+    if (totalPages > 5) {
+      if (currentPage <= 3) {
+        end = 5;
+      } else if (currentPage >= totalPages - 2) {
+        start = totalPages - 4;
       } else {
-        start = currentPage - 3;
-        end = currentPage + 3;
+        start = currentPage - 2;
+        end = currentPage + 2;
       }
     }
 

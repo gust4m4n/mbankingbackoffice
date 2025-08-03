@@ -44,122 +44,119 @@ class MbxUserManagementScreen extends StatelessWidget {
             child: Column(
               children: [
                 // User Table using reusable component
-                Expanded(
-                  child: Obx(
-                    () => MbxDataTableWidget(
-                      isLoading: controller.isLoading.value,
-                      columns: [
-                        MbxDataColumn(
-                          label: 'Name',
-                          sortable: true,
-                          sortKey: 'name',
-                          customWidget: (data) => _buildNameCell(data),
-                        ),
-                        const MbxDataColumn(
-                          label: 'Phone',
-                          sortable: true,
-                          sortKey: 'phone',
-                        ),
-                        MbxDataColumn(
-                          label: 'Balance',
-                          sortable: true,
-                          sortKey: 'balance',
-                          textAlign: TextAlign.right,
-                          customWidget: (data) => _buildBalanceCell(data),
-                        ),
-                        MbxDataColumn(
-                          label: 'Status',
-                          sortable: true,
-                          sortKey: 'status',
-                          customWidget: (data) => _buildStatusCell(data),
-                        ),
-                      ],
-                      rows: controller.users.map((user) {
-                        return MbxDataRow(
-                          id: user.id.toString(),
-                          data: {
-                            'name': user.name,
-                            'phone': user.phone,
-                            'balance': user.balance,
-                            'status': user.status,
-                            'isActive': user.isActive,
-                            'user': user,
-                          },
-                          actions: [
-                            // Ultra compact action buttons
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: IconButton(
-                                onPressed: () => _topupUser(user),
-                                icon: const Icon(
-                                  Icons.add_circle_outline,
-                                  size: 11,
-                                  color: Color(0xFF1976D2),
-                                ),
-                                tooltip: 'Top Up',
-                                padding: EdgeInsets.zero,
-                                splashRadius: 10,
+                Obx(
+                  () => MbxDataTableWidget(
+                    isLoading: controller.isLoading.value,
+                    columns: [
+                      MbxDataColumn(
+                        label: 'Name',
+                        sortable: true,
+                        sortKey: 'name',
+                        customWidget: (data) => _buildNameCell(data),
+                      ),
+                      const MbxDataColumn(
+                        label: 'Phone',
+                        sortable: true,
+                        sortKey: 'phone',
+                      ),
+                      MbxDataColumn(
+                        label: 'Balance',
+                        sortable: true,
+                        sortKey: 'balance',
+                        textAlign: TextAlign.right,
+                        customWidget: (data) => _buildBalanceCell(data),
+                      ),
+                      MbxDataColumn(
+                        label: 'Status',
+                        sortable: true,
+                        sortKey: 'status',
+                        customWidget: (data) => _buildStatusCell(data),
+                      ),
+                    ],
+                    rows: controller.users.map((user) {
+                      return MbxDataRow(
+                        id: user.id.toString(),
+                        data: {
+                          'name': user.name,
+                          'phone': user.phone,
+                          'balance': user.balance,
+                          'status': user.status,
+                          'isActive': user.isActive,
+                          'user': user,
+                        },
+                        actions: [
+                          // Ultra compact action buttons
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: IconButton(
+                              onPressed: () => _topupUser(user),
+                              icon: const Icon(
+                                Icons.add_circle_outline,
+                                size: 11,
+                                color: Color(0xFF1976D2),
                               ),
+                              tooltip: 'Top Up',
+                              padding: EdgeInsets.zero,
+                              splashRadius: 10,
                             ),
+                          ),
 
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: IconButton(
-                                onPressed: () => _adjustUser(user),
-                                icon: const Icon(
-                                  Icons.tune_rounded,
-                                  size: 11,
-                                  color: Color(0xFFFF9800),
-                                ),
-                                tooltip: 'Adjust',
-                                padding: EdgeInsets.zero,
-                                splashRadius: 10,
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: IconButton(
+                              onPressed: () => _adjustUser(user),
+                              icon: const Icon(
+                                Icons.tune_rounded,
+                                size: 11,
+                                color: Color(0xFFFF9800),
                               ),
+                              tooltip: 'Adjust',
+                              padding: EdgeInsets.zero,
+                              splashRadius: 10,
                             ),
+                          ),
 
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: IconButton(
-                                onPressed: () => _viewBalanceHistory(user),
-                                icon: const Icon(
-                                  Icons.history_rounded,
-                                  size: 11,
-                                  color: Color(0xFF673AB7),
-                                ),
-                                tooltip: 'History',
-                                padding: EdgeInsets.zero,
-                                splashRadius: 10,
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: IconButton(
+                              onPressed: () => _viewBalanceHistory(user),
+                              icon: const Icon(
+                                Icons.history_rounded,
+                                size: 11,
+                                color: Color(0xFF673AB7),
                               ),
+                              tooltip: 'History',
+                              padding: EdgeInsets.zero,
+                              splashRadius: 10,
                             ),
+                          ),
 
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: IconButton(
-                                onPressed: () => _viewUser(user),
-                                icon: const Icon(
-                                  Icons.visibility_outlined,
-                                  size: 11,
-                                ),
-                                tooltip: 'View',
-                                padding: EdgeInsets.zero,
-                                splashRadius: 10,
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: IconButton(
+                              onPressed: () => _viewUser(user),
+                              icon: const Icon(
+                                Icons.visibility_outlined,
+                                size: 11,
                               ),
+                              tooltip: 'View',
+                              padding: EdgeInsets.zero,
+                              splashRadius: 10,
                             ),
-                          ],
-                          onTap: () => _viewUser(user),
-                        );
-                      }).toList(),
-                      emptyIcon: Icons.people_outline,
-                      emptyTitle: 'No users found',
-                      emptySubtitle:
-                          'Users will appear here once they register',
-                      enableHighlight: true,
-                      enableRowOnlyHighlight: true,
-                    ),
+                          ),
+                        ],
+                        onTap: () => _viewUser(user),
+                      );
+                    }).toList(),
+                    emptyIcon: Icons.people_outline,
+                    emptyTitle: 'No users found',
+                    emptySubtitle: 'Users will appear here once they register',
+                    enableHighlight: true,
+                    enableRowOnlyHighlight: true,
                   ),
                 ),
 
