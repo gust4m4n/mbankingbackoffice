@@ -430,8 +430,8 @@ class MbxPaginationWidget extends StatelessWidget {
       message: tooltip ?? '',
       child: Material(
         color: onPressed != null
-            ? (isDarkMode ? const Color(0xff161616) : Colors.white)
-            : (isDarkMode ? const Color(0xff1a1a1a) : Colors.grey[200]),
+            ? (isDarkMode ? const Color(0xff3a3a3a) : Colors.white)
+            : (isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[200]),
         borderRadius: BorderRadius.circular(6),
         child: InkWell(
           borderRadius: BorderRadius.circular(6),
@@ -443,9 +443,9 @@ class MbxPaginationWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: onPressed != null
-                    ? (isDarkMode ? const Color(0xff2a2a2a) : Colors.grey[300]!)
+                    ? (isDarkMode ? const Color(0xff4a4a4a) : Colors.grey[300]!)
                     : (isDarkMode
-                          ? const Color(0xff1a1a1a)
+                          ? const Color(0xff2a2a2a)
                           : Colors.grey[200]!),
               ),
             ),
@@ -453,8 +453,8 @@ class MbxPaginationWidget extends StatelessWidget {
               icon,
               size: 18,
               color: onPressed != null
-                  ? (isDarkMode ? const Color(0xFFF0F0F0) : Colors.grey[700])
-                  : (isDarkMode ? const Color(0xFF404040) : Colors.grey[400]),
+                  ? (isDarkMode ? const Color(0xFFE0E0E0) : Colors.grey[700])
+                  : (isDarkMode ? const Color(0xFF606060) : Colors.grey[400]),
             ),
           ),
         ),
@@ -512,7 +512,7 @@ class MbxPaginationWidget extends StatelessWidget {
       child: Material(
         color: isActive
             ? const Color(0xFF1976D2)
-            : (isDarkMode ? const Color(0xff161616) : Colors.white),
+            : (isDarkMode ? const Color(0xff3a3a3a) : Colors.white),
         borderRadius: BorderRadius.circular(6),
         child: InkWell(
           borderRadius: BorderRadius.circular(6),
@@ -528,7 +528,7 @@ class MbxPaginationWidget extends StatelessWidget {
                 color: isActive
                     ? const Color(0xFF1976D2)
                     : (isDarkMode
-                          ? const Color(0xff2a2a2a)
+                          ? const Color(0xff4a4a4a)
                           : Colors.grey[300]!),
               ),
             ),
@@ -539,7 +539,7 @@ class MbxPaginationWidget extends StatelessWidget {
                   color: isActive
                       ? Colors.white
                       : (isDarkMode
-                            ? const Color(0xFFF0F0F0)
+                            ? const Color(0xFFE0E0E0)
                             : Colors.grey[700]),
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                   fontSize: 14,
