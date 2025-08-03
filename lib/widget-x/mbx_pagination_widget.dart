@@ -125,7 +125,7 @@ class MbxPaginationWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     SizedBox(
-                      width: 50,
+                      width: 100,
                       height: 36,
                       child: TextField(
                         textAlign: TextAlign.center,
@@ -143,16 +143,18 @@ class MbxPaginationWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                             borderSide: BorderSide(
                               color: isDarkMode
-                                  ? const Color(0xff2a2a2a)
-                                  : Colors.grey[300]!,
+                                  ? const Color(0xff4a4a4a)
+                                  : Colors.grey[400]!,
+                              width: 1,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(6),
                             borderSide: BorderSide(
                               color: isDarkMode
-                                  ? const Color(0xff2a2a2a)
-                                  : Colors.grey[300]!,
+                                  ? const Color(0xff4a4a4a)
+                                  : Colors.grey[400]!,
+                              width: 1,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -236,16 +238,18 @@ class MbxPaginationWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(4),
                                     borderSide: BorderSide(
                                       color: isDarkMode
-                                          ? const Color(0xff2a2a2a)
-                                          : Colors.grey[300]!,
+                                          ? const Color(0xff4a4a4a)
+                                          : Colors.grey[400]!,
+                                      width: 1,
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(4),
                                     borderSide: BorderSide(
                                       color: isDarkMode
-                                          ? const Color(0xff2a2a2a)
-                                          : Colors.grey[300]!,
+                                          ? const Color(0xff4a4a4a)
+                                          : Colors.grey[400]!,
+                                      width: 1,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -350,7 +354,7 @@ class MbxPaginationWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   SizedBox(
-                    width: 50,
+                    width: 100,
                     height: 32,
                     child: TextField(
                       textAlign: TextAlign.center,
@@ -368,16 +372,18 @@ class MbxPaginationWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           borderSide: BorderSide(
                             color: isDarkMode
-                                ? const Color(0xff2a2a2a)
-                                : Colors.grey[300]!,
+                                ? const Color(0xff4a4a4a)
+                                : Colors.grey[400]!,
+                            width: 1,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4),
                           borderSide: BorderSide(
                             color: isDarkMode
-                                ? const Color(0xff2a2a2a)
-                                : Colors.grey[300]!,
+                                ? const Color(0xff4a4a4a)
+                                : Colors.grey[400]!,
+                            width: 1,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
