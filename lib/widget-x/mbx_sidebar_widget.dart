@@ -252,14 +252,6 @@ class _MbxSidebarWidgetState extends State<MbxSidebarWidget> {
                       ),
                     ),
                   ),
-                  if (isHovered && !isActive)
-                    Icon(
-                      Icons.chevron_right,
-                      color: isDark
-                          ? Colors.white.withOpacity(0.7)
-                          : Colors.white.withOpacity(0.7),
-                      size: 18,
-                    ),
                 ],
               ),
             ),
