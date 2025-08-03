@@ -1,5 +1,8 @@
 import 'package:mbankingbackoffice/user/controllers/mbx_user_controller.dart';
 import 'package:mbankingbackoffice/user/models/mbx_user_model.dart';
+import 'package:mbankingbackoffice/user/views/mbx_adjustment_dialog.dart';
+import 'package:mbankingbackoffice/user/views/mbx_balance_history_dialog.dart';
+import 'package:mbankingbackoffice/user/views/mbx_topup_dialog.dart';
 import 'package:mbankingbackoffice/user/views/mbx_user_detail_dialog.dart';
 import 'package:mbankingbackoffice/user/views/widgets/mbx_user_header_search_widget.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
@@ -20,90 +23,148 @@ class MbxUserManagementScreen extends StatelessWidget {
             controller: controller,
             title: 'User Management',
           ),
-          child: _buildUserContent(controller),
+          child: _buildUserContent(controller, context),
         );
       },
     );
   }
 
-  Widget _buildUserContent(MbxUserController controller) {
+  Widget _buildUserContent(MbxUserController controller, BuildContext context) {
     return Column(
       children: [
         // User Table Container
         Expanded(
-          child: Obx(() {
-            return Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(Get.context!).cardColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  // User Table using reusable component
-                  MbxDataTableWidget(
-                    isLoading: controller.isLoading.value,
-                    columns: [
-                      MbxDataColumn(
-                        label: 'Name',
-                        sortable: true,
-                        sortKey: 'name',
-                        customWidget: (data) => _buildNameCell(data),
-                      ),
-                      const MbxDataColumn(
-                        label: 'Phone',
-                        sortable: true,
-                        sortKey: 'phone',
-                      ),
-                      MbxDataColumn(
-                        label: 'Balance',
-                        sortable: true,
-                        sortKey: 'balance',
-                        textAlign: TextAlign.right,
-                        customWidget: (data) => _buildBalanceCell(data),
-                      ),
-                      MbxDataColumn(
-                        label: 'Status',
-                        sortable: true,
-                        sortKey: 'status',
-                        customWidget: (data) => _buildStatusCell(data),
-                      ),
-                    ],
-                    rows: controller.users.map((user) {
-                      return MbxDataRow(
-                        id: user.id.toString(),
-                        data: {
-                          'name': user.name,
-                          'phone': user.phone,
-                          'balance': user.balance,
-                          'status': user.status,
-                          'isActive': user.isActive,
-                          'user': user,
-                        },
-                        actions: [
-                          IconButton(
-                            onPressed: () => _viewUser(user),
-                            icon: const Icon(
-                              Icons.visibility_outlined,
-                              size: 18,
-                            ),
-                            tooltip: 'View',
-                            splashRadius: 20,
+          child: GetBuilder<MbxUserController>(
+            builder: (controller) {
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    // User Table using reusable component
+                    Expanded(
+                      child: MbxDataTableWidget(
+                        isLoading: controller.isLoading.value,
+                        columns: [
+                          MbxDataColumn(
+                            label: 'Name',
+                            sortable: true,
+                            sortKey: 'name',
+                            customWidget: (data) => _buildNameCell(data),
+                          ),
+                          const MbxDataColumn(
+                            label: 'Phone',
+                            sortable: true,
+                            sortKey: 'phone',
+                          ),
+                          MbxDataColumn(
+                            label: 'Balance',
+                            sortable: true,
+                            sortKey: 'balance',
+                            textAlign: TextAlign.right,
+                            customWidget: (data) => _buildBalanceCell(data),
+                          ),
+                          MbxDataColumn(
+                            label: 'Status',
+                            sortable: true,
+                            sortKey: 'status',
+                            customWidget: (data) => _buildStatusCell(data),
                           ),
                         ],
-                        onTap: () => _viewUser(user),
-                      );
-                    }).toList(),
-                    emptyIcon: Icons.people_outline,
-                    emptyTitle: 'No users found',
-                    emptySubtitle: 'Users will appear here once they register',
-                    enableHighlight: true,
-                    enableRowOnlyHighlight: true,
-                  ),
+                        rows: controller.users.map((user) {
+                          return MbxDataRow(
+                            id: user.id.toString(),
+                            data: {
+                              'name': user.name,
+                              'phone': user.phone,
+                              'balance': user.balance,
+                              'status': user.status,
+                              'isActive': user.isActive,
+                              'user': user,
+                            },
+                            actions: [
+                              // Compact action buttons with smaller size
+                              SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: IconButton(
+                                  onPressed: () => _topupUser(user),
+                                  icon: const Icon(
+                                    Icons.add_circle_outline,
+                                    size: 14,
+                                    color: Color(0xFF1976D2),
+                                  ),
+                                  tooltip: 'Top Up',
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 14,
+                                ),
+                              ),
 
-                  // Pagination
-                  Obx(
-                    () => MbxPaginationWidget(
+                              SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: IconButton(
+                                  onPressed: () => _adjustUser(user),
+                                  icon: const Icon(
+                                    Icons.tune_rounded,
+                                    size: 14,
+                                    color: Color(0xFFFF9800),
+                                  ),
+                                  tooltip: 'Adjust',
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 14,
+                                ),
+                              ),
+
+                              SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: IconButton(
+                                  onPressed: () => _viewBalanceHistory(user),
+                                  icon: const Icon(
+                                    Icons.history_rounded,
+                                    size: 14,
+                                    color: Color(0xFF673AB7),
+                                  ),
+                                  tooltip: 'History',
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 14,
+                                ),
+                              ),
+
+                              SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: IconButton(
+                                  onPressed: () => _viewUser(user),
+                                  icon: const Icon(
+                                    Icons.visibility_outlined,
+                                    size: 14,
+                                  ),
+                                  tooltip: 'View',
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 14,
+                                ),
+                              ),
+                            ],
+                            onTap: () => _viewUser(user),
+                          );
+                        }).toList(),
+                        emptyIcon: Icons.people_outline,
+                        emptyTitle: 'No users found',
+                        emptySubtitle:
+                            'Users will appear here once they register',
+                        enableHighlight: true,
+                        enableRowOnlyHighlight: true,
+                      ),
+                    ),
+
+                    // Pagination
+                    MbxPaginationWidget(
                       currentPage: controller.currentPage.value,
                       totalPages: controller.totalPages.value,
                       totalItems: controller.totalUsers.value,
@@ -114,11 +175,11 @@ class MbxUserManagementScreen extends StatelessWidget {
                       onLast: controller.lastPage,
                       onPageChanged: controller.goToPage,
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -191,5 +252,27 @@ class MbxUserManagementScreen extends StatelessWidget {
 
   void _viewUser(MbxUserModel user) {
     MbxUserDetailDialog.show(Get.context!, user);
+  }
+
+  Future<void> _topupUser(MbxUserModel user) async {
+    final result = await MbxTopupDialog.show(Get.context!, user);
+    if (result == true) {
+      // Refresh user list to show updated balance
+      final controller = Get.find<MbxUserController>();
+      controller.refreshUsers();
+    }
+  }
+
+  Future<void> _adjustUser(MbxUserModel user) async {
+    final result = await MbxAdjustmentDialog.show(Get.context!, user);
+    if (result == true) {
+      // Refresh user list to show updated balance
+      final controller = Get.find<MbxUserController>();
+      controller.refreshUsers();
+    }
+  }
+
+  void _viewBalanceHistory(MbxUserModel user) {
+    MbxBalanceHistoryDialog.show(Get.context!, user);
   }
 }
