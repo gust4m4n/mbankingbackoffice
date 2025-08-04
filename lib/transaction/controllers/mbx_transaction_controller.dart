@@ -18,7 +18,8 @@ class MbxTransactionController extends GetxController {
   // Selected transaction for view/reversal
   MbxTransactionModel? selectedTransaction;
 
-  // Filter controllers
+  // Search and filter controllers
+  final searchController = TextEditingController();
   final userIdController = TextEditingController();
   final typeController = TextEditingController();
   final statusController = TextEditingController();
@@ -32,6 +33,7 @@ class MbxTransactionController extends GetxController {
   // Filter states
   var selectedType = '';
   var selectedStatus = '';
+  var isFilterActive = false.obs;
 
   // Available filter options
   final types = ['', 'topup', 'withdraw', 'transfer', 'reversal'];
@@ -52,6 +54,7 @@ class MbxTransactionController extends GetxController {
 
   @override
   void onClose() {
+    searchController.dispose();
     userIdController.dispose();
     typeController.dispose();
     statusController.dispose();
@@ -71,6 +74,9 @@ class MbxTransactionController extends GetxController {
       final response = await MbxTransactionApiService.getTransactions(
         page: page,
         perPage: perPage.value,
+        search: searchController.text.trim().isNotEmpty
+            ? searchController.text.trim()
+            : null,
         userId: userIdController.text.trim().isNotEmpty
             ? userIdController.text.trim()
             : null,
@@ -163,6 +169,7 @@ class MbxTransactionController extends GetxController {
 
   /// Apply filters
   void applyFilters() {
+    _checkFilterStatus();
     currentPage.value = 1;
     loadTransactions();
   }
@@ -350,5 +357,38 @@ class MbxTransactionController extends GetxController {
         ),
       ),
     );
+  }
+
+  /// Search transactions
+  void searchTransactions() {
+    _checkFilterStatus();
+    loadTransactions(page: 1);
+  }
+
+  /// Clear search and filters
+  void clearSearchAndFilters() {
+    searchController.clear();
+    userIdController.clear();
+    typeController.clear();
+    statusController.clear();
+    startDateController.clear();
+    endDateController.clear();
+    selectedType = '';
+    selectedStatus = '';
+    isFilterActive.value = false;
+    loadTransactions(page: 1);
+  }
+
+  /// Check if any filter is active
+  void _checkFilterStatus() {
+    isFilterActive.value =
+        searchController.text.trim().isNotEmpty ||
+        userIdController.text.trim().isNotEmpty ||
+        typeController.text.trim().isNotEmpty ||
+        statusController.text.trim().isNotEmpty ||
+        startDateController.text.trim().isNotEmpty ||
+        endDateController.text.trim().isNotEmpty ||
+        selectedType.isNotEmpty ||
+        selectedStatus.isNotEmpty;
   }
 }

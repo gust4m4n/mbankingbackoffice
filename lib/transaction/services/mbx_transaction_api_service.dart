@@ -8,6 +8,7 @@ class MbxTransactionApiService {
   static Future<ApiXResponse> getTransactions({
     int page = 1,
     int perPage = 10,
+    String? search,
     String? userId,
     String? type,
     String? status,
@@ -19,6 +20,9 @@ class MbxTransactionApiService {
       'limit': perPage.toString(),
     };
 
+    if (search != null && search.isNotEmpty) {
+      params['search'] = search;
+    }
     if (userId != null && userId.isNotEmpty) {
       params['user_id'] = userId;
     }

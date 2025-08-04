@@ -15,9 +15,16 @@ class MbxTransactionManagementScreen extends StatelessWidget {
           title: 'Transaction Management',
           currentRoute: '/transaction-management',
           showAddButton: false,
-          customHeaderWidget: const MbxManagementHeader(
-            title: 'Transaction Management',
-            showSearch: false,
+          customHeaderWidget: Obx(
+            () => MbxManagementHeader(
+              title: 'Transaction Management',
+              showSearch: true,
+              searchController: controller.searchController,
+              onSearch: controller.searchTransactions,
+              onClearSearch: controller.clearSearchAndFilters,
+              searchHint: 'Search...',
+              isFilterActive: controller.isFilterActive.value,
+            ),
           ),
           child: _buildTransactionContent(controller, context),
         );
