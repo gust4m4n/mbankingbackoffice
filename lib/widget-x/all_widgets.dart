@@ -33,6 +33,8 @@ export 'mbx_pagination_mixin.dart';
 export 'mbx_pagination_widget.dart';
 export 'mbx_screen.dart';
 export 'mbx_sidebar_widget.dart';
+export 'mbx_transaction_table_action_builders.dart';
+export 'mbx_transaction_table_widget.dart';
 export 'mbx_user_table_actions.dart';
 export 'mbx_user_table_widget.dart';
 export 'navigationbar_x.dart';

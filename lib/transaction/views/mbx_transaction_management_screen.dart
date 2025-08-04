@@ -31,221 +31,55 @@ class MbxTransactionManagementScreen extends StatelessWidget {
   ) {
     return Column(
       children: [
-        // Transaction Table
-        Expanded(child: _buildTransactionTable(controller, context)),
+        // Transaction Table Container
+        Expanded(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                // Transaction Table using reusable component
+                Expanded(
+                  child: Obx(
+                    () => MbxTransactionTableWidget(
+                      transactions: controller.transactions,
+                      isLoading: controller.isLoading.value,
+                      enableSorting: false,
+                      actionBuilder: (transaction) =>
+                          MbxTransactionTableActionBuilders.buildStandardActions(
+                            transaction,
+                            onView: () => _viewTransaction(transaction),
+                            onDownload: () => _downloadReceipt(transaction),
+                          ),
+                      onRowTap: (transaction) =>
+                          () => _viewTransaction(transaction),
+                    ),
+                  ),
+                ),
+
+                // Pagination
+                Obx(
+                  () => MbxPaginationWidget(
+                    currentPage: controller.currentPage.value,
+                    totalPages: controller.totalPages.value,
+                    totalItems: controller.totalTransactions.value,
+                    itemsPerPage: controller.perPage.value,
+                    onPrevious: controller.previousPage,
+                    onNext: controller.nextPage,
+                    onFirst: controller.firstPage,
+                    onLast: controller.lastPage,
+                    onPageChanged: controller.goToPage,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
-    );
-  }
-
-  Widget _buildTransactionTable(
-    MbxTransactionController controller,
-    BuildContext context,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          // Transaction Table using reusable component
-          MbxDataTableWidget(
-            isLoading: controller.isLoading.value,
-            columns: [
-              const MbxDataColumn(
-                key: 'id',
-                label: 'ID',
-                width: 120,
-                sortable: true,
-                sortKey: 'id',
-              ),
-              MbxDataColumn(
-                key: 'type',
-                label: 'Type',
-                width: 140,
-                sortable: true,
-                sortKey: 'type',
-                customWidget: (data) => _buildTypeCell(data),
-              ),
-              MbxDataColumn(
-                key: 'userName',
-                label: 'User',
-                width: 180,
-                sortable: true,
-                sortKey: 'userName',
-                customWidget: (data) => _buildUserCell(data),
-              ),
-              MbxDataColumn(
-                key: 'amount',
-                label: 'Amount',
-                width: 130,
-                sortable: true,
-                sortKey: 'amount',
-                textAlign: TextAlign.right,
-                customWidget: (data) => _buildAmountCell(data),
-              ),
-              MbxDataColumn(
-                key: 'status',
-                label: 'Status',
-                width: 120,
-                sortable: true,
-                sortKey: 'status',
-                customWidget: (data) => _buildStatusCell(data),
-              ),
-              const MbxDataColumn(
-                key: 'date',
-                label: 'Date',
-                width: 140,
-                sortable: true,
-                sortKey: 'date',
-              ),
-            ],
-            rows: controller.transactions.map((transaction) {
-              return MbxDataRow(
-                key: transaction.id.toString(),
-                id: transaction.id.toString(),
-                cells: {
-                  'id': MbxDataCell(value: transaction.id),
-                  'type': MbxDataCell(value: transaction.type),
-                  'userName': MbxDataCell(value: transaction.userName),
-                  'amount': MbxDataCell(value: transaction.amount),
-                  'status': MbxDataCell(value: transaction.status),
-                  'date': MbxDataCell(value: transaction.formattedCreatedAt),
-                },
-                data: {
-                  'id': transaction.id,
-                  'type': transaction.type,
-                  'userName': transaction.userName,
-                  'amount': transaction.amount,
-                  'status': transaction.status,
-                  'date': transaction.formattedCreatedAt,
-                  'transaction': transaction,
-                },
-                actions: [
-                  IconButton(
-                    onPressed: () => _viewTransaction(transaction),
-                    icon: const Icon(Icons.visibility_outlined, size: 18),
-                    tooltip: 'View Details',
-                    splashRadius: 20,
-                  ),
-                  IconButton(
-                    onPressed: () => _downloadReceipt(transaction),
-                    icon: const Icon(Icons.download_outlined, size: 18),
-                    tooltip: 'Download Receipt',
-                    splashRadius: 20,
-                  ),
-                ],
-                onTap: () => _viewTransaction(transaction),
-              );
-            }).toList(),
-            emptyIcon: Icons.receipt_long_outlined,
-            emptyTitle: 'No transactions found',
-            emptySubtitle: 'Transactions will appear here once processed',
-            enableHighlight: true,
-            enableRowOnlyHighlight: true,
-            minTableWidth: 890,
-          ),
-
-          // Pagination
-          Obx(
-            () => MbxPaginationWidget(
-              currentPage: controller.currentPage.value,
-              totalPages: controller.totalPages.value,
-              totalItems: controller.totalTransactions.value,
-              itemsPerPage: controller.perPage.value,
-              onPrevious: controller.previousPage,
-              onNext: controller.nextPage,
-              onFirst: controller.firstPage,
-              onLast: controller.lastPage,
-              onPageChanged: controller.goToPage,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTypeCell(Map<String, dynamic> data) {
-    final transaction = data['transaction'] as MbxTransactionModel;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getTypeColor(transaction.type).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        transaction.displayType,
-        style: TextStyle(
-          color: _getTypeColor(transaction.type),
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserCell(Map<String, dynamic> data) {
-    final transaction = data['transaction'] as MbxTransactionModel;
-
-    return Builder(
-      builder: (context) {
-        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              transaction.userName,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              transaction.maskedAccountNumber,
-              style: TextStyle(
-                fontSize: 12,
-                color: isDarkMode ? const Color(0xFFB0B0B0) : Colors.grey[600],
-                fontFamily: 'monospace',
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildAmountCell(Map<String, dynamic> data) {
-    final transaction = data['transaction'] as MbxTransactionModel;
-
-    return Text(
-      transaction.formattedAmount,
-      textAlign: TextAlign.right,
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Color(0xFF1976D2),
-      ),
-    );
-  }
-
-  Widget _buildStatusCell(Map<String, dynamic> data) {
-    final transaction = data['transaction'] as MbxTransactionModel;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getStatusColor(transaction.status).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        transaction.displayStatus,
-        style: TextStyle(
-          color: _getStatusColor(transaction.status),
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
-        ),
-      ),
     );
   }
 
@@ -259,36 +93,5 @@ class MbxTransactionManagementScreen extends StatelessWidget {
 
   void _showFeatureNotAvailable(String featureName) {
     MbxDialogController.showFeatureNotAvailable(featureName);
-  }
-
-  Color _getTypeColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'transfer':
-        return Colors.blue;
-      case 'topup':
-        return Colors.green;
-      case 'withdraw':
-        return Colors.orange;
-      case 'reversal':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return Colors.green;
-      case 'pending':
-        return Colors.orange;
-      case 'failed':
-      case 'cancelled':
-        return Colors.red;
-      case 'reversed':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
   }
 }
