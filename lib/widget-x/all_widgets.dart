@@ -25,6 +25,7 @@ export 'inkwell_x.dart';
 export 'internet_toasts.dart';
 export 'mbx_data_table_widget.dart';
 export 'mbx_dialog_controller.dart';
+export 'mbx_management_header.dart';
 export 'mbx_management_scaffold.dart';
 export 'mbx_pagination_mixin.dart';
 export 'mbx_pagination_widget.dart';

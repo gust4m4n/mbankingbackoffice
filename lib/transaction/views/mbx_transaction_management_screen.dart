@@ -15,6 +15,10 @@ class MbxTransactionManagementScreen extends StatelessWidget {
           title: 'Transaction Management',
           currentRoute: '/transaction-management',
           showAddButton: false,
+          customHeaderWidget: const MbxManagementHeader(
+            title: 'Transaction Management',
+            showSearch: false,
+          ),
           child: _buildTransactionContent(controller, context),
         );
       },

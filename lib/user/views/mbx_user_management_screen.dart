@@ -4,7 +4,6 @@ import 'package:mbankingbackoffice/user/views/mbx_adjustment_dialog.dart';
 import 'package:mbankingbackoffice/user/views/mbx_balance_history_dialog.dart';
 import 'package:mbankingbackoffice/user/views/mbx_topup_dialog.dart';
 import 'package:mbankingbackoffice/user/views/mbx_user_detail_dialog.dart';
-import 'package:mbankingbackoffice/user/views/widgets/mbx_user_header_search_widget.dart';
 import 'package:mbankingbackoffice/widget-x/all_widgets.dart';
 
 class MbxUserManagementScreen extends StatelessWidget {
@@ -19,9 +18,16 @@ class MbxUserManagementScreen extends StatelessWidget {
           title: 'User Management',
           currentRoute: '/user-management',
           showAddButton: false,
-          customHeaderWidget: MbxUserHeaderSearchWidget(
-            controller: controller,
-            title: 'User Management',
+          customHeaderWidget: Obx(
+            () => MbxManagementHeader(
+              title: 'User Management',
+              showSearch: true,
+              searchController: controller.searchController,
+              onSearch: controller.searchUsers,
+              onClearSearch: controller.clearSearchAndFilters,
+              searchHint: 'Search users...',
+              isFilterActive: controller.isFilterActive.value,
+            ),
           ),
           child: _buildUserContent(controller, context),
         );
