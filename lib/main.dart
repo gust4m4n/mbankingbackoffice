@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:mbankingbackoffice/admin/views/mbx_admin_management_screen_old.dart';
 import 'package:mbankingbackoffice/admin/views/test_admin_screen.dart';
 import 'package:mbankingbackoffice/apis/mbx_device_info_vm.dart';
@@ -98,53 +96,27 @@ Future<void> main() async {
 
   String initialRoute = '/login';
   final token = await MbxUserPreferencesVM.getToken();
-  // Temporarily force login screen for desktop debugging
-  if (Platform.isMacOS) {
-    await MbxUserPreferencesVM.setToken(''); // Clear token for macOS
-  }
-  if (token.isNotEmpty && !Platform.isMacOS) {
+  // Clear token for macOS desktop debugging
+  await MbxUserPreferencesVM.setToken(''); // Always clear token for macOS
+  if (token.isNotEmpty) {
     initialRoute = '/relogin';
   }
 
   print('🚀 Starting app with route: $initialRoute');
-  print('🖥️  Platform: ${Platform.operatingSystem}');
-  print(
-    '🔑 Token length: ${token.length}',
-  ); // Set orientation based on platform
-  if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-    print('🖥️  Desktop platform detected - allowing all orientations');
-    // Desktop platforms - allow all orientations
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]).then((value) {
-      print('🖥️  Running desktop app directly');
-      runApp(MyApp(initialRoute)); // Direct app for desktop
-    });
-  } else {
-    print('📱 Mobile platform detected - portrait only');
-    // Mobile platforms - portrait only
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
-      value,
-    ) {
-      runApp(
-        ContainerX(
-          gradientColorBegin: ColorX.black,
-          gradientColorEnd: ColorX.gray,
-          child: Center(
-            child: ClipRRect(
-              child: SizedBox(
-                width: double.infinity,
-                child: MyApp(initialRoute),
-              ),
-            ),
-          ),
-        ),
-      );
-    });
-  }
+  print('🖥️  Platform: macOS');
+  print('🔑 Token length: ${token.length}');
+
+  // macOS desktop - allow all orientations
+  print('🖥️  macOS platform - allowing all orientations');
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]).then((value) {
+    print('🖥️  Running macOS desktop app');
+    runApp(MyApp(initialRoute)); // Direct app for macOS desktop
+  });
   /*
   if (MbxSessionVM.token.isNotEmpty) {
     MbxSessionVM.checkPinAndBiometric();
@@ -182,12 +154,10 @@ class MyApp extends StatelessWidget {
           translations: MbxTranslationService(),
           fallbackLocale: const Locale('id', ''),
           scrollBehavior: AppScrollBehavior(),
-          title: 'MBanking BackOffice',
+          title: 'MBanking BackOffice - macOS',
           theme: MbxAppThemes.lightTheme.copyWith(
-            // Add bright background for desktop debugging
-            scaffoldBackgroundColor: Platform.isMacOS
-                ? Colors.blue.shade100
-                : null,
+            // Bright background for macOS desktop debugging
+            scaffoldBackgroundColor: Colors.blue.shade100,
           ),
           darkTheme: MbxAppThemes.darkTheme,
           themeMode: themeController.themeMode,
